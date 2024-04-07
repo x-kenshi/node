@@ -16,7 +16,7 @@ class CFunctionInfo;
 namespace internal {
 
 class Isolate;
-class Page;
+class PageMetadata;
 class SCTableReference;
 class StatsCounter;
 
@@ -69,6 +69,7 @@ class StatsCounter;
   V(execution_mode_address, "IsolateData::execution_mode")                     \
   V(debug_suspended_generator_address,                                         \
     "Debug::step_suspended_generator_address()")                               \
+  V(context_address, "Isolate::context_address()")                             \
   V(fast_c_call_caller_fp_address,                                             \
     "IsolateData::fast_c_call_caller_fp_address")                              \
   V(fast_c_call_caller_pc_address,                                             \
@@ -362,6 +363,8 @@ class StatsCounter;
   V(address_of_wasm_int32_max_as_double, "wasm_int32_max_as_double")           \
   V(address_of_wasm_uint32_max_as_double, "wasm_uint32_max_as_double")         \
   V(address_of_wasm_int32_overflow_as_float, "wasm_int32_overflow_as_float")   \
+  V(address_of_wasm_i32x8_int32_overflow_as_float,                             \
+    "wasm_i32x8_int32_overflow_as_float")                                      \
   V(supports_cetss_address, "CpuFeatures::supports_cetss_address")             \
   V(write_barrier_marking_from_code_function, "WriteBarrier::MarkingFromCode") \
   V(write_barrier_indirect_pointer_marking_from_code_function,                 \

@@ -49,7 +49,7 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
   Handle<BytecodeArray> ToBytecodeArray(IsolateT* isolate);
   template <typename IsolateT>
   EXPORT_TEMPLATE_DECLARE(V8_EXPORT_PRIVATE)
-  Handle<ByteArray> ToSourcePositionTable(IsolateT* isolate);
+  Handle<TrustedByteArray> ToSourcePositionTable(IsolateT* isolate);
 
 #ifdef DEBUG
   int CheckBytecodeMatches(Tagged<BytecodeArray> bytecode);
@@ -110,7 +110,7 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
 
   // Stores the object in the accumulator into |slot_index| at |depth| in the
   // context chain starting with |context|.
-  BytecodeArrayBuilder& StoreContextSlot(Register context, int slot_index,
+  BytecodeArrayBuilder& StoreContextSlot(Register context, Variable* variable,
                                          int depth);
 
   // Load from a module variable into the accumulator. |depth| is the depth of
@@ -139,6 +139,11 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
 
   // Keyed load property. The key should be in the accumulator.
   BytecodeArrayBuilder& LoadKeyedProperty(Register object, int feedback_slot);
+
+  BytecodeArrayBuilder& LoadEnumeratedKeyedProperty(Register object,
+                                                    Register enum_index,
+                                                    Register cache_type,
+                                                    int feedback_slot);
 
   // Named load property of the @@iterator symbol.
   BytecodeArrayBuilder& LoadIteratorProperty(Register object,
@@ -448,6 +453,8 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
                                   NilValue nil);
   BytecodeArrayBuilder& JumpIfNotNil(BytecodeLabel* label, Token::Value op,
                                      NilValue nil);
+  BytecodeArrayBuilder& JumpIfForInDone(BytecodeLabel* label, Register index,
+                                        Register cache_length);
 
   BytecodeArrayBuilder& SwitchOnSmiNoFeedback(BytecodeJumpTable* jump_table);
 
@@ -474,7 +481,6 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
   BytecodeArrayBuilder& ForInEnumerate(Register receiver);
   BytecodeArrayBuilder& ForInPrepare(RegisterList cache_info_triple,
                                      int feedback_slot);
-  BytecodeArrayBuilder& ForInContinue(Register index, Register cache_length);
   BytecodeArrayBuilder& ForInNext(Register receiver, Register index,
                                   RegisterList cache_type_array_pair,
                                   int feedback_slot);
@@ -565,6 +571,7 @@ class V8_EXPORT_PRIVATE BytecodeArrayBuilder final {
   // Returns the raw operand value for the given register or register list.
   uint32_t GetInputRegisterOperand(Register reg);
   uint32_t GetOutputRegisterOperand(Register reg);
+  uint32_t GetInputOutputRegisterOperand(Register reg);
   uint32_t GetInputRegisterListOperand(RegisterList reg_list);
   uint32_t GetOutputRegisterListOperand(RegisterList reg_list);
 

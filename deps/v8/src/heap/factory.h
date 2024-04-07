@@ -35,7 +35,6 @@ class BreakPoint;
 class BreakPointInfo;
 class CallableTask;
 class CallbackTask;
-class CallHandlerInfo;
 class CallSiteInfo;
 class Expression;
 class EmbedderDataArray;
@@ -44,11 +43,14 @@ class CoverageInfo;
 class DebugInfo;
 class DeoptimizationData;
 class DeoptimizationLiteralArray;
+class DictionaryTemplateInfo;
 class EnumCache;
 class FreshlyAllocatedBigInt;
+class FunctionTemplateInfo;
 class Isolate;
 class JSArrayBufferView;
 class JSDataView;
+class JSDisposableStack;
 class JSGeneratorObject;
 class JSMap;
 class JSMapIterator;
@@ -440,6 +442,7 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
       DirectHandle<Context> context);
 
   // Foreign objects are pretenured when allocated by the bootstrapper.
+  template <ExternalPointerTag tag>
   Handle<Foreign> NewForeign(
       Address addr, AllocationType allocation_type = AllocationType::kYoung);
 
@@ -449,6 +452,8 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   Handle<PropertyCell> NewPropertyCell(
       DirectHandle<Name> name, PropertyDetails details,
       DirectHandle<Object> value,
+      AllocationType allocation = AllocationType::kOld);
+  Handle<ConstTrackingLetCell> NewConstTrackingLetCell(
       AllocationType allocation = AllocationType::kOld);
   Handle<PropertyCell> NewProtector();
 
@@ -587,7 +592,8 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   // runtime.
   Handle<JSObject> NewJSObject(
       Handle<JSFunction> constructor,
-      AllocationType allocation = AllocationType::kYoung);
+      AllocationType allocation = AllocationType::kYoung,
+      NewJSObjectType = NewJSObjectType::kNoAPIWrapper);
   // JSObject without a prototype.
   Handle<JSObject> NewJSObjectWithNullProto();
   // JSObject without a prototype, in dictionary mode.
@@ -605,13 +611,15 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   Handle<JSObject> NewJSObjectFromMap(
       DirectHandle<Map> map, AllocationType allocation = AllocationType::kYoung,
       DirectHandle<AllocationSite> allocation_site =
-          DirectHandle<AllocationSite>::null());
+          DirectHandle<AllocationSite>::null(),
+      NewJSObjectType = NewJSObjectType::kNoAPIWrapper);
   // Like NewJSObjectFromMap, but includes allocating a properties dictionary.);
   Handle<JSObject> NewSlowJSObjectFromMap(
       DirectHandle<Map> map, int number_of_slow_properties,
       AllocationType allocation = AllocationType::kYoung,
       DirectHandle<AllocationSite> allocation_site =
-          DirectHandle<AllocationSite>::null());
+          DirectHandle<AllocationSite>::null(),
+      NewJSObjectType = NewJSObjectType::kNoAPIWrapper);
   Handle<JSObject> NewSlowJSObjectFromMap(DirectHandle<Map> map);
   // Calls NewJSObjectFromMap or NewSlowJSObjectFromMap depending on whether the
   // map is a dictionary map.
@@ -619,7 +627,8 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
       DirectHandle<Map> map, int number_of_slow_properties,
       AllocationType allocation = AllocationType::kYoung,
       DirectHandle<AllocationSite> allocation_site =
-          DirectHandle<AllocationSite>::null());
+          DirectHandle<AllocationSite>::null(),
+      NewJSObjectType = NewJSObjectType::kNoAPIWrapper);
   inline Handle<JSObject> NewFastOrSlowJSObjectFromMap(DirectHandle<Map> map);
   // Allocates and initializes a new JavaScript object with the given
   // {prototype} and {properties}. The newly created object will be
@@ -683,13 +692,15 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
       DirectHandle<NativeContext> creation_context,
       DirectHandle<Object> target);
 
+  Handle<JSDisposableStack> NewJSDisposableStack();
+
 #if V8_ENABLE_WEBASSEMBLY
   Handle<WasmTypeInfo> NewWasmTypeInfo(
-      Address type_address, Handle<Map> opt_parent, int instance_size_bytes,
+      Address type_address, Handle<Map> opt_parent,
       DirectHandle<WasmInstanceObject> opt_instance, uint32_t type_index);
   Handle<WasmInternalFunction> NewWasmInternalFunction(
-      Address opt_call_target, DirectHandle<HeapObject> ref,
-      DirectHandle<Map> rtt, int function_index);
+      DirectHandle<ExposedTrustedObject> ref, DirectHandle<Map> rtt,
+      int function_index);
   Handle<WasmCapiFunctionData> NewWasmCapiFunctionData(
       Address call_target, DirectHandle<Foreign> embedder_data,
       DirectHandle<Code> wrapper_code, DirectHandle<Map> rtt,
@@ -706,10 +717,14 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
       DirectHandle<PodArray<wasm::ValueType>> serialized_sig);
   Handle<WasmApiFunctionRef> NewWasmApiFunctionRef(
       DirectHandle<WasmApiFunctionRef> ref);
+
+  Handle<WasmFastApiCallData> NewWasmFastApiCallData(
+      DirectHandle<HeapObject> signature);
+
   // {opt_call_target} is kNullAddress for JavaScript functions, and
   // non-null for exported Wasm functions.
   Handle<WasmJSFunctionData> NewWasmJSFunctionData(
-      Address opt_call_target, DirectHandle<JSReceiver> callable,
+      DirectHandle<JSReceiver> callable,
       DirectHandle<PodArray<wasm::ValueType>> serialized_sig,
       DirectHandle<Code> wrapper_code, DirectHandle<Map> rtt,
       wasm::Suspend suspend, wasm::Promise promise);
@@ -718,11 +733,11 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   Handle<WasmStruct> NewWasmStruct(const wasm::StructType* type,
                                    wasm::WasmValue* args,
                                    DirectHandle<Map> map);
-  Handle<WasmArray> NewWasmArray(const wasm::ArrayType* type, uint32_t length,
+  Handle<WasmArray> NewWasmArray(wasm::ValueType element_type, uint32_t length,
                                  wasm::WasmValue initial_value,
                                  DirectHandle<Map> map);
   Handle<WasmArray> NewWasmArrayFromElements(
-      const wasm::ArrayType* type, const std::vector<wasm::WasmValue>& elements,
+      const wasm::ArrayType* type, base::Vector<wasm::WasmValue> elements,
       DirectHandle<Map> map);
   Handle<WasmArray> NewWasmArrayFromMemory(uint32_t length,
                                            DirectHandle<Map> map,
@@ -970,8 +985,6 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   Handle<JSPromise> NewJSPromiseWithoutHook();
   Handle<JSPromise> NewJSPromise();
 
-  Handle<CallHandlerInfo> NewCallHandlerInfo(bool has_no_side_effect = false);
-
   Tagged<HeapObject> NewForTest(DirectHandle<Map> map,
                                 AllocationType allocation) {
     return New(map, allocation);
@@ -987,6 +1000,15 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
   Handle<JSAtomicsMutex> NewJSAtomicsMutex();
 
   Handle<JSAtomicsCondition> NewJSAtomicsCondition();
+
+  Handle<FunctionTemplateInfo> NewFunctionTemplateInfo(int length,
+                                                       bool do_not_cache);
+
+  Handle<ObjectTemplateInfo> NewObjectTemplateInfo(
+      DirectHandle<FunctionTemplateInfo> constructor, bool do_not_cache);
+
+  Handle<DictionaryTemplateInfo> NewDictionaryTemplateInfo(
+      Handle<FixedArray> property_names);
 
   // Helper class for creating JSFunction objects.
   class V8_EXPORT_PRIVATE JSFunctionBuilder final {
@@ -1071,17 +1093,19 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
       return *this;
     }
 
-    CodeBuilder& set_source_position_table(Handle<ByteArray> table) {
+    CodeBuilder& set_source_position_table(Handle<TrustedByteArray> table) {
       DCHECK_NE(kind_, CodeKind::BASELINE);
       DCHECK(!table.is_null());
-      position_table_ = table;
+      source_position_table_ = table;
       return *this;
     }
 
-    CodeBuilder& set_bytecode_offset_table(Handle<ByteArray> table) {
+    inline CodeBuilder& set_empty_source_position_table();
+
+    CodeBuilder& set_bytecode_offset_table(Handle<TrustedByteArray> table) {
       DCHECK_EQ(kind_, CodeKind::BASELINE);
       DCHECK(!table.is_null());
-      position_table_ = table;
+      bytecode_offset_table_ = table;
       return *this;
     }
 
@@ -1094,7 +1118,7 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
     }
 
     inline CodeBuilder& set_interpreter_data(
-        Handle<HeapObject> interpreter_data);
+        Handle<TrustedObject> interpreter_data);
 
     CodeBuilder& set_is_turbofanned() {
       DCHECK(!CodeKindIsUnoptimizedJSFunction(kind_));
@@ -1131,11 +1155,10 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
     Builtin builtin_ = Builtin::kNoBuiltinId;
     uint32_t inlined_bytecode_size_ = 0;
     BytecodeOffset osr_offset_ = BytecodeOffset::None();
-    // Either source_position_table for non-baseline code or
-    // bytecode_offset_table for baseline code.
-    Handle<ByteArray> position_table_;
-    Handle<DeoptimizationData> deoptimization_data_;
-    Handle<HeapObject> interpreter_data_;
+    MaybeHandle<TrustedByteArray> bytecode_offset_table_;
+    MaybeHandle<TrustedByteArray> source_position_table_;
+    MaybeHandle<DeoptimizationData> deoptimization_data_;
+    MaybeHandle<TrustedObject> interpreter_data_;
     BasicBlockProfilerData* profiler_data_ = nullptr;
     bool is_turbofanned_ = false;
     int stack_slots_ = 0;
@@ -1251,11 +1274,13 @@ class V8_EXPORT_PRIVATE Factory : public FactoryBase<Factory> {
                                    Tagged<AllocationSite> allocation_site);
 
   // Initializes a JSObject based on its map.
-  void InitializeJSObjectFromMap(Tagged<JSObject> obj,
-                                 Tagged<Object> properties, Tagged<Map> map);
+  void InitializeJSObjectFromMap(
+      Tagged<JSObject> obj, Tagged<Object> properties, Tagged<Map> map,
+      NewJSObjectType = NewJSObjectType::kNoAPIWrapper);
   // Initializes JSObject body starting at given offset.
   void InitializeJSObjectBody(Tagged<JSObject> obj, Tagged<Map> map,
                               int start_offset);
+  void InitializeCppHeapWrapper(Tagged<JSObject> obj);
 
   Handle<WeakArrayList> NewUninitializedWeakArrayList(
       int capacity, AllocationType allocation = AllocationType::kYoung);

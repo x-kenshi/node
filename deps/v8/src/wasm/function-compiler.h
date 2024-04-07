@@ -13,6 +13,7 @@
 
 #include "src/codegen/assembler.h"
 #include "src/codegen/code-desc.h"
+#include "src/codegen/compiler.h"
 #include "src/wasm/compilation-environment.h"
 #include "src/wasm/function-body-decoder.h"
 #include "src/wasm/wasm-limits.h"
@@ -79,8 +80,7 @@ struct WasmCompilationResult {
   base::OwnedVector<uint8_t> protected_instructions_data;
   std::unique_ptr<AssumptionsJournal> assumptions;
   int func_index = kAnonymousFuncIndex;
-  ExecutionTier requested_tier;
-  ExecutionTier result_tier;
+  ExecutionTier result_tier = ExecutionTier::kNone;
   Kind kind = kFunction;
   ForDebugging for_debugging = kNotForDebugging;
   bool frame_has_feedback_slot = false;
@@ -157,7 +157,7 @@ class V8_EXPORT_PRIVATE JSToWasmWrapperCompilationUnit final {
   const bool is_import_;
   const FunctionSig* const sig_;
   uint32_t const canonical_sig_index_;
-  std::unique_ptr<TurbofanCompilationJob> const job_;
+  std::unique_ptr<OptimizedCompilationJob> const job_;
 };
 
 inline bool CanUseGenericJsToWasmWrapper(const WasmModule* module,

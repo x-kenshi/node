@@ -19,7 +19,7 @@
 #include "src/debug/debug.h"
 #include "src/deoptimizer/deoptimizer.h"
 #include "src/execution/frames-inl.h"
-#include "src/heap/memory-chunk.h"
+#include "src/heap/mutable-page.h"
 #include "src/init/bootstrapper.h"
 #include "src/logging/counters.h"
 #include "src/objects/heap-number.h"
@@ -4437,7 +4437,7 @@ void MacroAssembler::CallBuiltin(Builtin builtin) {
     case BuiltinCallJumpMode::kForMksnapshot: {
       Handle<Code> code = isolate()->builtins()->code_handle(builtin);
       IndirectLoadConstant(temp, code);
-      CallCodeObject(temp);
+      CallCodeObject(temp, kJSEntrypointTag);
       break;
     }
     case BuiltinCallJumpMode::kPCRelative:
@@ -4477,7 +4477,7 @@ void MacroAssembler::TailCallBuiltin(Builtin builtin) {
     case BuiltinCallJumpMode::kForMksnapshot: {
       Handle<Code> code = isolate()->builtins()->code_handle(builtin);
       IndirectLoadConstant(temp, code);
-      JumpCodeObject(temp);
+      JumpCodeObject(temp, kJSEntrypointTag);
       break;
     }
     case BuiltinCallJumpMode::kPCRelative:
@@ -4725,6 +4725,17 @@ void MacroAssembler::LoadAddress(Register dst, Label* target) {
   li(dst, address);
 }
 
+void MacroAssembler::LoadAddressPCRelative(Register dst, Label* target) {
+  ASM_CODE_COMMENT(this);
+  nal();
+  // daddiu could handle 16-bit pc offset.
+  int32_t offset = branch_offset_helper(target, OffsetSize::kOffset16);
+  DCHECK(is_int16(offset));
+  mov(t8, ra);
+  daddiu(dst, ra, offset);
+  mov(ra, t8);
+}
+
 void MacroAssembler::Push(Tagged<Smi> smi) {
   UseScratchRegisterScope temps(this);
   Register scratch = temps.Acquire();
@@ -4915,8 +4926,7 @@ void MacroAssembler::TestCodeIsMarkedForDeoptimizationAndJump(
 }
 
 Operand MacroAssembler::ClearedValue() const {
-  return Operand(
-      static_cast<int32_t>(HeapObjectReference::ClearedValue(isolate()).ptr()));
+  return Operand(static_cast<int32_t>(i::ClearedValue(isolate()).ptr()));
 }
 
 void MacroAssembler::InvokePrologue(Register expected_parameter_count,
@@ -6034,41 +6044,49 @@ void MacroAssembler::PrepareCallCFunction(int num_reg_arguments,
   PrepareCallCFunction(num_reg_arguments, 0, scratch);
 }
 
-void MacroAssembler::CallCFunction(ExternalReference function,
-                                   int num_reg_arguments,
-                                   int num_double_arguments,
-                                   SetIsolateDataSlots set_isolate_data_slots) {
+int MacroAssembler::CallCFunction(ExternalReference function,
+                                  int num_reg_arguments,
+                                  int num_double_arguments,
+                                  SetIsolateDataSlots set_isolate_data_slots,
+                                  Label* return_location) {
   ASM_CODE_COMMENT(this);
   BlockTrampolinePoolScope block_trampoline_pool(this);
   li(t9, function);
-  CallCFunctionHelper(t9, num_reg_arguments, num_double_arguments,
-                      set_isolate_data_slots);
+  return CallCFunctionHelper(t9, num_reg_arguments, num_double_arguments,
+                             set_isolate_data_slots, return_location);
 }
 
-void MacroAssembler::CallCFunction(Register function, int num_reg_arguments,
-                                   int num_double_arguments,
-                                   SetIsolateDataSlots set_isolate_data_slots) {
+int MacroAssembler::CallCFunction(Register function, int num_reg_arguments,
+                                  int num_double_arguments,
+                                  SetIsolateDataSlots set_isolate_data_slots,
+                                  Label* return_location) {
   ASM_CODE_COMMENT(this);
-  CallCFunctionHelper(function, num_reg_arguments, num_double_arguments,
-                      set_isolate_data_slots);
+  return CallCFunctionHelper(function, num_reg_arguments, num_double_arguments,
+                             set_isolate_data_slots, return_location);
 }
 
-void MacroAssembler::CallCFunction(ExternalReference function,
-                                   int num_arguments,
-                                   SetIsolateDataSlots set_isolate_data_slots) {
-  CallCFunction(function, num_arguments, 0, set_isolate_data_slots);
+int MacroAssembler::CallCFunction(ExternalReference function, int num_arguments,
+                                  SetIsolateDataSlots set_isolate_data_slots,
+                                  Label* return_location) {
+  return CallCFunction(function, num_arguments, 0, set_isolate_data_slots,
+                       return_location);
 }
 
-void MacroAssembler::CallCFunction(Register function, int num_arguments,
-                                   SetIsolateDataSlots set_isolate_data_slots) {
-  CallCFunction(function, num_arguments, 0, set_isolate_data_slots);
+int MacroAssembler::CallCFunction(Register function, int num_arguments,
+                                  SetIsolateDataSlots set_isolate_data_slots,
+                                  Label* return_location) {
+  return CallCFunction(function, num_arguments, 0, set_isolate_data_slots,
+                       return_location);
 }
 
-void MacroAssembler::CallCFunctionHelper(
+int MacroAssembler::CallCFunctionHelper(
     Register function, int num_reg_arguments, int num_double_arguments,
-    SetIsolateDataSlots set_isolate_data_slots) {
+    SetIsolateDataSlots set_isolate_data_slots, Label* return_location) {
   DCHECK_LE(num_reg_arguments + num_double_arguments, kMaxCParameters);
   DCHECK(has_frame());
+
+  Label get_pc;
+
   // Make sure that the stack is aligned before calling a C function unless
   // running in the simulator. The simulator has its own alignment check which
   // provides more information.
@@ -6115,10 +6133,7 @@ void MacroAssembler::CallCFunctionHelper(
       Register scratch = t2;
       DCHECK(!AreAliased(pc_scratch, scratch, function));
 
-      mov(scratch, ra);
-      nal();
-      mov(pc_scratch, ra);
-      mov(ra, scratch);
+      LoadAddressPCRelative(pc_scratch, &get_pc);
 
       // See x64 code for reasoning about how to address the isolate data
       // fields.
@@ -6127,6 +6142,13 @@ void MacroAssembler::CallCFunctionHelper(
                                   IsolateData::fast_c_call_caller_pc_offset()));
         Sd(fp, MemOperand(kRootRegister,
                           IsolateData::fast_c_call_caller_fp_offset()));
+#if DEBUG
+        // Reset Isolate::context field right before the fast C call such that
+        // the GC can visit this field unconditionally. This is necessary
+        // because CEntry sets it to kInvalidContext in debug build only.
+        static_assert(Context::kNoContext == 0);
+        StoreRootRelative(IsolateData::context_offset(), zero_reg);
+#endif
       } else {
         DCHECK_NOT_NULL(isolate());
         li(scratch,
@@ -6135,10 +6157,23 @@ void MacroAssembler::CallCFunctionHelper(
         li(scratch,
            ExternalReference::fast_c_call_caller_fp_address(isolate()));
         Sd(fp, MemOperand(scratch));
+#if DEBUG
+        // Reset Isolate::context field right before the fast C call such that
+        // the GC can visit this field unconditionally. This is necessary
+        // because CEntry sets it to kInvalidContext in debug build only.
+        static_assert(Context::kNoContext == 0);
+        Sd(zero_reg,
+           ExternalReferenceAsOperand(
+               ExternalReference::context_address(isolate()), pc_scratch));
+#endif
       }
     }
 
     Call(function);
+    int call_pc_offset = pc_offset();
+    bind(&get_pc);
+
+    if (return_location) bind(return_location);
 
     if (set_isolate_data_slots == SetIsolateDataSlots::kYes) {
       // We don't unset the PC; the FP is the source of truth.
@@ -6164,6 +6199,8 @@ void MacroAssembler::CallCFunctionHelper(
     }
 
     set_pc_for_safepoint();
+
+    return call_pc_offset;
   }
 }
 
@@ -6172,8 +6209,8 @@ void MacroAssembler::CallCFunctionHelper(
 void MacroAssembler::CheckPageFlag(Register object, Register scratch, int mask,
                                    Condition cc, Label* condition_met) {
   ASM_CODE_COMMENT(this);
-  And(scratch, object, Operand(~kPageAlignmentMask));
-  Ld(scratch, MemOperand(scratch, BasicMemoryChunk::kFlagsOffset));
+  And(scratch, object, Operand(~MemoryChunk::GetAlignmentMaskForAssembler()));
+  Ld(scratch, MemOperand(scratch, MemoryChunkLayout::kFlagsOffset));
   And(scratch, scratch, Operand(mask));
   Branch(condition_met, cc, scratch, Operand(zero_reg));
 }
@@ -6227,39 +6264,41 @@ void MacroAssembler::CallForDeoptimization(Builtin target, int, Label* exit,
 }
 
 void MacroAssembler::LoadCodeInstructionStart(
-    Register destination, Register code_data_container_object) {
+    Register destination, Register code_data_container_object,
+    CodeEntrypointTag tag) {
   ASM_CODE_COMMENT(this);
   Ld(destination, FieldMemOperand(code_data_container_object,
                                   Code::kInstructionStartOffset));
 }
 
-void MacroAssembler::CallCodeObject(Register code_data_container_object) {
+void MacroAssembler::CallCodeObject(Register code_data_container_object,
+                                    CodeEntrypointTag tag) {
   ASM_CODE_COMMENT(this);
   LoadCodeInstructionStart(code_data_container_object,
-                           code_data_container_object);
+                           code_data_container_object, tag);
   Call(code_data_container_object);
 }
 
 void MacroAssembler::JumpCodeObject(Register code_data_container_object,
-                                    JumpMode jump_mode) {
+                                    CodeEntrypointTag tag, JumpMode jump_mode) {
   ASM_CODE_COMMENT(this);
   DCHECK_EQ(JumpMode::kJump, jump_mode);
   LoadCodeInstructionStart(code_data_container_object,
-                           code_data_container_object);
+                           code_data_container_object, tag);
   Jump(code_data_container_object);
 }
 
 void MacroAssembler::CallJSFunction(Register function_object) {
   Register code = kJavaScriptCallCodeStartRegister;
   Ld(code, FieldMemOperand(function_object, JSFunction::kCodeOffset));
-  CallCodeObject(code);
+  CallCodeObject(code, kJSEntrypointTag);
 }
 
 void MacroAssembler::JumpJSFunction(Register function_object,
                                     JumpMode jump_mode) {
   Register code = kJavaScriptCallCodeStartRegister;
   Ld(code, FieldMemOperand(function_object, JSFunction::kCodeOffset));
-  JumpCodeObject(code, jump_mode);
+  JumpCodeObject(code, kJSEntrypointTag, jump_mode);
 }
 
 namespace {
@@ -6300,7 +6339,7 @@ void TailCallOptimizedCodeSlot(MacroAssembler* masm,
                                          scratch1, scratch2);
 
   static_assert(kJavaScriptCallCodeStartRegister == a2, "ABI mismatch");
-  __ LoadCodeInstructionStart(a2, optimized_code_entry);
+  __ LoadCodeInstructionStart(a2, optimized_code_entry, kJSEntrypointTag);
   __ Jump(a2);
 
   // Optimized code slot contains deoptimized code or code is cleared and
@@ -6367,7 +6406,7 @@ void MacroAssembler::GenerateTailCallToReturnedCode(
   }
 
   static_assert(kJavaScriptCallCodeStartRegister == a2, "ABI mismatch");
-  LoadCodeInstructionStart(a2, v0);
+  LoadCodeInstructionStart(a2, v0, kJSEntrypointTag);
   Jump(a2);
 }
 

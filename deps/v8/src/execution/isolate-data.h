@@ -101,7 +101,9 @@ class Isolate;
   V(kExternalPointerTableOffset, ExternalPointerTable::kSize, \
     external_pointer_table)                                   \
   V(kSharedExternalPointerTableOffset, kSystemPointerSize,    \
-    shared_external_pointer_table)
+    shared_external_pointer_table)                            \
+  V(kCppHeapPointerTableOffset, ExternalPointerTable::kSize,  \
+    cpp_heap_pointer_table)
 #else
 #define ISOLATE_DATA_FIELDS_POINTER_COMPRESSION(V)
 #endif  // V8_COMPRESS_POINTERS
@@ -230,6 +232,7 @@ class IsolateData final {
 
   THREAD_LOCAL_TOP_MEMBER_OFFSET(topmost_script_having_context)
   THREAD_LOCAL_TOP_MEMBER_OFFSET(is_on_central_stack_flag)
+  THREAD_LOCAL_TOP_MEMBER_OFFSET(context)
 #undef THREAD_LOCAL_TOP_MEMBER_OFFSET
 
  private:
@@ -334,6 +337,7 @@ class IsolateData final {
 #ifdef V8_COMPRESS_POINTERS
   ExternalPointerTable external_pointer_table_;
   ExternalPointerTable* shared_external_pointer_table_;
+  ExternalPointerTable cpp_heap_pointer_table_;
 #endif  // V8_COMPRESS_POINTERS
 
 #ifdef V8_ENABLE_SANDBOX

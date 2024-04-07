@@ -79,7 +79,7 @@ class TypeInferenceReducer
   using table_t = SnapshotTable<Type>;
 
  public:
-  TURBOSHAFT_REDUCER_BOILERPLATE()
+  TURBOSHAFT_REDUCER_BOILERPLATE(TypeInference)
 
   using Adapter = UniformReducerAdapter<TypeInferenceReducer, Next>;
   using Args = TypeInferenceReducerArgs;
@@ -360,9 +360,10 @@ class TypeInferenceReducer
     return index;
   }
 
-  OpIndex REDUCE(FloatBinop)(OpIndex left, OpIndex right,
-                             FloatBinopOp::Kind kind, FloatRepresentation rep) {
-    OpIndex index = Next::ReduceFloatBinop(left, right, kind, rep);
+  V<Float> REDUCE(FloatBinop)(V<Float> left, V<Float> right,
+                              FloatBinopOp::Kind kind,
+                              FloatRepresentation rep) {
+    V<Float> index = Next::ReduceFloatBinop(left, right, kind, rep);
     if (!NeedsTyping(index)) return index;
 
     Type type = Typer::TypeFloatBinop(GetType(left), GetType(right), kind, rep,

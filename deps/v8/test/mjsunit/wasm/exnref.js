@@ -600,7 +600,7 @@ d8.file.execute("test/mjsunit/wasm/exceptions-utils.js");
   let builder = new WasmModuleBuilder();
   let except = builder.addTag(kSig_v_v);
   let sig = builder.addType(makeSig([], [kWasmExnRef]));
-  let g = builder.addGlobal(kWasmExnRef, true);
+  let g = builder.addGlobal(kWasmExnRef, true, false);
   builder.addExportOfKind("g", kExternalGlobal, g.index);
   builder.addFunction("catch_all_ref", kSig_v_v)
       .addBody([
@@ -611,12 +611,11 @@ d8.file.execute("test/mjsunit/wasm/exceptions-utils.js");
           kExprEnd,
           kExprReturn,
         kExprEnd,
-        kExprGlobalSet, g.index,
+        kExprThrowRef
   ]).exportFunc();
   let instance = builder.instantiate();
 
-  instance.exports.catch_all_ref();
-  assertTrue(instance.exports.g.value instanceof WebAssembly.Exception);
+  assertThrows(instance.exports.catch_all_ref, WebAssembly.Exception);
 })();
 
 (function TestCatchRefTwoParams() {

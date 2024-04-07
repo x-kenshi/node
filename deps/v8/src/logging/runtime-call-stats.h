@@ -153,8 +153,11 @@ class RuntimeCallTimer final {
   V(Date_NumberValue)                                      \
   V(Debug_Call)                                            \
   V(debug_GetPrivateMembers)                               \
+  V(DictionaryTemplate_New)                                \
+  V(DictionaryTemplate_NewInstance)                        \
   V(Error_New)                                             \
   V(External_New)                                          \
+  V(Float16Array_New)                                      \
   V(Float32Array_New)                                      \
   V(Float64Array_New)                                      \
   V(Function_Call)                                         \
@@ -334,14 +337,12 @@ class RuntimeCallTimer final {
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, BytecodeGraphBuilder)              \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, CommitAssignment)                  \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, ConnectRanges)                     \
-  ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, ControlFlowOptimization)           \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, CSAEarlyOptimization)              \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, CSAOptimization)                   \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, DecideSpillingMode)                \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, DecompressionOptimization)         \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, EarlyGraphTrimming)                \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, EarlyOptimization)                 \
-  ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, EffectLinearization)               \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, EscapeAnalysis)                    \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, FinalizeCode)                      \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, FrameElision)                      \
@@ -350,7 +351,6 @@ class RuntimeCallTimer final {
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, JSWasmInlining)                    \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, JSWasmLowering)                    \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, JumpThreading)                     \
-  ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, LateOptimization)                  \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, LoadElimination)                   \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, LocateSpillSlots)                  \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, LoopExitElimination)               \
@@ -372,12 +372,13 @@ class RuntimeCallTimer final {
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, SelectInstructions)                \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, SimplifiedLowering)                \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, SimplifyLoops)                     \
-  ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, StoreStoreElimination)             \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TraceScheduleAndVerify)            \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TurboshaftBuildGraph)              \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize,                                    \
                               TurboshaftCodeEliminationAndSimplification)     \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TurboshaftCsaBranchElimination)    \
+  ADD_THREAD_SPECIFIC_COUNTER(V, Optimize,                                    \
+                              TurboshaftCsaEarlyMachineOptimization)          \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TurboshaftCsaLateEscapeAnalysis)   \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TurboshaftCsaLoadElimination)      \
   ADD_THREAD_SPECIFIC_COUNTER(V, Optimize, TurboshaftCsaOptimize)             \

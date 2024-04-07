@@ -5,6 +5,7 @@
 #ifndef V8_OBJECTS_SLOTS_INL_H_
 #define V8_OBJECTS_SLOTS_INL_H_
 
+#include "include/v8-internal.h"
 #include "src/base/atomic-utils.h"
 #include "src/common/globals.h"
 #include "src/common/ptr-compr-inl.h"
@@ -110,33 +111,34 @@ Tagged<Object> FullObjectSlot::Release_CompareAndSwap(
 // FullMaybeObjectSlot implementation.
 //
 
-MaybeObject FullMaybeObjectSlot::operator*() const {
-  return MaybeObject(*location());
+Tagged<MaybeObject> FullMaybeObjectSlot::operator*() const {
+  return Tagged<MaybeObject>(*location());
 }
 
-MaybeObject FullMaybeObjectSlot::load(PtrComprCageBase cage_base) const {
+Tagged<MaybeObject> FullMaybeObjectSlot::load(
+    PtrComprCageBase cage_base) const {
   return **this;
 }
 
-void FullMaybeObjectSlot::store(MaybeObject value) const {
+void FullMaybeObjectSlot::store(Tagged<MaybeObject> value) const {
   *location() = value.ptr();
 }
 
-MaybeObject FullMaybeObjectSlot::Relaxed_Load() const {
-  return MaybeObject(base::AsAtomicPointer::Relaxed_Load(location()));
+Tagged<MaybeObject> FullMaybeObjectSlot::Relaxed_Load() const {
+  return Tagged<MaybeObject>(base::AsAtomicPointer::Relaxed_Load(location()));
 }
 
-MaybeObject FullMaybeObjectSlot::Relaxed_Load(
+Tagged<MaybeObject> FullMaybeObjectSlot::Relaxed_Load(
     PtrComprCageBase cage_base) const {
   return Relaxed_Load();
 }
 
-void FullMaybeObjectSlot::Relaxed_Store(MaybeObject value) const {
-  base::AsAtomicPointer::Relaxed_Store(location(), value->ptr());
+void FullMaybeObjectSlot::Relaxed_Store(Tagged<MaybeObject> value) const {
+  base::AsAtomicPointer::Relaxed_Store(location(), value.ptr());
 }
 
-void FullMaybeObjectSlot::Release_CompareAndSwap(MaybeObject old,
-                                                 MaybeObject target) const {
+void FullMaybeObjectSlot::Release_CompareAndSwap(
+    Tagged<MaybeObject> old, Tagged<MaybeObject> target) const {
   base::AsAtomicPointer::Release_CompareAndSwap(location(), old.ptr(),
                                                 target.ptr());
 }
@@ -145,15 +147,16 @@ void FullMaybeObjectSlot::Release_CompareAndSwap(MaybeObject old,
 // FullHeapObjectSlot implementation.
 //
 
-HeapObjectReference FullHeapObjectSlot::operator*() const {
-  return HeapObjectReference(*location());
+Tagged<HeapObjectReference> FullHeapObjectSlot::operator*() const {
+  return Tagged<HeapObjectReference>::cast(Tagged<MaybeObject>(*location()));
 }
 
-HeapObjectReference FullHeapObjectSlot::load(PtrComprCageBase cage_base) const {
+Tagged<HeapObjectReference> FullHeapObjectSlot::load(
+    PtrComprCageBase cage_base) const {
   return **this;
 }
 
-void FullHeapObjectSlot::store(HeapObjectReference value) const {
+void FullHeapObjectSlot::store(Tagged<HeapObjectReference> value) const {
   *location() = value.ptr();
 }
 
@@ -260,6 +263,55 @@ uint32_t ExternalPointerSlot::GetContentAsIndexAfterDeserialization(
 #endif
 }
 
+#ifdef V8_COMPRESS_POINTERS
+CppHeapPointerHandle CppHeapPointerSlot::Relaxed_LoadHandle() const {
+  return base::AsAtomic32::Relaxed_Load(location());
+}
+
+void CppHeapPointerSlot::Relaxed_StoreHandle(
+    CppHeapPointerHandle handle) const {
+  return base::AsAtomic32::Relaxed_Store(location(), handle);
+}
+
+void CppHeapPointerSlot::Release_StoreHandle(
+    CppHeapPointerHandle handle) const {
+  return base::AsAtomic32::Release_Store(location(), handle);
+}
+#endif  // V8_COMPRESS_POINTERS
+
+Address CppHeapPointerSlot::try_load(
+    IsolateForPointerCompression isolate) const {
+#ifdef V8_COMPRESS_POINTERS
+  const ExternalPointerTable& table = isolate.GetCppHeapPointerTable();
+  CppHeapPointerHandle handle = Relaxed_LoadHandle();
+  if (handle == kNullCppHeapPointerHandle) {
+    return kNullAddress;
+  }
+  return table.Get(handle, tag_);
+#else   // !V8_COMPRESS_POINTERS
+  return static_cast<Address>(base::AsAtomicPointer::Relaxed_Load(location()));
+#endif  // !V8_COMPRESS_POINTERS
+}
+
+void CppHeapPointerSlot::store(IsolateForPointerCompression isolate,
+                               Address value) const {
+#ifdef V8_COMPRESS_POINTERS
+  ExternalPointerTable& table = isolate.GetCppHeapPointerTable();
+  CppHeapPointerHandle handle = Relaxed_LoadHandle();
+  table.Set(handle, value, tag_);
+#else   // !V8_COMPRESS_POINTERS
+  base::AsAtomicPointer::Relaxed_Store(location(), value);
+#endif  // !V8_COMPRESS_POINTERS
+}
+
+void CppHeapPointerSlot::reset() const {
+#ifdef V8_COMPRESS_POINTERS
+  base::AsAtomic32::Release_Store(location(), kNullCppHeapPointerHandle);
+#else   // !V8_COMPRESS_POINTERS
+  base::AsAtomicPointer::Release_Store(location(), kNullAddress);
+#endif  // !V8_COMPRESS_POINTERS
+}
+
 Tagged<Object> IndirectPointerSlot::load(IsolateForSandbox isolate) const {
   return Relaxed_Load(isolate);
 }
@@ -356,7 +408,7 @@ Tagged<Object> IndirectPointerSlot::ResolveTrustedPointerHandle(
     IndirectPointerHandle handle, IsolateForSandbox isolate) const {
   DCHECK_NE(handle, kNullIndirectPointerHandle);
   const TrustedPointerTable& table = isolate.GetTrustedPointerTable();
-  return Tagged<Object>(table.Get(handle));
+  return Tagged<Object>(table.Get(handle, tag_));
 }
 
 Tagged<Object> IndirectPointerSlot::ResolveCodePointerHandle(

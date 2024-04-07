@@ -1399,7 +1399,7 @@ void V8FileLogger::LogSourceCodeInformation(Handle<AbstractCode> code,
   msg << V8FileLogger::kNext;
   int maxInlinedId = -1;
   if (hasInlined) {
-    Tagged<PodArray<InliningPosition>> inlining_positions =
+    Tagged<TrustedPodArray<InliningPosition>> inlining_positions =
         DeoptimizationData::cast(
             Handle<Code>::cast(code)->deoptimization_data())
             ->InliningPositions();
@@ -1710,7 +1710,7 @@ void CodeLinePosEvent(JitLogger& jit_logger, Address code_start,
 }  // namespace
 
 void V8FileLogger::CodeLinePosInfoRecordEvent(
-    Address code_start, Tagged<ByteArray> source_position_table,
+    Address code_start, Tagged<TrustedByteArray> source_position_table,
     JitCodeEvent::CodeType code_type) {
   if (!jit_logger_) return;
   SourcePositionTableIterator iter(source_position_table);
@@ -2047,11 +2047,11 @@ EnumerateCompiledFunctions(Heap* heap) {
         record(function->shared(), AbstractCode::cast(function->code(isolate)));
 #if V8_ENABLE_WEBASSEMBLY
       } else if (WasmJSFunction::IsWasmJSFunction(function)) {
-        record(
-            function->shared(),
-            AbstractCode::cast(
-                function->shared()->wasm_js_function_data()->internal()->code(
-                    isolate)));
+        record(function->shared(),
+               AbstractCode::cast(function->shared()
+                                      ->wasm_js_function_data()
+                                      ->internal(isolate)
+                                      ->code(isolate)));
 #endif  // V8_ENABLE_WEBASSEMBLY
       }
     }
@@ -2459,10 +2459,6 @@ void ExistingCodeLogger::LogCodeObject(Tagged<AbstractCode> object) {
       description = "A JavaScript to Wasm adapter";
       tag = CodeTag::kStub;
       break;
-    case CodeKind::JS_TO_JS_FUNCTION:
-      description = "A WebAssembly.Function adapter";
-      tag = CodeTag::kStub;
-      break;
     case CodeKind::WASM_TO_CAPI_FUNCTION:
       description = "A Wasm to C-API adapter";
       tag = CodeTag::kStub;
@@ -2594,10 +2590,8 @@ void ExistingCodeLogger::LogExistingFunction(Handle<SharedFunctionInfo> shared,
     // API function.
     Handle<FunctionTemplateInfo> fun_data =
         handle(shared->api_func_data(), isolate_);
-    Tagged<Object> raw_call_data = fun_data->call_code(kAcquireLoad);
-    if (!IsUndefined(raw_call_data, isolate_)) {
-      Tagged<CallHandlerInfo> call_data = CallHandlerInfo::cast(raw_call_data);
-      Address entry_point = call_data->callback(isolate_);
+    if (fun_data->has_callback(isolate_)) {
+      Address entry_point = fun_data->callback(isolate_);
 #if USES_FUNCTION_DESCRIPTORS
       entry_point = *FUNCTION_ENTRYPOINT_ADDRESS(entry_point);
 #endif

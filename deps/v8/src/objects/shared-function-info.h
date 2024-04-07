@@ -179,11 +179,8 @@ class InterpreterData
     : public TorqueGeneratedInterpreterData<InterpreterData,
                                             ExposedTrustedObject> {
  public:
-  // TODO(saelo): once InterpreterData objects are moved into TrustedSpace,
-  // these two references can become protected pointers.
-  static_assert(!kInterpreterDataObjectsLiveInTrustedSpace);
-  DECL_TRUSTED_POINTER_ACCESSORS(bytecode_array, BytecodeArray)
-  DECL_CODE_POINTER_ACCESSORS(interpreter_trampoline)
+  DECL_PROTECTED_POINTER_ACCESSORS(bytecode_array, BytecodeArray)
+  DECL_PROTECTED_POINTER_ACCESSORS(interpreter_trampoline, Code)
 
   class BodyDescriptor;
 
@@ -422,7 +419,7 @@ class SharedFunctionInfo
       WriteBarrierMode mode = UPDATE_WRITE_BARRIER);
   DECL_GETTER(HasBaselineCode, bool)
   DECL_RELEASE_ACQUIRE_ACCESSORS(baseline_code, Tagged<Code>)
-  inline void FlushBaselineCode(IsolateForSandbox isolate);
+  inline void FlushBaselineCode();
   inline Tagged<BytecodeArray> GetActiveBytecodeArray(
       IsolateForSandbox isolate) const;
   inline void SetActiveBytecodeArray(Tagged<BytecodeArray> bytecode,
@@ -831,6 +828,30 @@ class SharedFunctionInfo
   FRIEND_TEST(PreParserTest, LazyFunctionLength);
 
   TQ_OBJECT_CONSTRUCTORS(SharedFunctionInfo)
+};
+
+// A SharedFunctionInfoWrapper wraps a SharedFunctionInfo from trusted space.
+// It can be useful when a protected pointer reference to a SharedFunctionInfo
+// is needed, for example for a ProtectedFixedArray.
+class SharedFunctionInfoWrapper : public TrustedObject {
+ public:
+  DECL_ACCESSORS(shared_info, Tagged<SharedFunctionInfo>)
+
+  DECL_CAST(SharedFunctionInfoWrapper)
+  DECL_PRINTER(SharedFunctionInfoWrapper)
+  DECL_VERIFIER(SharedFunctionInfoWrapper)
+
+#define FIELD_LIST(V)               \
+  V(kSharedInfoOffset, kTaggedSize) \
+  V(kHeaderSize, 0)                 \
+  V(kSize, 0)
+
+  DEFINE_FIELD_OFFSET_CONSTANTS(TrustedObject::kHeaderSize, FIELD_LIST)
+#undef FIELD_LIST
+
+  class BodyDescriptor;
+
+  OBJECT_CONSTRUCTORS(SharedFunctionInfoWrapper, TrustedObject);
 };
 
 #ifdef V8_ENABLE_SANDBOX

@@ -178,9 +178,8 @@ StartupBlobs Serialize(v8::Isolate* isolate) {
     // Note that we need to run a garbage collection without stack at this
     // point, so that all dead objects are reclaimed. This is required to avoid
     // conservative stack scanning and guarantee deterministic behaviour.
-    EmbedderStackStateScope stack_scope(
-        i_isolate->heap(), EmbedderStackStateScope::kExplicitInvocation,
-        StackState::kNoHeapPointers);
+    DisableConservativeStackScanningScopeForTesting no_stack_scanning(
+        i_isolate->heap());
     heap::InvokeMemoryReducingMajorGCs(i_isolate->heap());
   }
 
@@ -395,9 +394,7 @@ static void SerializeContext(base::Vector<const uint8_t>* startup_blob_out,
       // point, so that all dead objects are reclaimed. This is required to
       // avoid conservative stack scanning and guarantee deterministic
       // behaviour.
-      EmbedderStackStateScope stack_scope(
-          heap, EmbedderStackStateScope::kExplicitInvocation,
-          StackState::kNoHeapPointers);
+      DisableConservativeStackScanningScopeForTesting no_stack_scanning(heap);
       heap::InvokeMemoryReducingMajorGCs(heap);
     }
 
@@ -538,10 +535,11 @@ static void SerializeCustomContext(
     base::Vector<const uint8_t>* context_blob_out) {
   v8::Isolate* isolate = TestSerializer::NewIsolateInitialized();
   Isolate* i_isolate = reinterpret_cast<Isolate*>(isolate);
+
   {
+    v8::Global<v8::Context> env;
     v8::Isolate::Scope isolate_scope(isolate);
 
-    v8::Persistent<v8::Context> env;
     {
       HandleScope scope(i_isolate);
       env.Reset(isolate, v8::Context::New(isolate));
@@ -580,9 +578,8 @@ static void SerializeCustomContext(
       // point, so that all dead objects are reclaimed. This is required to
       // avoid conservative stack scanning and guarantee deterministic
       // behaviour.
-      EmbedderStackStateScope stack_scope(
-          i_isolate->heap(), EmbedderStackStateScope::kExplicitInvocation,
-          StackState::kNoHeapPointers);
+      DisableConservativeStackScanningScopeForTesting no_stack_scanning(
+          i_isolate->heap());
       heap::InvokeMemoryReducingMajorGCs(i_isolate->heap());
     }
 
@@ -591,62 +588,73 @@ static void SerializeCustomContext(
       v8::Local<v8::Context>::New(isolate, env)->Exit();
     }
 
-    HandleScope scope(i_isolate);
-    i::Tagged<i::Context> raw_context =
-        i::Context::cast(*v8::Utils::OpenPersistent(env));
+    {
+      HandleScope scope(i_isolate);
+      i::Tagged<i::Context> raw_context =
+          i::Context::cast(*v8::Utils::OpenPersistent(env));
 
-    env.Reset();
+      // On purpose we do not reset the global context here --- env.Reset() ---
+      // so that it is found below, during heap verification at the GC before
+      // isolate disposal.
 
-    SafepointScope safepoint(i_isolate, SafepointKind::kIsolate);
-    DisallowGarbageCollection no_gc;
+      SafepointScope safepoint(i_isolate, SafepointKind::kIsolate);
+      DisallowGarbageCollection no_gc;
 
-    if (i_isolate->heap()->read_only_space()->writable()) {
-      // Promote objects from mutable heap spaces to read-only space prior to
-      // serialization. Objects can be promoted if a) they are themselves
-      // immutable-after-deserialization and b) all objects in the transitive
-      // object graph also satisfy condition a).
-      ReadOnlyPromotion::Promote(i_isolate, safepoint, no_gc);
-      // When creating the snapshot from scratch, we are responsible for sealing
-      // the RO heap here. Note we cannot delegate the responsibility e.g. to
-      // Isolate::Init since it should still be possible to allocate into RO
-      // space after the Isolate has been initialized, for example as part of
-      // Context creation.
-      i_isolate->read_only_heap()->OnCreateHeapObjectsComplete(i_isolate);
+      if (i_isolate->heap()->read_only_space()->writable()) {
+        // Promote objects from mutable heap spaces to read-only space prior to
+        // serialization. Objects can be promoted if a) they are themselves
+        // immutable-after-deserialization and b) all objects in the transitive
+        // object graph also satisfy condition a).
+        ReadOnlyPromotion::Promote(i_isolate, safepoint, no_gc);
+        // When creating the snapshot from scratch, we are responsible for
+        // sealing the RO heap here. Note we cannot delegate the responsibility
+        // e.g. to Isolate::Init since it should still be possible to allocate
+        // into RO space after the Isolate has been initialized, for example as
+        // part of Context creation.
+        i_isolate->read_only_heap()->OnCreateHeapObjectsComplete(i_isolate);
+      }
+
+      SnapshotByteSink read_only_sink;
+      ReadOnlySerializer read_only_serializer(
+          i_isolate, Snapshot::kDefaultSerializerFlags);
+      read_only_serializer.Serialize();
+
+      SharedHeapSerializer shared_space_serializer(
+          i_isolate, Snapshot::kDefaultSerializerFlags);
+
+      SnapshotByteSink startup_sink;
+      StartupSerializer startup_serializer(i_isolate,
+                                           Snapshot::kDefaultSerializerFlags,
+                                           &shared_space_serializer);
+      startup_serializer.SerializeStrongReferences(no_gc);
+
+      SnapshotByteSink context_sink;
+      ContextSerializer context_serializer(
+          i_isolate, Snapshot::kDefaultSerializerFlags, &startup_serializer,
+          v8::SerializeInternalFieldsCallback());
+      context_serializer.Serialize(&raw_context, no_gc);
+
+      startup_serializer.SerializeWeakReferencesAndDeferred();
+
+      shared_space_serializer.FinalizeSerialization();
+
+      SnapshotData read_only_snapshot(&read_only_serializer);
+      SnapshotData shared_space_snapshot(&shared_space_serializer);
+      SnapshotData startup_snapshot(&startup_serializer);
+      SnapshotData context_snapshot(&context_serializer);
+
+      *context_blob_out = WritePayload(context_snapshot.RawData());
+      *startup_blob_out = WritePayload(startup_snapshot.RawData());
+      *read_only_blob_out = WritePayload(read_only_snapshot.RawData());
+      *shared_space_blob_out = WritePayload(shared_space_snapshot.RawData());
     }
 
-    SnapshotByteSink read_only_sink;
-    ReadOnlySerializer read_only_serializer(i_isolate,
-                                            Snapshot::kDefaultSerializerFlags);
-    read_only_serializer.Serialize();
-
-    SharedHeapSerializer shared_space_serializer(
-        i_isolate, Snapshot::kDefaultSerializerFlags);
-
-    SnapshotByteSink startup_sink;
-    StartupSerializer startup_serializer(
-        i_isolate, Snapshot::kDefaultSerializerFlags, &shared_space_serializer);
-    startup_serializer.SerializeStrongReferences(no_gc);
-
-    SnapshotByteSink context_sink;
-    ContextSerializer context_serializer(
-        i_isolate, Snapshot::kDefaultSerializerFlags, &startup_serializer,
-        v8::SerializeInternalFieldsCallback());
-    context_serializer.Serialize(&raw_context, no_gc);
-
-    startup_serializer.SerializeWeakReferencesAndDeferred();
-
-    shared_space_serializer.FinalizeSerialization();
-
-    SnapshotData read_only_snapshot(&read_only_serializer);
-    SnapshotData shared_space_snapshot(&shared_space_serializer);
-    SnapshotData startup_snapshot(&startup_serializer);
-    SnapshotData context_snapshot(&context_serializer);
-
-    *context_blob_out = WritePayload(context_snapshot.RawData());
-    *startup_blob_out = WritePayload(startup_snapshot.RawData());
-    *read_only_blob_out = WritePayload(read_only_snapshot.RawData());
-    *shared_space_blob_out = WritePayload(shared_space_snapshot.RawData());
+    // At this point, the heap must be in a consistent state and this GC must
+    // not crash, even with the live handle to the global environment.
+    heap::InvokeMajorGC(i_isolate->heap());
+    // We reset the global context, before isolate disposal.
   }
+
   isolate->Dispose();
 }
 
@@ -845,7 +853,8 @@ UNINITIALIZED_TEST(CustomSnapshotDataBlobStringNotInternalized) {
     v8::Context::Scope c_scope(context);
     v8::Local<v8::Value> result = CompileRun("f()").As<v8::Value>();
     CHECK(result->IsString());
-    i::Tagged<i::String> str = *v8::Utils::OpenHandle(*result.As<v8::String>());
+    i::Tagged<i::String> str =
+        *v8::Utils::OpenDirectHandle(*result.As<v8::String>());
     CHECK_EQ(std::string(str->ToCString().get()), "AB");
     CHECK(!IsInternalizedString(str));
     CHECK(!i::ReadOnlyHeap::Contains(str));
@@ -1154,7 +1163,9 @@ class AlternatingArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
   void Free(void* data, size_t size) override { allocator_->Free(data, size); }
 
   void* Reallocate(void* data, size_t old_length, size_t new_length) override {
+    START_ALLOW_USE_DEPRECATED()
     return allocator_->Reallocate(data, old_length, new_length);
+    END_ALLOW_USE_DEPRECATED()
   }
 
  private:
@@ -2426,13 +2437,13 @@ TEST(CodeSerializerLargeCodeObjectWithIncrementalMarking) {
 
   // Create a string on an evacuation candidate in old space.
   Handle<String> moving_object;
-  Page* ec_page;
+  PageMetadata* ec_page;
   {
     AlwaysAllocateScopeForTesting always_allocate(heap);
     heap::SimulateFullSpace(heap->old_space());
     moving_object = isolate->factory()->InternalizeString(
         isolate->factory()->NewStringFromAsciiChecked("happy_hippo"));
-    ec_page = Page::FromHeapObject(*moving_object);
+    ec_page = PageMetadata::FromHeapObject(*moving_object);
   }
 
   Handle<JSObject> global(isolate->context()->global_object(), isolate);
@@ -2615,16 +2626,16 @@ TEST(CodeSerializerThreeBigStrings) {
       CompileRun("a")
           ->ToString(CcTest::isolate()->GetCurrentContext())
           .ToLocalChecked();
-  CHECK(heap->InSpace(*v8::Utils::OpenHandle(*result_str), LO_SPACE));
+  CHECK(heap->InSpace(*v8::Utils::OpenDirectHandle(*result_str), LO_SPACE));
   result_str = CompileRun("b")
                    ->ToString(CcTest::isolate()->GetCurrentContext())
                    .ToLocalChecked();
-  CHECK(heap->InSpace(*v8::Utils::OpenHandle(*result_str), OLD_SPACE));
+  CHECK(heap->InSpace(*v8::Utils::OpenDirectHandle(*result_str), OLD_SPACE));
 
   result_str = CompileRun("c")
                    ->ToString(CcTest::isolate()->GetCurrentContext())
                    .ToLocalChecked();
-  CHECK(heap->InSpace(*v8::Utils::OpenHandle(*result_str), OLD_SPACE));
+  CHECK(heap->InSpace(*v8::Utils::OpenDirectHandle(*result_str), OLD_SPACE));
 
   delete cache;
   source_a.Dispose();
@@ -3437,10 +3448,10 @@ UNINITIALIZED_TEST(SnapshotCreatorMultipleContexts) {
   FreeCurrentEmbeddedBlob();
 }
 
-static int serialized_static_field = 314;
+namespace {
+int serialized_static_field = 314;
 
-static void SerializedCallback(
-    const v8::FunctionCallbackInfo<v8::Value>& info) {
+void SerializedCallback(const v8::FunctionCallbackInfo<v8::Value>& info) {
   CHECK(i::ValidateCallbackInfo(info));
   if (info.Data()->IsExternal()) {
     CHECK_EQ(info.Data().As<v8::External>()->Value(),
@@ -3452,30 +3463,31 @@ static void SerializedCallback(
   info.GetReturnValue().Set(v8_num(42));
 }
 
-static void SerializedCallbackReplacement(
+void SerializedCallbackReplacement(
     const v8::FunctionCallbackInfo<v8::Value>& info) {
   CHECK(i::ValidateCallbackInfo(info));
   info.GetReturnValue().Set(v8_num(1337));
 }
 
-static void NamedPropertyGetterForSerialization(
+v8::Intercepted NamedPropertyGetterForSerialization(
     v8::Local<v8::Name> name, const v8::PropertyCallbackInfo<v8::Value>& info) {
   CHECK(i::ValidateCallbackInfo(info));
-  if (name->Equals(info.GetIsolate()->GetCurrentContext(), v8_str("x"))
-          .FromJust()) {
+  v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();
+  if (name->Equals(context, v8_str("x")).FromJust()) {
     info.GetReturnValue().Set(v8_num(2016));
+    return v8::Intercepted::kYes;
   }
+  return v8::Intercepted::kNo;
 }
 
-static void AccessorForSerialization(
-    v8::Local<v8::String> property,
-    const v8::PropertyCallbackInfo<v8::Value>& info) {
+void AccessorForSerialization(v8::Local<v8::Name> property,
+                              const v8::PropertyCallbackInfo<v8::Value>& info) {
   CHECK(i::ValidateCallbackInfo(info));
   info.GetReturnValue().Set(v8_num(2017));
 }
 
-static SerializerOneByteResource serializable_one_byte_resource("one_byte", 8);
-static SerializerTwoByteResource serializable_two_byte_resource(
+SerializerOneByteResource serializable_one_byte_resource("one_byte", 8);
+SerializerTwoByteResource serializable_two_byte_resource(
     AsciiToTwoByteString(u"two_byte 🤓"), 11);
 
 intptr_t original_external_references[] = {
@@ -3500,6 +3512,8 @@ intptr_t replaced_external_references[] = {
 
 intptr_t short_external_references[] = {
     reinterpret_cast<intptr_t>(SerializedCallbackReplacement), 0};
+
+}  // namespace
 
 UNINITIALIZED_TEST(SnapshotCreatorExternalReferences) {
   DisableAlwaysOpt();
@@ -4106,9 +4120,235 @@ UNINITIALIZED_TEST(SnapshotCreatorTemplates) {
   FreeCurrentEmbeddedBlob();
 }
 
+namespace context_data_test {
+
+// Data passed to callbacks.
+static int serialize_internal_fields_data = 2016;
+static int serialize_context_data_data = 2017;
+static int deserialize_internal_fields_data = 2018;
+static int deserialize_context_data_data = 2019;
+
+InternalFieldData context_data = InternalFieldData{11};
+InternalFieldData object_data = InternalFieldData{22};
+
+v8::StartupData SerializeInternalFields(v8::Local<v8::Object> holder, int index,
+                                        void* data) {
+  CHECK_EQ(data, &serialize_internal_fields_data);
+  InternalFieldData* field = static_cast<InternalFieldData*>(
+      holder->GetAlignedPointerFromInternalField(index));
+  if (index == 0) {
+    CHECK_NULL(field);
+    return {nullptr, 0};
+  }
+  CHECK_EQ(1, index);
+  CHECK_EQ(object_data.data, field->data);
+  int size = sizeof(*field);
+  char* payload = new char[size];
+  // We simply use memcpy to serialize the content.
+  memcpy(payload, field, size);
+  return {payload, size};
+}
+
+v8::StartupData SerializeContextData(v8::Local<v8::Context> context, int index,
+                                     void* data) {
+  CHECK_EQ(data, &serialize_context_data_data);
+  InternalFieldData* field = static_cast<InternalFieldData*>(
+      context->GetAlignedPointerFromEmbedderData(index));
+  if (index == 0) {
+    CHECK_NULL(field);
+    return {nullptr, 0};
+  }
+  CHECK_EQ(1, index);
+  CHECK_EQ(context_data.data, field->data);
+  int size = sizeof(*field);
+  char* payload = new char[size];
+  // We simply use memcpy to serialize the content.
+  memcpy(payload, field, size);
+  return {payload, size};
+}
+
+void DeserializeInternalFields(v8::Local<v8::Object> holder, int index,
+                               v8::StartupData payload, void* data) {
+  CHECK_EQ(data, &deserialize_internal_fields_data);
+  CHECK_EQ(1, index);
+  InternalFieldData* field = new InternalFieldData{0};
+  memcpy(field, payload.data, payload.raw_size);
+  CHECK_EQ(object_data.data, field->data);
+  holder->SetAlignedPointerInInternalField(index, field);
+}
+
+void DeserializeContextData(v8::Local<v8::Context> context, int index,
+                            v8::StartupData payload, void* data) {
+  CHECK_EQ(data, &deserialize_context_data_data);
+  CHECK_EQ(1, index);
+  InternalFieldData* field = new InternalFieldData{0};
+  memcpy(field, payload.data, payload.raw_size);
+  CHECK_EQ(context_data.data, field->data);
+  context->SetAlignedPointerInEmbedderData(index, field);
+}
+
+}  // namespace context_data_test
+
+UNINITIALIZED_TEST(SerializeContextData) {
+  DisableAlwaysOpt();
+  DisableEmbeddedBlobRefcounting();
+
+  v8::SerializeInternalFieldsCallback serialize_internal_fields(
+      context_data_test::SerializeInternalFields,
+      &context_data_test::serialize_internal_fields_data);
+  v8::SerializeContextDataCallback serialize_context_data(
+      context_data_test::SerializeContextData,
+      &context_data_test::serialize_context_data_data);
+  v8::DeserializeInternalFieldsCallback deserialize_internal_fields(
+      context_data_test::DeserializeInternalFields,
+      &context_data_test::deserialize_internal_fields_data);
+  v8::DeserializeContextDataCallback deserialize_context_data(
+      context_data_test::DeserializeContextData,
+      &context_data_test::deserialize_context_data_data);
+
+  {
+    v8::StartupData blob;
+    {
+      SnapshotCreatorParams params;
+      v8::SnapshotCreator creator(params.create_params);
+      v8::Isolate* isolate = creator.GetIsolate();
+      {
+        v8::HandleScope handle_scope(isolate);
+        v8::Local<v8::Context> context = v8::Context::New(isolate);
+        v8::Context::Scope context_scope(context);
+        context->SetAlignedPointerInEmbedderData(0, nullptr);
+        context->SetAlignedPointerInEmbedderData(
+            1, &context_data_test::context_data);
+
+        v8::Local<v8::ObjectTemplate> object_template =
+            v8::ObjectTemplate::New(isolate);
+        object_template->SetInternalFieldCount(2);
+        v8::Local<v8::Object> obj =
+            object_template->NewInstance(context).ToLocalChecked();
+        obj->SetAlignedPointerInInternalField(0, nullptr);
+        obj->SetAlignedPointerInInternalField(1,
+                                              &context_data_test::object_data);
+
+        CHECK(context->Global()->Set(context, v8_str("obj"), obj).FromJust());
+        creator.SetDefaultContext(context, serialize_internal_fields,
+                                  serialize_context_data);
+      }
+
+      blob =
+          creator.CreateBlob(v8::SnapshotCreator::FunctionCodeHandling::kClear);
+    }
+
+    {
+      v8::Isolate::CreateParams params;
+      params.snapshot_blob = &blob;
+      params.array_buffer_allocator = CcTest::array_buffer_allocator();
+      // Test-appropriate equivalent of v8::Isolate::New.
+      v8::Isolate* isolate = TestSerializer::NewIsolate(params);
+      {
+        v8::Isolate::Scope isolate_scope(isolate);
+
+        v8::HandleScope handle_scope(isolate);
+        v8::Local<v8::Context> context = v8::Context::New(
+            isolate, nullptr, {}, {}, deserialize_internal_fields, nullptr,
+            deserialize_context_data);
+        InternalFieldData* data = static_cast<InternalFieldData*>(
+            context->GetAlignedPointerFromEmbedderData(1));
+        CHECK_EQ(context_data_test::context_data.data, data->data);
+        context->SetAlignedPointerInEmbedderData(1, nullptr);
+        delete data;
+
+        v8::Local<v8::Value> obj_val =
+            context->Global()->Get(context, v8_str("obj")).ToLocalChecked();
+        CHECK(obj_val->IsObject());
+        v8::Local<v8::Object> obj = obj_val.As<v8::Object>();
+        InternalFieldData* field = static_cast<InternalFieldData*>(
+            obj->GetAlignedPointerFromInternalField(1));
+        CHECK_EQ(context_data_test::object_data.data, field->data);
+        obj->SetAlignedPointerInInternalField(1, nullptr);
+        delete field;
+      }
+      isolate->Dispose();
+    }
+    delete[] blob.data;
+  }
+  {
+    v8::StartupData blob;
+    {
+      SnapshotCreatorParams params;
+      v8::SnapshotCreator creator(params.create_params);
+      v8::Isolate* isolate = creator.GetIsolate();
+      {
+        v8::HandleScope handle_scope(isolate);
+
+        v8::Local<v8::Context> default_context = v8::Context::New(isolate);
+        creator.SetDefaultContext(default_context);
+
+        v8::Local<v8::Context> context = v8::Context::New(isolate);
+        v8::Context::Scope context_scope(context);
+        context->SetAlignedPointerInEmbedderData(0, nullptr);
+        context->SetAlignedPointerInEmbedderData(
+            1, &context_data_test::context_data);
+
+        v8::Local<v8::ObjectTemplate> object_template =
+            v8::ObjectTemplate::New(isolate);
+        object_template->SetInternalFieldCount(2);
+        v8::Local<v8::Object> obj =
+            object_template->NewInstance(context).ToLocalChecked();
+        obj->SetAlignedPointerInInternalField(0, nullptr);
+        obj->SetAlignedPointerInInternalField(1,
+                                              &context_data_test::object_data);
+
+        CHECK(context->Global()->Set(context, v8_str("obj"), obj).FromJust());
+        CHECK_EQ(0, creator.AddContext(context, serialize_internal_fields,
+                                       serialize_context_data));
+      }
+
+      blob =
+          creator.CreateBlob(v8::SnapshotCreator::FunctionCodeHandling::kClear);
+    }
+
+    {
+      v8::Isolate::CreateParams params;
+      params.snapshot_blob = &blob;
+      params.array_buffer_allocator = CcTest::array_buffer_allocator();
+      // Test-appropriate equivalent of v8::Isolate::New.
+      v8::Isolate* isolate = TestSerializer::NewIsolate(params);
+      {
+        v8::Isolate::Scope isolate_scope(isolate);
+
+        v8::HandleScope handle_scope(isolate);
+        v8::Local<v8::Context> context =
+            v8::Context::FromSnapshot(isolate, 0, deserialize_internal_fields,
+                                      nullptr, v8::MaybeLocal<v8::Value>(),
+                                      nullptr, deserialize_context_data)
+                .ToLocalChecked();
+        InternalFieldData* data = static_cast<InternalFieldData*>(
+            context->GetAlignedPointerFromEmbedderData(1));
+        CHECK_EQ(context_data_test::context_data.data, data->data);
+        context->SetAlignedPointerInEmbedderData(1, nullptr);
+        delete data;
+
+        v8::Local<v8::Value> obj_val =
+            context->Global()->Get(context, v8_str("obj")).ToLocalChecked();
+        CHECK(obj_val->IsObject());
+        v8::Local<v8::Object> obj = obj_val.As<v8::Object>();
+        InternalFieldData* field = static_cast<InternalFieldData*>(
+            obj->GetAlignedPointerFromInternalField(1));
+        CHECK_EQ(context_data_test::object_data.data, field->data);
+        obj->SetAlignedPointerInInternalField(1, nullptr);
+        delete field;
+      }
+      isolate->Dispose();
+    }
+    delete[] blob.data;
+  }
+
+  FreeCurrentEmbeddedBlob();
+}
+
 MaybeLocal<v8::Module> ResolveCallback(Local<v8::Context> context,
                                        Local<v8::String> specifier,
-                                       Local<v8::FixedArray> import_assertions,
+                                       Local<v8::FixedArray> import_attributes,
                                        Local<v8::Module> referrer) {
   return {};
 }
@@ -4229,8 +4469,8 @@ UNINITIALIZED_TEST(SnapshotCreatorAddData) {
       v8::Local<v8::Context> serialized_context =
           context->GetDataFromSnapshotOnce<v8::Context>(4).ToLocalChecked();
       CHECK(context->GetDataFromSnapshotOnce<v8::Context>(4).IsEmpty());
-      CHECK_EQ(*v8::Utils::OpenHandle(*serialized_context),
-               *v8::Utils::OpenHandle(*context));
+      CHECK_EQ(*v8::Utils::OpenDirectHandle(*serialized_context),
+               *v8::Utils::OpenDirectHandle(*context));
 
       v8::Local<v8::Module> serialized_module =
           context->GetDataFromSnapshotOnce<v8::Module>(5).ToLocalChecked();
@@ -5340,12 +5580,12 @@ void CheckSFIsAreWeak(Tagged<WeakFixedArray> sfis, Isolate* isolate) {
   CHECK_GT(sfis->length(), 0);
   int no_of_weak = 0;
   for (int i = 0; i < sfis->length(); ++i) {
-    MaybeObject maybe_object = sfis->get(i);
+    Tagged<MaybeObject> maybe_object = sfis->get(i);
     Tagged<HeapObject> heap_object;
-    CHECK(maybe_object->IsWeakOrCleared() ||
+    CHECK(maybe_object.IsWeakOrCleared() ||
           (maybe_object.GetHeapObjectIfStrong(&heap_object) &&
            IsUndefined(heap_object, isolate)));
-    if (maybe_object->IsWeak()) {
+    if (maybe_object.IsWeak()) {
       ++no_of_weak;
     }
   }

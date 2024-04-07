@@ -35,6 +35,7 @@ struct EphemeronMarking {
 // - AddWeakReferenceForReferenceSummarizer
 // - TryMark
 // - IsMarked
+// - MarkPointerTableEntry
 // - retaining_path_mode
 // - RecordSlot
 // - RecordRelocSlot
@@ -64,7 +65,7 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
         should_keep_ages_unchanged_(should_keep_ages_unchanged),
         should_mark_shared_heap_(heap->isolate()->is_shared_space_isolate()),
         code_flushing_increase_(code_flushing_increase),
-        isolate_in_background_(heap->isolate()->IsIsolateInBackground())
+        isolate_in_background_(heap->isolate()->is_backgrounded())
 #ifdef V8_ENABLE_SANDBOX
         ,
         external_pointer_table_(&heap->isolate()->external_pointer_table()),
@@ -74,6 +75,10 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
             heap->isolate()->shared_external_pointer_space()),
         trusted_pointer_table_(&heap->isolate()->trusted_pointer_table())
 #endif  // V8_ENABLE_SANDBOX
+#ifdef V8_COMPRESS_POINTERS
+        ,
+        cpp_heap_pointer_table_(&heap->isolate()->cpp_heap_pointer_table())
+#endif  // V8_COMPRESS_POINTERS
   {
   }
 
@@ -136,7 +141,9 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
   }
 
   V8_INLINE void VisitExternalPointer(Tagged<HeapObject> host,
-                                      ExternalPointerSlot slot) final;
+                                      ExternalPointerSlot slot) override;
+  V8_INLINE void VisitCppHeapPointer(Tagged<HeapObject> host,
+                                     CppHeapPointerSlot slot) override;
   V8_INLINE void VisitIndirectPointer(Tagged<HeapObject> host,
                                       IndirectPointerSlot slot,
                                       IndirectPointerMode mode) final;
@@ -153,7 +160,7 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
 #ifdef THREAD_SANITIZER
     // This is needed because TSAN does not process the memory fence
     // emitted after page initialization.
-    BasicMemoryChunk::FromHeapObject(heap_object)->SynchronizedHeapLoad();
+    MemoryChunk::FromHeapObject(heap_object)->SynchronizedLoad();
 #endif
   }
 
@@ -194,12 +201,12 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
 
   V8_INLINE void VisitDescriptorsForMap(Tagged<Map> map);
 
-  template <typename T>
+  template <typename T, typename TBodyDescriptor = typename T::BodyDescriptor>
   int VisitEmbedderTracingSubclass(Tagged<Map> map, Tagged<T> object);
-  template <typename T>
+  template <typename T, typename TBodyDescriptor>
   int VisitEmbedderTracingSubClassWithEmbedderTracing(Tagged<Map> map,
                                                       Tagged<T> object);
-  template <typename T>
+  template <typename T, typename TBodyDescriptor>
   int VisitEmbedderTracingSubClassNoEmbedderTracing(Tagged<Map> map,
                                                     Tagged<T> object);
 
@@ -233,6 +240,9 @@ class MarkingVisitorBase : public ConcurrentHeapVisitor<int, ConcreteVisitor> {
   ExternalPointerTable::Space* const shared_external_pointer_space_;
   TrustedPointerTable* const trusted_pointer_table_;
 #endif  // V8_ENABLE_SANDBOX
+#ifdef V8_COMPRESS_POINTERS
+  ExternalPointerTable* const cpp_heap_pointer_table_;
+#endif  // V8_COMPRESS_POINTERS
 };
 
 // This is the common base class for main and concurrent full marking visitors.
@@ -267,6 +277,8 @@ class FullMarkingVisitorBase : public MarkingVisitorBase<ConcreteVisitor> {
   bool IsMarked(Tagged<HeapObject> obj) const {
     return MarkBit::From(obj).Get<AccessMode::ATOMIC>();
   }
+
+  void MarkPointerTableEntry(Tagged<HeapObject> obj, IndirectPointerSlot slot);
 };
 
 }  // namespace internal

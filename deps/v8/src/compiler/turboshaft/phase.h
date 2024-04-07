@@ -30,11 +30,7 @@ namespace v8::internal::compiler::turboshaft {
 template <typename P>
 struct produces_printable_graph : public std::true_type {};
 
-enum class TurboshaftPipelineKind {
-  kJS,
-  kWasm,
-  kCSA,
-};
+enum class TurboshaftPipelineKind { kJS, kWasm, kCSA, kJSToWasm };
 
 class LoopUnrollingAnalyzer;
 class WasmRevecAnalyzer;
@@ -42,15 +38,18 @@ class WasmRevecAnalyzer;
 class V8_EXPORT_PRIVATE PipelineData
     : public base::ContextualClass<PipelineData> {
  public:
-  explicit PipelineData(
-      TurboshaftPipelineKind pipeline_kind,
-      OptimizedCompilationInfo* const& info, Schedule*& schedule,
-      Zone*& graph_zone, Zone* shared_zone, JSHeapBroker*& broker,
-      Isolate* const& isolate, SourcePositionTable*& source_positions,
-      NodeOriginTable*& node_origins, InstructionSequence*& sequence,
-      Frame*& frame, AssemblerOptions& assembler_options,
-      size_t* address_of_max_unoptimized_frame_height,
-      size_t* address_of_max_pushed_argument_count, Zone*& instruction_zone)
+  explicit PipelineData(TurboshaftPipelineKind pipeline_kind,
+                        OptimizedCompilationInfo* const& info,
+                        Schedule*& schedule, Zone*& graph_zone,
+                        Zone* shared_zone, JSHeapBroker*& broker,
+                        Isolate* const& isolate,
+                        SourcePositionTable*& source_positions,
+                        NodeOriginTable*& node_origins,
+                        InstructionSequence*& sequence, Frame*& frame,
+                        AssemblerOptions& assembler_options,
+                        size_t* address_of_max_unoptimized_frame_height,
+                        size_t* address_of_max_pushed_argument_count,
+                        Zone*& instruction_zone, Graph* graph = nullptr)
       : pipeline_kind_(pipeline_kind),
         info_(info),
         schedule_(schedule),
@@ -68,7 +67,8 @@ class V8_EXPORT_PRIVATE PipelineData
         address_of_max_pushed_argument_count_(
             address_of_max_pushed_argument_count),
         instruction_zone_(instruction_zone),
-        graph_(graph_zone_->New<turboshaft::Graph>(graph_zone_)) {}
+        graph_(graph ? graph
+                     : graph_zone_->New<turboshaft::Graph>(graph_zone_)) {}
 
   bool has_graph() const { return graph_ != nullptr; }
   turboshaft::Graph& graph() const { return *graph_; }
@@ -95,6 +95,7 @@ class V8_EXPORT_PRIVATE PipelineData
     return address_of_max_pushed_argument_count_;
   }
   Zone* instruction_zone() const { return instruction_zone_; }
+  CodeTracer* GetCodeTracer() const { return isolate_->GetCodeTracer(); }
 
 #if V8_ENABLE_WEBASSEMBLY
   const wasm::FunctionSig* wasm_sig() const {
@@ -107,7 +108,8 @@ class V8_EXPORT_PRIVATE PipelineData
   void SetIsWasm(const wasm::WasmModule* module, const wasm::FunctionSig* sig) {
     wasm_module_ = module;
     wasm_sig_ = sig;
-    is_wasm_ = true;
+    DCHECK(pipeline_kind() == TurboshaftPipelineKind::kWasm ||
+           pipeline_kind() == TurboshaftPipelineKind::kJSToWasm);
   }
 #ifdef V8_ENABLE_WASM_SIMD256_REVEC
   WasmRevecAnalyzer* wasm_revec_analyzer() const {
@@ -124,7 +126,13 @@ class V8_EXPORT_PRIVATE PipelineData
 #endif  // V8_ENABLE_WASM_SIMD256_REVEC
 #endif  // V8_ENABLE_WEBASSEMBLY
 
-  bool is_wasm() const { return is_wasm_; }
+  bool is_wasm() const {
+    return pipeline_kind() == TurboshaftPipelineKind::kWasm ||
+           pipeline_kind() == TurboshaftPipelineKind::kJSToWasm;
+  }
+  bool is_js_to_wasm() const {
+    return pipeline_kind() == TurboshaftPipelineKind::kJSToWasm;
+  }
 
   void reset_schedule() { schedule_ = nullptr; }
 
@@ -152,6 +160,9 @@ class V8_EXPORT_PRIVATE PipelineData
     return loop_unrolling_analyzer_;
   }
 
+  bool graph_has_special_rpo() const { return graph_has_special_rpo_; }
+  void set_graph_has_special_rpo() { graph_has_special_rpo_ = true; }
+
  private:
   // Turbofan's PipelineData owns most of these objects. We only hold references
   // to them.
@@ -178,16 +189,15 @@ class V8_EXPORT_PRIVATE PipelineData
   // if we need many of them.
   const wasm::FunctionSig* wasm_sig_ = nullptr;
   const wasm::WasmModule* wasm_module_ = nullptr;
-  bool is_wasm_ = false;
 #ifdef V8_ENABLE_WASM_SIMD256_REVEC
 
   WasmRevecAnalyzer* wasm_revec_analyzer_ = nullptr;
 #endif  // V8_ENABLE_WASM_SIMD256_REVEC
-#else
-  static constexpr bool is_wasm_ = false;
 #endif  // V8_ENABLE_WEBASSEMBLY
 
   LoopUnrollingAnalyzer* loop_unrolling_analyzer_ = nullptr;
+
+  bool graph_has_special_rpo_ = false;
 
   turboshaft::Graph* graph_;
 };

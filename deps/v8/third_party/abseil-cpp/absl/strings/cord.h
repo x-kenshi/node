@@ -75,6 +75,7 @@
 #include "absl/base/internal/per_thread_tls.h"
 #include "absl/base/macros.h"
 #include "absl/base/nullability.h"
+#include "absl/base/optimization.h"
 #include "absl/base/port.h"
 #include "absl/container/inlined_vector.h"
 #include "absl/crc/internal/crc_cord_state.h"
@@ -1120,7 +1121,7 @@ Cord MakeCordFromExternal(absl::string_view data, Releaser&& releaser) {
   } else {
     using ReleaserType = absl::decay_t<Releaser>;
     cord_internal::InvokeReleaser(
-        cord_internal::Rank0{}, ReleaserType(std::forward<Releaser>(releaser)),
+        cord_internal::Rank1{}, ReleaserType(std::forward<Releaser>(releaser)),
         data);
   }
   return cord;
@@ -1170,7 +1171,8 @@ inline void Cord::InlineRep::Swap(absl::Nonnull<Cord::InlineRep*> rhs) {
   if (rhs == this) {
     return;
   }
-  std::swap(data_, rhs->data_);
+  using std::swap;
+  swap(data_, rhs->data_);
 }
 
 inline absl::Nullable<const char*> Cord::InlineRep::data() const {
@@ -1387,6 +1389,7 @@ inline void Cord::Prepend(absl::string_view src) {
 
 inline void Cord::Append(CordBuffer buffer) {
   if (ABSL_PREDICT_FALSE(buffer.length() == 0)) return;
+  contents_.MaybeRemoveEmptyCrcNode();
   absl::string_view short_value;
   if (CordRep* rep = buffer.ConsumeValue(short_value)) {
     contents_.AppendTree(rep, CordzUpdateTracker::kAppendCordBuffer);
@@ -1397,6 +1400,7 @@ inline void Cord::Append(CordBuffer buffer) {
 
 inline void Cord::Prepend(CordBuffer buffer) {
   if (ABSL_PREDICT_FALSE(buffer.length() == 0)) return;
+  contents_.MaybeRemoveEmptyCrcNode();
   absl::string_view short_value;
   if (CordRep* rep = buffer.ConsumeValue(short_value)) {
     contents_.PrependTree(rep, CordzUpdateTracker::kPrependCordBuffer);

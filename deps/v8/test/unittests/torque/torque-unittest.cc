@@ -84,8 +84,11 @@ type string constexpr 'const char*';
 type RawPtr generates 'TNode<RawPtrT>' constexpr 'void*';
 type ExternalPointer
     generates 'TNode<ExternalPointerT>' constexpr 'ExternalPointer_t';
+type CppHeapPointer
+    generates 'TNode<CppHeapPointerT>' constexpr 'CppHeapPointer_t';
 type IndirectPointer
     generates 'TNode<IndirectPointerHandle>' constexpr 'IndirectPointerHandle';
+type ProtectedPointer extends Tagged;
 type InstructionStream extends HeapObject generates 'TNode<InstructionStream>';
 type BuiltinPtr extends Smi generates 'TNode<BuiltinPtr>';
 type Context extends HeapObject generates 'TNode<Context>';

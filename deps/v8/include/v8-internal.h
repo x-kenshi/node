@@ -253,15 +253,15 @@ static_assert(1ULL << (64 - kBoundedSizeShift) ==
 // size allows omitting bounds checks on table accesses if the indices are
 // guaranteed (e.g. through shifting) to be below the maximum index. This
 // value must be a power of two.
-constexpr size_t kExternalPointerTableReservationSize = 512 * MB;
+constexpr size_t kExternalPointerTableReservationSize = 256 * MB;
 
 // The external pointer table indices stored in HeapObjects as external
 // pointers are shifted to the left by this amount to guarantee that they are
 // smaller than the maximum table size.
-constexpr uint32_t kExternalPointerIndexShift = 6;
+constexpr uint32_t kExternalPointerIndexShift = 7;
 #else
-constexpr size_t kExternalPointerTableReservationSize = 1024 * MB;
-constexpr uint32_t kExternalPointerIndexShift = 5;
+constexpr size_t kExternalPointerTableReservationSize = 512 * MB;
+constexpr uint32_t kExternalPointerIndexShift = 6;
 #endif  // V8_TARGET_OS_ANDROID
 
 // The maximum number of entries in an external pointer table.
@@ -300,6 +300,26 @@ using ExternalPointer_t = Address;
 
 constexpr ExternalPointer_t kNullExternalPointer = 0;
 constexpr ExternalPointerHandle kNullExternalPointerHandle = 0;
+
+// See `ExternalPointerHandle` for the main documentation. The difference to
+// `ExternalPointerHandle` is that the handle does not represent an arbitrary
+// external pointer but always refers to an object managed by `CppHeap`. The
+// handles are using in combination with a dedicated table for `CppHeap`
+// references.
+using CppHeapPointerHandle = uint32_t;
+
+// The actual pointer to objects located on the `CppHeap`. When pointer
+// compression is enabled these pointers are stored as `CppHeapPointerHandle`.
+// In non-compressed configurations the pointers are simply stored as raw
+// pointers.
+#ifdef V8_COMPRESS_POINTERS
+using CppHeapPointer_t = CppHeapPointerHandle;
+#else
+using CppHeapPointer_t = Address;
+#endif
+
+constexpr CppHeapPointer_t kNullCppHeapPointer = 0;
+constexpr CppHeapPointerHandle kNullCppHeapPointerHandle = 0;
 
 //
 // External Pointers.
@@ -418,22 +438,41 @@ constexpr uint64_t kAllExternalPointerTypeTags[] = {
 // External pointers using these tags are kept in a per-Isolate external
 // pointer table and can only be accessed when this Isolate is active.
 #define PER_ISOLATE_EXTERNAL_POINTER_TAGS(V)             \
-  V(kForeignForeignAddressTag,                  TAG(10)) \
-  V(kNativeContextMicrotaskQueueTag,            TAG(11)) \
-  V(kEmbedderDataSlotPayloadTag,                TAG(12)) \
+  V(kNativeContextMicrotaskQueueTag,            TAG(10)) \
+  V(kEmbedderDataSlotPayloadTag,                TAG(11)) \
 /* This tag essentially stands for a `void*` pointer in the V8 API, and */ \
 /* it is the Embedder's responsibility to ensure type safety (against */   \
 /* substitution) and lifetime validity of these objects. */                \
-  V(kExternalObjectValueTag,                    TAG(13)) \
-  V(kCallHandlerInfoCallbackTag,                TAG(14)) \
-  V(kAccessorInfoGetterTag,                     TAG(15)) \
-  V(kAccessorInfoSetterTag,                     TAG(16)) \
-  V(kWasmInternalFunctionCallTargetTag,         TAG(17)) \
-  V(kWasmTypeInfoNativeTypeTag,                 TAG(18)) \
-  V(kWasmExportedFunctionDataSignatureTag,      TAG(19)) \
-  V(kWasmContinuationJmpbufTag,                 TAG(20)) \
-  V(kWasmIndirectFunctionTargetTag,             TAG(21)) \
-  V(kArrayBufferExtensionTag,                   TAG(22))
+  V(kExternalObjectValueTag,                    TAG(12)) \
+  V(kFunctionTemplateInfoCallbackTag,           TAG(13)) \
+  V(kAccessorInfoGetterTag,                     TAG(14)) \
+  V(kAccessorInfoSetterTag,                     TAG(15)) \
+  V(kWasmInternalFunctionCallTargetTag,         TAG(16)) \
+  V(kWasmTypeInfoNativeTypeTag,                 TAG(17)) \
+  V(kWasmExportedFunctionDataSignatureTag,      TAG(18)) \
+  V(kWasmContinuationJmpbufTag,                 TAG(19)) \
+  V(kWasmIndirectFunctionTargetTag,             TAG(20)) \
+  V(kArrayBufferExtensionTag,                   TAG(21)) \
+  /* Foreigns */ \
+  V(kGenericForeignTag,                         TAG(30)) \
+  /* Managed */ \
+  V(kGenericManagedTag,                         TAG(40)) \
+  V(kWasmWasmStreamingTag,                      TAG(41)) \
+  V(kWasmFuncDataTag,                           TAG(42)) \
+  V(kWasmManagedDataTag,                        TAG(43)) \
+  V(kWasmNativeModuleTag,                       TAG(44)) \
+  V(kWasmStackMemoryTag,                        TAG(45)) \
+  V(kIcuBreakIteratorTag,                       TAG(46)) \
+  V(kIcuUnicodeStringTag,                       TAG(47)) \
+  V(kIcuListFormatterTag,                       TAG(48)) \
+  V(kIcuLocaleTag,                              TAG(49)) \
+  V(kIcuSimpleDateFormatTag,                    TAG(50)) \
+  V(kIcuDateIntervalFormatTag,                  TAG(51)) \
+  V(kIcuRelativeDateTimeFormatterTag,           TAG(52)) \
+  V(kIcuLocalizedNumberFormatterTag,            TAG(53)) \
+  V(kIcuPluralRulesTag,                         TAG(54)) \
+  V(kIcuCollatorTag,                            TAG(55)) \
+  V(kDisplayNamesInternalTag,                   TAG(56))
 
 // All external pointer tags.
 #define ALL_EXTERNAL_POINTER_TAGS(V) \
@@ -455,6 +494,9 @@ enum ExternalPointerTag : uint64_t {
   kExternalPointerFreeEntryTag =       MAKE_TAG(0, 0b11111111),
   // Evacuation entries are used during external pointer table compaction.
   kExternalPointerEvacuationEntryTag = MAKE_TAG(1, 0b11100111),
+  // External pointer tag that will match any external pointer in a Foreign.
+  // Use with care! If desired, this could be made more fine-granular.
+  kAnyForeignTag = kAnyExternalPointerTag,
 
   ALL_EXTERNAL_POINTER_TAGS(EXTERNAL_POINTER_TAG_ENUM)
 };
@@ -478,7 +520,7 @@ V8_INLINE static constexpr bool IsSharedExternalPointerType(
 V8_INLINE static constexpr bool IsMaybeReadOnlyExternalPointerType(
     ExternalPointerTag tag) {
   return tag == kAccessorInfoGetterTag || tag == kAccessorInfoSetterTag ||
-         tag == kCallHandlerInfoCallbackTag;
+         tag == kFunctionTemplateInfoCallbackTag;
 }
 
 // Sanity checks.
@@ -576,11 +618,11 @@ using CodePointerHandle = IndirectPointerHandle;
 // The size of the virtual memory reservation for the code pointer table.
 // As with the other tables, a maximum table size in combination with shifted
 // indices allows omitting bounds checks.
-constexpr size_t kCodePointerTableReservationSize = 16 * MB;
+constexpr size_t kCodePointerTableReservationSize = 128 * MB;
 
 // Code pointer handles are shifted by a different amount than indirect pointer
 // handles as the tables have a different maximum size.
-constexpr uint32_t kCodePointerHandleShift = 12;
+constexpr uint32_t kCodePointerHandleShift = 9;
 
 // A null handle always references an entry that contains nullptr.
 constexpr CodePointerHandle kNullCodePointerHandle = kNullIndirectPointerHandle;
@@ -616,8 +658,6 @@ constexpr bool kAllCodeObjectsLiveInTrustedSpace =
     kRuntimeGeneratedCodeObjectsLiveInTrustedSpace &&
     kBuiltinCodeObjectsLiveInTrustedSpace;
 
-constexpr bool kInterpreterDataObjectsLiveInTrustedSpace = false;
-
 // {obj} must be the raw tagged pointer representation of a HeapObject
 // that's guaranteed to never be in ReadOnlySpace.
 V8_EXPORT internal::Isolate* IsolateFromNeverReadOnlySpaceObject(Address obj);
@@ -649,6 +689,13 @@ class Internals {
 
   static const int kOddballKindOffset = 4 * kApiTaggedSize + kApiDoubleSize;
   static const int kJSObjectHeaderSize = 3 * kApiTaggedSize;
+#ifdef V8_COMPRESS_POINTERS
+  static const int kJSAPIObjectWithEmbedderSlotsHeaderSize =
+      kJSObjectHeaderSize + kApiInt32Size;
+#else   // !V8_COMPRESS_POINTERS
+  static const int kJSAPIObjectWithEmbedderSlotsHeaderSize =
+      kJSObjectHeaderSize + kApiTaggedSize;
+#endif  // !V8_COMPRESS_POINTERS
   static const int kFixedArrayHeaderSize = 2 * kApiTaggedSize;
   static const int kEmbedderDataArrayHeaderSize = 2 * kApiTaggedSize;
   static const int kEmbedderDataSlotSize = kApiSystemPointerSize;
@@ -721,16 +768,18 @@ class Internals {
       kIsolateEmbedderDataOffset + kNumIsolateDataSlots * kApiSystemPointerSize;
   static const int kIsolateSharedExternalPointerTableAddressOffset =
       kIsolateExternalPointerTableOffset + kExternalPointerTableSize;
+  static const int kIsolateCppHeapPointerTableOffset =
+      kIsolateSharedExternalPointerTableAddressOffset + kApiSystemPointerSize;
 #ifdef V8_ENABLE_SANDBOX
   static const int kIsolateTrustedCageBaseOffset =
-      kIsolateSharedExternalPointerTableAddressOffset + kApiSystemPointerSize;
+      kIsolateCppHeapPointerTableOffset + kExternalPointerTableSize;
   static const int kIsolateTrustedPointerTableOffset =
       kIsolateTrustedCageBaseOffset + kApiSystemPointerSize;
   static const int kIsolateApiCallbackThunkArgumentOffset =
       kIsolateTrustedPointerTableOffset + kTrustedPointerTableSize;
 #else
   static const int kIsolateApiCallbackThunkArgumentOffset =
-      kIsolateSharedExternalPointerTableAddressOffset + kApiSystemPointerSize;
+      kIsolateCppHeapPointerTableOffset + kExternalPointerTableSize;
 #endif  // V8_ENABLE_SANDBOX
 #else
   static const int kIsolateApiCallbackThunkArgumentOffset =
@@ -748,23 +797,28 @@ class Internals {
 
 #if V8_STATIC_ROOTS_BOOL
 
-// These constants need to be initialized in api.cc.
+// These constants are copied from static-roots.h and guarded by static asserts.
 #define EXPORTED_STATIC_ROOTS_PTR_LIST(V) \
-  V(UndefinedValue)                       \
-  V(NullValue)                            \
-  V(TrueValue)                            \
-  V(FalseValue)                           \
-  V(EmptyString)                          \
-  V(TheHoleValue)
+  V(UndefinedValue, 0x69)                 \
+  V(NullValue, 0x85)                      \
+  V(TrueValue, 0xc9)                      \
+  V(FalseValue, 0xad)                     \
+  V(EmptyString, 0xa1)                    \
+  V(TheHoleValue, 0x741)
 
   using Tagged_t = uint32_t;
   struct StaticReadOnlyRoot {
-#define DEF_ROOT(name) V8_EXPORT static const Tagged_t k##name;
+#define DEF_ROOT(name, value) static constexpr Tagged_t k##name = value;
     EXPORTED_STATIC_ROOTS_PTR_LIST(DEF_ROOT)
 #undef DEF_ROOT
 
-    V8_EXPORT static const Tagged_t kFirstStringMap;
-    V8_EXPORT static const Tagged_t kLastStringMap;
+    static constexpr Tagged_t kFirstStringMap = 0xe5;
+    static constexpr Tagged_t kLastStringMap = 0x47d;
+
+#define PLUSONE(...) +1
+    static constexpr size_t kNumberOfExportedStaticRoots =
+        2 + EXPORTED_STATIC_ROOTS_PTR_LIST(PLUSONE);
+#undef PLUSONE
   };
 
 #endif  // V8_STATIC_ROOTS_BOOL
@@ -781,8 +835,6 @@ class Internals {
   static const int kNodeStateMask = 0x3;
   static const int kNodeStateIsWeakValue = 2;
 
-  static const int kTracedNodeClassIdOffset = kApiSystemPointerSize;
-
   static const int kFirstNonstringType = 0x80;
   static const int kOddballType = 0x83;
   static const int kForeignType = 0xcc;
@@ -790,6 +842,11 @@ class Internals {
   static const int kJSObjectType = 0x421;
   static const int kFirstJSApiObjectType = 0x422;
   static const int kLastJSApiObjectType = 0x80A;
+  // Defines a range [kFirstEmbedderJSApiObjectType, kJSApiObjectTypesCount]
+  // of JSApiObject instance type values that an embedder can use.
+  static const int kFirstEmbedderJSApiObjectType = 0;
+  static const int kLastEmbedderJSApiObjectType =
+      kLastJSApiObjectType - kFirstJSApiObjectType;
 
   static const int kUndefinedOddballKind = 4;
   static const int kNullOddballKind = 3;
@@ -943,15 +1000,15 @@ class Internals {
     Address base = *reinterpret_cast<Address*>(
         reinterpret_cast<uintptr_t>(isolate) + kIsolateCageBaseOffset);
     switch (index) {
-#define DECOMPRESS_ROOT(name) \
-  case k##name##RootIndex:    \
+#define DECOMPRESS_ROOT(name, ...) \
+  case k##name##RootIndex:         \
     return base + StaticReadOnlyRoot::k##name;
       EXPORTED_STATIC_ROOTS_PTR_LIST(DECOMPRESS_ROOT)
 #undef DECOMPRESS_ROOT
+#undef EXPORTED_STATIC_ROOTS_PTR_LIST
       default:
         break;
     }
-#undef EXPORTED_STATIC_ROOTS_PTR_LIST
 #endif  // V8_STATIC_ROOTS_BOOL
     return *GetRootSlot(isolate, index);
   }
@@ -1048,6 +1105,10 @@ class Internals {
 #ifdef V8_COMPRESS_POINTERS
   V8_INLINE static Address GetPtrComprCageBaseFromOnHeapAddress(Address addr) {
     return addr & -static_cast<intptr_t>(kPtrComprCageBaseAlignment);
+  }
+
+  V8_INLINE static uint32_t CompressTagged(Address value) {
+    return static_cast<uint32_t>(value);
   }
 
   V8_INLINE static Address DecompressTaggedField(Address heap_object_ptr,
@@ -1373,10 +1434,6 @@ class HandleHelper final {
     if (rhs.IsEmpty()) return false;
     return lhs.ptr() == rhs.ptr();
   }
-
-  static V8_EXPORT bool IsOnStack(const void* ptr);
-  static V8_EXPORT void VerifyOnStack(const void* ptr);
-  static V8_EXPORT void VerifyOnMainThread();
 };
 
 V8_EXPORT void VerifyHandleIsNonEmpty(bool is_empty);

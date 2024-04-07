@@ -38,10 +38,13 @@ struct PtrComprCageReservationParams
     // If external code space is not enabled then executable pages (e.g. copied
     // builtins, and JIT pages) will fall under the pointer compression range.
     // Under Fuchsia that means the entire range must be allocated as JITtable.
-    jit = JitPermission::kMapAsJittable;
+    permissions = PageAllocator::Permission::kNoAccessWillJitLater;
 #else
-    jit = JitPermission::kNoJit;
+    permissions = PageAllocator::Permission::kNoAccess;
 #endif
+    page_initialization_mode =
+        base::PageInitializationMode::kAllocatedPagesCanBeUninitialized;
+    page_freeing_mode = base::PageFreeingMode::kMakeInaccessible;
   }
 };
 #endif  // V8_COMPRESS_POINTERS
@@ -113,15 +116,7 @@ IsolateAllocator::IsolateAllocator() {
   page_allocator_ = GetPlatformPageAllocator();
 #endif  // V8_COMPRESS_POINTERS
 
-  // Allocate Isolate in C++ heap taking into account required alignment.
-  isolate_memory_ = base::AlignedAlloc(sizeof(Isolate), kMinimumOSPageSize);
-
   CHECK_NOT_NULL(page_allocator_);
-}
-
-IsolateAllocator::~IsolateAllocator() {
-  // The memory was allocated in C++ heap.
-  base::AlignedFree(isolate_memory_);
 }
 
 VirtualMemoryCage* IsolateAllocator::GetPtrComprCage() {

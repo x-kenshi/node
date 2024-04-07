@@ -109,6 +109,7 @@ RUNTIME_FUNCTION(Runtime_ClearMegamorphicStubCache) {
   }
   isolate->load_stub_cache()->Clear();
   isolate->store_stub_cache()->Clear();
+  isolate->define_own_stub_cache()->Clear();
   return ReadOnlyRoots(isolate).undefined_value();
 }
 
@@ -1051,7 +1052,7 @@ RUNTIME_FUNCTION(Runtime_GetUndetectable) {
   desc->SetCallAsFunctionHandler(ReturnNull);
   Local<v8::Object> obj =
       desc->NewInstance(v8_isolate->GetCurrentContext()).ToLocalChecked();
-  return *Utils::OpenHandle(*obj);
+  return *Utils::OpenDirectHandle(*obj);
 }
 
 static void call_as_function(const v8::FunctionCallbackInfo<v8::Value>& info) {
@@ -1080,7 +1081,7 @@ RUNTIME_FUNCTION(Runtime_GetCallable) {
           .ToLocalChecked()
           ->NewInstance(v8_isolate->GetCurrentContext())
           .ToLocalChecked();
-  return *Utils::OpenHandle(*instance);
+  return *Utils::OpenDirectHandle(*instance);
 }
 
 RUNTIME_FUNCTION(Runtime_ClearFunctionFeedback) {
@@ -1217,8 +1218,8 @@ RUNTIME_FUNCTION(Runtime_TakeHeapSnapshot) {
   return ReadOnlyRoots(isolate).undefined_value();
 }
 
-static void DebugPrintImpl(MaybeObject maybe_object, std::ostream& os) {
-  if (maybe_object->IsCleared()) {
+static void DebugPrintImpl(Tagged<MaybeObject> maybe_object, std::ostream& os) {
+  if (maybe_object.IsCleared()) {
     os << "[weak cleared]";
   } else {
     Tagged<Object> object = maybe_object.GetHeapObjectOrSmi();
@@ -1261,7 +1262,7 @@ RUNTIME_FUNCTION(Runtime_DebugPrint) {
     }
   }
 
-  MaybeObject maybe_object(*args.address_of_arg_at(0));
+  Tagged<MaybeObject> maybe_object(*args.address_of_arg_at(0));
   DebugPrintImpl(maybe_object, *output_stream);
   return args[0];
 }
@@ -1273,12 +1274,12 @@ RUNTIME_FUNCTION(Runtime_DebugPrintPtr) {
     return CrashUnlessFuzzing(isolate);
   }
 
-  MaybeObject maybe_object(*args.address_of_arg_at(0));
+  Tagged<MaybeObject> maybe_object(*args.address_of_arg_at(0));
   if (!maybe_object.IsCleared()) {
     Tagged<Object> object = maybe_object.GetHeapObjectOrSmi();
     size_t pointer;
     if (Object::ToIntegerIndex(object, &pointer)) {
-      MaybeObject from_pointer(static_cast<Address>(pointer));
+      Tagged<MaybeObject> from_pointer(static_cast<Address>(pointer));
       DebugPrintImpl(from_pointer, os);
     }
   }
@@ -1845,6 +1846,15 @@ RUNTIME_FUNCTION(Runtime_NoElementsProtector) {
   return isolate->heap()->ToBoolean(Protectors::IsNoElementsIntact(isolate));
 }
 
+RUNTIME_FUNCTION(Runtime_StringWrapperToPrimitiveProtector) {
+  SealHandleScope shs(isolate);
+  if (args.length() != 0) {
+    return CrashUnlessFuzzing(isolate);
+  }
+  return isolate->heap()->ToBoolean(
+      Protectors::IsStringWrapperToPrimitiveIntact(isolate));
+}
+
 // For use by tests and fuzzers. It
 //
 // 1. serializes a snapshot of the current isolate,
@@ -2062,13 +2072,14 @@ RUNTIME_FUNCTION(Runtime_SharedGC) {
   return ReadOnlyRoots(isolate).undefined_value();
 }
 
-RUNTIME_FUNCTION(Runtime_AtomicsConditionNumWaitersForTesting) {
+RUNTIME_FUNCTION(Runtime_AtomicsSynchronizationPrimitiveNumWaitersForTesting) {
   HandleScope scope(isolate);
   if (args.length() != 1) {
     return CrashUnlessFuzzing(isolate);
   }
-  Handle<JSAtomicsCondition> cv = args.at<JSAtomicsCondition>(0);
-  return cv->NumWaitersForTesting(isolate);
+  Handle<JSSynchronizationPrimitive> primitive =
+      args.at<JSSynchronizationPrimitive>(0);
+  return primitive->NumWaitersForTesting(isolate);
 }
 
 RUNTIME_FUNCTION(Runtime_GetWeakCollectionSize) {
@@ -2099,7 +2110,7 @@ RUNTIME_FUNCTION(Runtime_NotifyIsolateBackground) {
 }
 
 RUNTIME_FUNCTION(Runtime_IsEfficiencyModeEnabled) {
-  if (isolate->UseEfficiencyMode()) {
+  if (isolate->EfficiencyModeEnabled()) {
     return ReadOnlyRoots(isolate).true_value();
   }
   return ReadOnlyRoots(isolate).false_value();

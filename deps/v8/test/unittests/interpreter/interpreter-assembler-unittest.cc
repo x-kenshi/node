@@ -362,6 +362,7 @@ TARGET_TEST_F(InterpreterAssemblerTest, BytecodeOperand) {
           case interpreter::OperandType::kRegOutList:
           case interpreter::OperandType::kRegOutPair:
           case interpreter::OperandType::kRegOutTriple:
+          case interpreter::OperandType::kRegInOut:
             EXPECT_THAT(m.LoadRegisterAtOperandIndex(i),
                         m.IsLoadRegisterOperand(offset, operand_size));
             break;
@@ -383,44 +384,6 @@ TARGET_TEST_F(InterpreterAssemblerTest, GetContext) {
             MachineType::Pointer(), c::IsLoadParentFramePointer(),
             c::IsIntPtrConstant(Register::current_context().ToOperand() *
                                 kSystemPointerSize))));
-  }
-}
-
-TARGET_TEST_F(InterpreterAssemblerTest, LoadConstantPoolEntry) {
-  TRACED_FOREACH(interpreter::Bytecode, bytecode, kBytecodes) {
-    InterpreterAssemblerTestState state(this, bytecode);
-    InterpreterAssemblerForTest m(&state, bytecode);
-    {
-      TNode<IntPtrT> index = m.IntPtrConstant(2);
-      TNode<Object> load_constant = m.LoadConstantPoolEntry(index);
-      Matcher<c::Node*> constant_pool_matcher = m.IsLoadFromObject(
-          MachineType::AnyTagged(),
-          c::IsParameter(InterpreterDispatchDescriptor::kBytecodeArray),
-          c::IsIntPtrConstant(BytecodeArray::kConstantPoolOffset -
-                              kHeapObjectTag));
-      EXPECT_THAT(load_constant,
-                  m.IsLoadFromObject(
-                      MachineType::AnyTagged(), constant_pool_matcher,
-                      c::IsIntPtrConstant(FixedArray::OffsetOfElementAt(2) -
-                                          kHeapObjectTag)));
-    }
-    {
-      c::Node* index = m.UntypedParameter(2);
-      TNode<Object> load_constant =
-          m.LoadConstantPoolEntry(m.ReinterpretCast<IntPtrT>(index));
-      Matcher<c::Node*> constant_pool_matcher = m.IsLoadFromObject(
-          MachineType::AnyTagged(),
-          c::IsParameter(InterpreterDispatchDescriptor::kBytecodeArray),
-          c::IsIntPtrConstant(BytecodeArray::kConstantPoolOffset -
-                              kHeapObjectTag));
-      EXPECT_THAT(
-          load_constant,
-          m.IsLoadFromObject(
-              MachineType::AnyTagged(), constant_pool_matcher,
-              c::IsIntPtrAdd(
-                  c::IsIntPtrConstant(FixedArray::kHeaderSize - kHeapObjectTag),
-                  c::IsWordShl(index, c::IsIntPtrConstant(kTaggedSizeLog2)))));
-    }
   }
 }
 
