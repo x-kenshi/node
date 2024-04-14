@@ -1984,6 +1984,15 @@ changes:
 Configures the test runner to only execute top level tests that have the `only`
 option set.
 
+### `--test-seed`
+<!-- YAML
+added:
+  - REPLACEME
+-->
+
+Configures a custom seed to be passed to any TestContext. If unset, the seed
+will be randomly generated.
+
 ### `--test-reporter`
 
 <!-- YAML
