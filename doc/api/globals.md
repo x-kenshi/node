@@ -498,7 +498,116 @@ changes:
 
 > Stability: 2 - Stable
 
-A browser-compatible implementation of the [`fetch()`][] function.
+Implements [`fetch()`][].
+
+```mjs
+const res = await fetch('https://example.com');
+const json = await res.json();
+console.log(json);
+```
+
+## `request.body`
+
+A body can be of the following types:
+
+* [`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
+* [`ArrayBufferView`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer)
+* [`AsyncIterables`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncIterator)
+* [`Blob`][]
+* [`Iterables`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterable_protocol)
+* [`String`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)
+* [`URLSearchParams`][]
+* [`FormData`][]
+
+In this implementation of fetch, `request.body` now accepts `Async Iterables`.
+It is not present in the [Fetch Standard][].
+
+```mjs
+const data = {
+  async *[Symbol.asyncIterator]() {
+    yield 'hello';
+    yield 'world';
+  },
+};
+
+await fetch('https://example.com', { body: data, method: 'POST', duplex: 'half' });
+```
+
+[`FormData`][] besides text data and buffers can also utilize streams via [`Blob`][] objects:
+
+```mjs
+import { openAsBlob } from 'node:fs';
+
+const file = await openAsBlob('./big.csv');
+const body = new FormData();
+body.set('file', file, 'big.csv');
+
+await fetch('http://example.com', { method: 'POST', body });
+```
+
+## `request.duplex`
+
+In this implementation of fetch, `request.duplex` must be set if
+`request.body` is `ReadableStream` or `Async Iterables`, however,
+fetch requests are currently always full duplex.
+
+## `response.body`
+
+```mjs
+import { Readable } from 'node:stream';
+
+const response = await fetch('https://example.com');
+const readableWebStream = response.body;
+const readableNodeStream = Readable.fromWeb(readableWebStream);
+```
+
+## Specification Compliance
+
+This section documents parts of the [Fetch Standard][] that Node.js does
+not support or does not fully implement.
+
+### Garbage Collection
+
+The [Fetch Standard][] allows users to skip consuming the response body by relying on
+garbage collection to release connection resources. Node.js does not do the same.
+Therefore, it is important to always either consume or cancel the response body.
+
+Garbage collection in Node.js is less aggressive and deterministic
+(due to the lack of clear idle periods that browsers have through the rendering refresh rate)
+which means that leaving the release of connection resources to the garbage collector
+can lead to excessive connection usage, reduced performance (due to less connection re-use),
+and even stalls or deadlocks when running out of connections.
+
+```mjs
+// Do
+headers = await fetch(url)
+  .then(async (res) => {
+    for await (const chunk of res.body) {
+      // Force consumption of body
+    }
+    return res.headers;
+  });
+
+// Do not
+headers = await fetch(url)
+  .then((res) => res.headers);
+```
+
+However, if you want to get only headers, it might be better to use `HEAD` request
+method. Usage of this method will obviate the need for consumption or cancelling of
+the response body.
+
+```mjs
+const headers = await fetch(url, { method: 'HEAD' })
+  .then((res) => res.headers);
+```
+
+### Forbidden and Safelisted Header Names
+
+The [Fetch Standard][] requires implementations to exclude certain headers from
+requests and responses. In browser environments, some headers are forbidden so
+the user agent remains in full control over them. In Node.js, these constraints
+are removed to give more control to the user.
 
 ## Class: `File`
 
@@ -1149,12 +1258,14 @@ A browser-compatible implementation of [`WritableStreamDefaultWriter`][].
 [CommonJS module]: modules.md
 [CommonJS modules]: modules.md
 [ECMAScript module]: esm.md
+[Fetch Standard]: https://fetch.spec.whatwg.org
 [Navigator API]: https://html.spec.whatwg.org/multipage/system-state.html#the-navigator-object
 [RFC 5646]: https://www.rfc-editor.org/rfc/rfc5646.txt
 [Web Crypto API]: webcrypto.md
 [`--no-experimental-global-navigator`]: cli.md#--no-experimental-global-navigator
 [`--no-experimental-websocket`]: cli.md#--no-experimental-websocket
 [`AbortController`]: https://developer.mozilla.org/en-US/docs/Web/API/AbortController
+[`Blob`]: #class-blob
 [`ByteLengthQueuingStrategy`]: webstreams.md#class-bytelengthqueuingstrategy
 [`CompressionStream`]: webstreams.md#class-compressionstream
 [`CountQueuingStrategy`]: webstreams.md#class-countqueuingstrategy
@@ -1162,6 +1273,7 @@ A browser-compatible implementation of [`WritableStreamDefaultWriter`][].
 [`DOMException`]: https://developer.mozilla.org/en-US/docs/Web/API/DOMException
 [`DecompressionStream`]: webstreams.md#class-decompressionstream
 [`EventTarget` and `Event` API]: events.md#eventtarget-and-event-api
+[`FormData`]: #class-formdata
 [`MessageChannel`]: worker_threads.md#class-messagechannel
 [`MessageEvent`]: https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent/MessageEvent
 [`MessagePort`]: worker_threads.md#class-messageport
