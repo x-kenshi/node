@@ -23,11 +23,10 @@ programs. Some of them are:
 * [`require('node:util').TextDecoder`][]
 * [`RegExp` Unicode Property Escapes][]
 
-Node.js and the underlying V8 engine use
-[International Components for Unicode (ICU)][ICU] to implement these features
-in native C/C++ code. The full ICU data set is provided by Node.js by default.
-However, due to the size of the ICU data file, several
-options are provided for customizing the ICU data set either when
+Node.js and the underlying V8 engine use [International Components for Unicode
+(ICU)][ICU] to implement these features in native C/C++ code. The full ICU data
+set is provided by Node.js by default. However, due to the size of the ICU data
+file, several options are provided for customizing the ICU data set either when
 building or running Node.js.
 
 ## Options for building Node.js
@@ -61,14 +60,14 @@ option:
 | [`RegExp` Unicode Property Escapes][]    | none (invalid `RegExp` error)     | full                         | full                   | full       |
 
 The "(not locale-aware)" designation denotes that the function carries out its
-operation just like the non-`Locale` version of the function, if one
-exists. For example, under `none` mode, `Date.prototype.toLocaleString()`'s
-operation is identical to that of `Date.prototype.toString()`.
+operation just like the non-`Locale` version of the function, if one exists. For
+example, under `none` mode, `Date.prototype.toLocaleString()`'s operation is
+identical to that of `Date.prototype.toString()`.
 
 ### Disable all internationalization features (`none`)
 
-If this option is chosen, ICU is disabled and most internationalization
-features mentioned above will be **unavailable** in the resulting `node` binary.
+If this option is chosen, ICU is disabled and most internationalization features
+mentioned above will be **unavailable** in the resulting `node` binary.
 
 ### Build with a pre-installed ICU (`system-icu`)
 
@@ -79,16 +78,15 @@ OS.
 
 Functionalities that only require the ICU library itself, such as
 [`String.prototype.normalize()`][] and the [WHATWG URL parser][], are fully
-supported under `system-icu`. Features that require ICU locale data in
-addition, such as [`Intl.DateTimeFormat`][] _may_ be fully or partially
-supported, depending on the completeness of the ICU data installed on the
-system.
+supported under `system-icu`. Features that require ICU locale data in addition,
+such as [`Intl.DateTimeFormat`][] _may_ be fully or partially supported,
+depending on the completeness of the ICU data installed on the system.
 
 ### Embed a limited set of ICU data (`small-icu`)
 
 This option makes the resulting binary link against the ICU library statically,
-and includes a subset of ICU data (typically only the English locale) within
-the `node` executable.
+and includes a subset of ICU data (typically only the English locale) within the
+`node` executable.
 
 Functionalities that only require the ICU library itself, such as
 [`String.prototype.normalize()`][] and the [WHATWG URL parser][], are fully
@@ -122,9 +120,8 @@ available to ICU through either:
   ./configure --with-icu-default-data-dir=/runtime/directory/with/dat/file --with-intl=small-icu
   ```
 
-  This only embeds the default data directory path into the binary.
-  The actual data file is going to be loaded at runtime from this directory
-  path.
+  This only embeds the default data directory path into the binary. The actual
+  data file is going to be loaded at runtime from this directory path.
 
 * The [`NODE_ICU_DATA`][] environment variable:
 
@@ -139,16 +136,16 @@ available to ICU through either:
   ```
 
 When more than one of them is specified, the `--icu-data-dir` CLI parameter has
-the highest precedence, then the `NODE_ICU_DATA`  environment variable, then
-the `--with-icu-default-data-dir` configure option.
+the highest precedence, then the `NODE_ICU_DATA` environment variable, then the
+`--with-icu-default-data-dir` configure option.
 
 ICU is able to automatically find and load a variety of data formats, but the
-data must be appropriate for the ICU version, and the file correctly named.
-The most common name for the data file is `icudtX[bl].dat`, where `X` denotes
-the intended ICU version, and `b` or `l` indicates the system's endianness.
-Node.js would fail to load if the expected data file cannot be read from the
-specified directory. The name of the data file corresponding to the current
-Node.js version can be computed with:
+data must be appropriate for the ICU version, and the file correctly named. The
+most common name for the data file is `icudtX[bl].dat`, where `X` denotes the
+intended ICU version, and `b` or `l` indicates the system's endianness. Node.js
+would fail to load if the expected data file cannot be read from the specified
+directory. The name of the data file corresponding to the current Node.js
+version can be computed with:
 
 ```js
 `icudt${process.versions.icu.split('.')[0]}${os.endianness()[0].toLowerCase()}.dat`;
@@ -159,37 +156,37 @@ and more details on ICU data in general.
 
 The [full-icu][] npm module can greatly simplify ICU data installation by
 detecting the ICU version of the running `node` executable and downloading the
-appropriate data file. After installing the module through `npm i full-icu`,
-the data file will be available at `./node_modules/full-icu`. This path can be
-then passed either to `NODE_ICU_DATA` or `--icu-data-dir` as shown above to
-enable full `Intl` support.
+appropriate data file. After installing the module through `npm i full-icu`, the
+data file will be available at `./node_modules/full-icu`. This path can be then
+passed either to `NODE_ICU_DATA` or `--icu-data-dir` as shown above to enable
+full `Intl` support.
 
 ### Embed the entire ICU (`full-icu`)
 
-This option makes the resulting binary link against ICU statically and include
-a full set of ICU data. A binary created this way has no further external
-dependencies and supports all locales, but might be rather large. This is
-the default behavior if no `--with-intl` flag is passed. The official binaries
-are also built in this mode.
+This option makes the resulting binary link against ICU statically and include a
+full set of ICU data. A binary created this way has no further external
+dependencies and supports all locales, but might be rather large. This is the
+default behavior if no `--with-intl` flag is passed. The official binaries are
+also built in this mode.
 
 ## Detecting internationalization support
 
-To verify that ICU is enabled at all (`system-icu`, `small-icu`, or
-`full-icu`), simply checking the existence of `Intl` should suffice:
+To verify that ICU is enabled at all (`system-icu`, `small-icu`, or `full-icu`),
+simply checking the existence of `Intl` should suffice:
 
 ```js
 const hasICU = typeof Intl === 'object';
 ```
 
-Alternatively, checking for `process.versions.icu`, a property defined only
-when ICU is enabled, works too:
+Alternatively, checking for `process.versions.icu`, a property defined only when
+ICU is enabled, works too:
 
 ```js
 const hasICU = typeof process.versions.icu === 'string';
 ```
 
-To check for support for a non-English locale (i.e. `full-icu` or
-`system-icu`), [`Intl.DateTimeFormat`][] can be a good distinguishing factor:
+To check for support for a non-English locale (i.e. `full-icu` or `system-icu`),
+[`Intl.DateTimeFormat`][] can be a good distinguishing factor:
 
 ```js
 const hasFullICU = (() => {

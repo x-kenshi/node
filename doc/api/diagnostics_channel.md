@@ -31,17 +31,16 @@ import diagnostics_channel from 'node:diagnostics_channel';
 const diagnostics_channel = require('node:diagnostics_channel');
 ```
 
-It is intended that a module writer wanting to report diagnostics messages
-will create one or many top-level channels to report messages through.
-Channels may also be acquired at runtime but it is not encouraged
-due to the additional overhead of doing so. Channels may be exported for
-convenience, but as long as the name is known it can be acquired anywhere.
+It is intended that a module writer wanting to report diagnostics messages will
+create one or many top-level channels to report messages through. Channels may
+also be acquired at runtime but it is not encouraged due to the additional
+overhead of doing so. Channels may be exported for convenience, but as long as
+the name is known it can be acquired anywhere.
 
-If you intend for your module to produce diagnostics data for others to
-consume it is recommended that you include documentation of what named
-channels are used along with the shape of the message data. Channel names
-should generally include the module name to avoid collisions with data from
-other modules.
+If you intend for your module to produce diagnostics data for others to consume
+it is recommended that you include documentation of what named channels are used
+along with the shape of the message data. Channel names should generally include
+the module name to avoid collisions with data from other modules.
 
 ## Public API
 
@@ -241,14 +240,14 @@ added:
 
 > Stability: 1 - Experimental
 
-* `nameOrChannels` {string|TracingChannel} Channel name or
-  object containing all the [TracingChannel Channels][]
+* `nameOrChannels` {string|TracingChannel} Channel name or object containing all
+  the [TracingChannel Channels][]
 * Returns: {TracingChannel} Collection of channels to trace with
 
-Creates a [`TracingChannel`][] wrapper for the given
-[TracingChannel Channels][]. If a name is given, the corresponding tracing
-channels will be created in the form of `tracing:${name}:${eventType}` where
-`eventType` corresponds to the types of [TracingChannel Channels][].
+Creates a [`TracingChannel`][] wrapper for the given [TracingChannel
+Channels][]. If a name is given, the corresponding tracing channels will be
+created in the form of `tracing:${name}:${eventType}` where `eventType`
+corresponds to the types of [TracingChannel Channels][].
 
 ```mjs
 import diagnostics_channel from 'node:diagnostics_channel';
@@ -291,12 +290,12 @@ added:
 -->
 
 The class `Channel` represents an individual named channel within the data
-pipeline. It is used to track subscribers and to publish messages when there
-are subscribers present. It exists as a separate object to avoid channel
-lookups at publish time, enabling very fast publish speeds and allowing
-for heavy use while incurring very minimal cost. Channels are created with
-[`diagnostics_channel.channel(name)`][], constructing a channel directly
-with `new Channel(name)` is not supported.
+pipeline. It is used to track subscribers and to publish messages when there are
+subscribers present. It exists as a separate object to avoid channel lookups at
+publish time, enabling very fast publish speeds and allowing for heavy use while
+incurring very minimal cost. Channels are created with
+[`diagnostics_channel.channel(name)`][], constructing a channel directly with
+`new Channel(name)` is not supported.
 
 #### `channel.hasSubscribers`
 
@@ -308,8 +307,8 @@ added:
 
 * Returns: {boolean} If there are active subscribers
 
-Check if there are active subscribers to this channel. This is helpful if
-the message you want to send might be expensive to prepare.
+Check if there are active subscribers to this channel. This is helpful if the
+message you want to send might be expensive to prepare.
 
 This API is optional but helpful when trying to publish messages from very
 performance-sensitive code.
@@ -344,8 +343,8 @@ added:
 
 * `message` {any} The message to send to the channel subscribers
 
-Publish a message to any subscribers to the channel. This will trigger
-message handlers synchronously so they will execute within the same context.
+Publish a message to any subscribers to the channel. This will trigger message
+handlers synchronously so they will execute within the same context.
 
 ```mjs
 import diagnostics_channel from 'node:diagnostics_channel';
@@ -378,7 +377,8 @@ deprecated:
  - v16.17.0
 -->
 
-> Stability: 0 - Deprecated: Use [`diagnostics_channel.subscribe(name, onMessage)`][]
+> Stability: 0 - Deprecated: Use \[`diagnostics_channel.subscribe(name, >
+> onMessage)`]\[]
 
 * `onMessage` {Function} The handler to receive channel messages
   * `message` {any} The message data
@@ -477,9 +477,9 @@ added:
 
 When [`channel.runStores(context, ...)`][] is called, the given context data
 will be applied to any store bound to the channel. If the store has already been
-bound the previous `transform` function will be replaced with the new one.
-The `transform` function may be omitted to set the given context data as the
-context directly.
+bound the previous `transform` function will be replaced with the new one. The
+`transform` function may be omitted to set the given context data as the context
+directly.
 
 ```mjs
 import diagnostics_channel from 'node:diagnostics_channel';
@@ -563,8 +563,8 @@ added:
 * `...args` {any} Optional arguments to pass to the function.
 
 Applies the given data to any AsyncLocalStorage instances bound to the channel
-for the duration of the given function, then publishes to the channel within
-the scope of that data is applied to the stores.
+for the duration of the given function, then publishes to the channel within the
+scope of that data is applied to the stores.
 
 If a transform function was given to [`channel.bindStore(store)`][] it will be
 applied to transform the message data before it becomes the context value for
@@ -572,8 +572,8 @@ the store. The prior storage context is accessible from within the transform
 function in cases where context linking is required.
 
 The context applied to the store should be accessible in any async code which
-continues from execution which began during the given function, however
-there are some situations in which [context loss][] may occur.
+continues from execution which began during the given function, however there
+are some situations in which [context loss][] may occur.
 
 ```mjs
 import diagnostics_channel from 'node:diagnostics_channel';
@@ -620,8 +620,8 @@ added:
 > Stability: 1 - Experimental
 
 The class `TracingChannel` is a collection of [TracingChannel Channels][] which
-together express a single traceable action. It is used to formalize and
-simplify the process of producing events for tracing application flow.
+together express a single traceable action. It is used to formalize and simplify
+the process of producing events for tracing application flow.
 [`diagnostics_channel.tracingChannel()`][] is used to construct a
 `TracingChannel`. As with `Channel` it is recommended to create and reuse a
 single `TracingChannel` at the top-level of the file rather than creating them
@@ -712,8 +712,8 @@ added:
   * `asyncStart` {Function} The [`asyncStart` event][] subscriber
   * `asyncEnd` {Function} The [`asyncEnd` event][] subscriber
   * `error` {Function} The [`error` event][] subscriber
-* Returns: {boolean} `true` if all handlers were successfully unsubscribed,
-  and `false` otherwise.
+* Returns: {boolean} `true` if all handlers were successfully unsubscribed, and
+  `false` otherwise.
 
 Helper to unsubscribe a collection of functions from the corresponding channels.
 This is the same as calling [`channel.unsubscribe(onMessage)`][] on each channel
@@ -784,13 +784,13 @@ added:
 * Returns: {any} The return value of the given function
 
 Trace a synchronous function call. This will always produce a [`start` event][]
-and [`end` event][] around the execution and may produce an [`error` event][]
-if the given function throws an error. This will run the given function using
+and [`end` event][] around the execution and may produce an [`error` event][] if
+the given function throws an error. This will run the given function using
 [`channel.runStores(context, ...)`][] on the `start` channel which ensures all
 events should have any bound stores set to match this trace context.
 
-To ensure only correct trace graphs are formed, events will only be published
-if subscribers are present prior to starting the trace. Subscriptions which are
+To ensure only correct trace graphs are formed, events will only be published if
+subscribers are present prior to starting the trace. Subscriptions which are
 added after the trace begins will not receive future events from that trace,
 only future traces will be seen.
 
@@ -799,11 +799,14 @@ import diagnostics_channel from 'node:diagnostics_channel';
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.traceSync(() => {
-  // Do something
-}, {
-  some: 'thing',
-});
+channels.traceSync(
+  () => {
+    // Do something
+  },
+  {
+    some: 'thing',
+  },
+);
 ```
 
 ```cjs
@@ -811,11 +814,14 @@ const diagnostics_channel = require('node:diagnostics_channel');
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.traceSync(() => {
-  // Do something
-}, {
-  some: 'thing',
-});
+channels.traceSync(
+  () => {
+    // Do something
+  },
+  {
+    some: 'thing',
+  },
+);
 ```
 
 #### `tracingChannel.tracePromise(fn[, context[, thisArg[, ...args]]])`
@@ -834,17 +840,17 @@ added:
 * `...args` {any} Optional arguments to pass to the function
 * Returns: {Promise} Chained from promise returned by the given function
 
-Trace a promise-returning function call. This will always produce a
-[`start` event][] and [`end` event][] around the synchronous portion of the
-function execution, and will produce an [`asyncStart` event][] and
-[`asyncEnd` event][] when a promise continuation is reached. It may also
-produce an [`error` event][] if the given function throws an error or the
-returned promise rejects. This will run the given function using
-[`channel.runStores(context, ...)`][] on the `start` channel which ensures all
-events should have any bound stores set to match this trace context.
+Trace a promise-returning function call. This will always produce a [`start`
+event][] and [`end` event][] around the synchronous portion of the function
+execution, and will produce an [`asyncStart` event][] and [`asyncEnd` event][]
+when a promise continuation is reached. It may also produce an [`error` event][]
+if the given function throws an error or the returned promise rejects. This will
+run the given function using [`channel.runStores(context, ...)`][] on the
+`start` channel which ensures all events should have any bound stores set to
+match this trace context.
 
-To ensure only correct trace graphs are formed, events will only be published
-if subscribers are present prior to starting the trace. Subscriptions which are
+To ensure only correct trace graphs are formed, events will only be published if
+subscribers are present prior to starting the trace. Subscriptions which are
 added after the trace begins will not receive future events from that trace,
 only future traces will be seen.
 
@@ -853,11 +859,14 @@ import diagnostics_channel from 'node:diagnostics_channel';
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.tracePromise(async () => {
-  // Do something
-}, {
-  some: 'thing',
-});
+channels.tracePromise(
+  async () => {
+    // Do something
+  },
+  {
+    some: 'thing',
+  },
+);
 ```
 
 ```cjs
@@ -865,11 +874,14 @@ const diagnostics_channel = require('node:diagnostics_channel');
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.tracePromise(async () => {
-  // Do something
-}, {
-  some: 'thing',
-});
+channels.tracePromise(
+  async () => {
+    // Do something
+  },
+  {
+    some: 'thing',
+  },
+);
 ```
 
 #### `tracingChannel.traceCallback(fn, position, context, thisArg, ...args)`
@@ -891,18 +903,18 @@ added:
 * `...args` {any} arguments to pass to the function (must include the callback)
 * Returns: {any} The return value of the given function
 
-Trace a callback-receiving function call. The callback is expected to follow
-the error as first arg convention typically used. This will always produce a
+Trace a callback-receiving function call. The callback is expected to follow the
+error as first arg convention typically used. This will always produce a
 [`start` event][] and [`end` event][] around the synchronous portion of the
-function execution, and will produce a [`asyncStart` event][] and
-[`asyncEnd` event][] around the callback execution. It may also produce an
-[`error` event][] if the given function throws or the first argument passed to
-the callback is set. This will run the given function using
-[`channel.runStores(context, ...)`][] on the `start` channel which ensures all
-events should have any bound stores set to match this trace context.
+function execution, and will produce a [`asyncStart` event][] and [`asyncEnd`
+event][] around the callback execution. It may also produce an [`error` event][]
+if the given function throws or the first argument passed to the callback is
+set. This will run the given function using [`channel.runStores(context,
+...)`][] on the `start` channel which ensures all events should have any bound
+stores set to match this trace context.
 
-To ensure only correct trace graphs are formed, events will only be published
-if subscribers are present prior to starting the trace. Subscriptions which are
+To ensure only correct trace graphs are formed, events will only be published if
+subscribers are present prior to starting the trace. Subscriptions which are
 added after the trace begins will not receive future events from that trace,
 only future traces will be seen.
 
@@ -911,12 +923,19 @@ import diagnostics_channel from 'node:diagnostics_channel';
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.traceCallback((arg1, callback) => {
-  // Do something
-  callback(null, 'result');
-}, 1, {
-  some: 'thing',
-}, thisArg, arg1, callback);
+channels.traceCallback(
+  (arg1, callback) => {
+    // Do something
+    callback(null, 'result');
+  },
+  1,
+  {
+    some: 'thing',
+  },
+  thisArg,
+  arg1,
+  callback,
+);
 ```
 
 ```cjs
@@ -924,12 +943,18 @@ const diagnostics_channel = require('node:diagnostics_channel');
 
 const channels = diagnostics_channel.tracingChannel('my-channel');
 
-channels.traceCallback((arg1, callback) => {
-  // Do something
-  callback(null, 'result');
-}, {
-  some: 'thing',
-}, thisArg, arg1, callback);
+channels.traceCallback(
+  (arg1, callback) => {
+    // Do something
+    callback(null, 'result');
+  },
+  {
+    some: 'thing',
+  },
+  thisArg,
+  arg1,
+  callback,
+);
 ```
 
 The callback will also be run with [`channel.runStores(context, ...)`][] which
@@ -981,18 +1006,18 @@ channels.asyncStart.bindStore(myStore, (data) => {
 
 A TracingChannel is a collection of several diagnostics\_channels representing
 specific points in the execution lifecycle of a single traceable action. The
-behavior is split into five diagnostics\_channels consisting of `start`,
-`end`, `asyncStart`, `asyncEnd`, and `error`. A single traceable action will
-share the same event object between all events, this can be helpful for
-managing correlation through a weakmap.
+behavior is split into five diagnostics\_channels consisting of `start`, `end`,
+`asyncStart`, `asyncEnd`, and `error`. A single traceable action will share the
+same event object between all events, this can be helpful for managing
+correlation through a weakmap.
 
-These event objects will be extended with `result` or `error` values when
-the task "completes". In the case of a synchronous task the `result` will be
-the return value and the `error` will be anything thrown from the function.
-With callback-based async functions the `result` will be the second argument
-of the callback while the `error` will either be a thrown error visible in the
-`end` event or the first callback argument in either of the `asyncStart` or
-`asyncEnd` events.
+These event objects will be extended with `result` or `error` values when the
+task "completes". In the case of a synchronous task the `result` will be the
+return value and the `error` will be anything thrown from the function. With
+callback-based async functions the `result` will be the second argument of the
+callback while the `error` will either be a thrown error visible in the `end`
+event or the first callback argument in either of the `asyncStart` or `asyncEnd`
+events.
 
 To ensure only correct trace graphs are formed, events should only be published
 if subscribers are present prior to starting the trace. Subscriptions which are
@@ -1003,7 +1028,8 @@ Tracing channels should follow a naming pattern of:
 
 * `tracing:module.class.method:start` or `tracing:module.function:start`
 * `tracing:module.class.method:end` or `tracing:module.function:end`
-* `tracing:module.class.method:asyncStart` or `tracing:module.function:asyncStart`
+* `tracing:module.class.method:asyncStart` or
+  `tracing:module.function:asyncStart`
 * `tracing:module.class.method:asyncEnd` or `tracing:module.function:asyncEnd`
 * `tracing:module.class.method:error` or `tracing:module.function:error`
 
@@ -1026,8 +1052,8 @@ traced function was synchronous the `result` field will be set to the return
 value of the function. Alternatively, the `error` field may be present to
 represent any thrown errors.
 
-It is recommended to listen specifically to the `error` event to track errors
-as it may be possible for a traceable action to produce multiple errors. For
+It is recommended to listen specifically to the `error` event to track errors as
+it may be possible for a traceable action to produce multiple errors. For
 example, an async task which fails may be started internally before the sync
 part of the task then throws an error.
 
@@ -1043,11 +1069,11 @@ For callbacks-based functions, the first argument of the callback will be
 assigned to the `error` field, if not `undefined` or `null`, and the second
 argument will be assigned to the `result` field.
 
-For promises, the argument to the `resolve` path will be assigned to `result`
-or the argument to the `reject` path will be assign to `error`.
+For promises, the argument to the `resolve` path will be assigned to `result` or
+the argument to the `reject` path will be assign to `error`.
 
-It is recommended to listen specifically to the `error` event to track errors
-as it may be possible for a traceable action to produce multiple errors. For
+It is recommended to listen specifically to the `error` event to track errors as
+it may be possible for a traceable action to produce multiple errors. For
 example, an async task which fails may be started internally before the sync
 part of the task then throws an error.
 
@@ -1063,18 +1089,18 @@ however it may be useful to see the point where the callback completes.
 
 * Name: `tracing:${name}:error`
 
-The `error` event represents any error produced by the traceable function
-either synchronously or asynchronously. If an error is thrown in the
-synchronous portion of the traced function the error will be assigned to the
-`error` field of the event and the `error` event will be triggered. If an error
-is received asynchronously through a callback or promise rejection it will also
-be assigned to the `error` field of the event and trigger the `error` event.
+The `error` event represents any error produced by the traceable function either
+synchronously or asynchronously. If an error is thrown in the synchronous
+portion of the traced function the error will be assigned to the `error` field
+of the event and the `error` event will be triggered. If an error is received
+asynchronously through a callback or promise rejection it will also be assigned
+to the `error` field of the event and trigger the `error` event.
 
 It is possible for a single traceable function call to produce errors multiple
 times so this should be considered when consuming this event. For example, if
-another async task is triggered internally which fails and then the sync part
-of the function then throws and error two `error` events will be emitted, one
-for the sync error and one for the async error.
+another async task is triggered internally which fails and then the sync part of
+the function then throws and error two `error` events will be emitted, one for
+the sync error and one for the async error.
 
 ### Built-in Channels
 

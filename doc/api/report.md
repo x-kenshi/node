@@ -19,15 +19,15 @@ changes:
 
 Delivers a JSON-formatted diagnostic summary, written to a file.
 
-The report is intended for development, test, and production use, to capture
-and preserve information for problem determination. It includes JavaScript
-and native stack traces, heap statistics, platform information, resource
-usage etc. With the report option enabled, diagnostic reports can be triggered
-on unhandled exceptions, fatal errors and user signals, in addition to
-triggering programmatically through API calls.
+The report is intended for development, test, and production use, to capture and
+preserve information for problem determination. It includes JavaScript and
+native stack traces, heap statistics, platform information, resource usage etc.
+With the report option enabled, diagnostic reports can be triggered on unhandled
+exceptions, fatal errors and user signals, in addition to triggering
+programmatically through API calls.
 
-A complete example report that was generated on an uncaught exception
-is provided below for reference.
+A complete example report that was generated on an uncaught exception is
+provided below for reference.
 
 ```json
 {
@@ -424,13 +424,13 @@ node --report-uncaught-exception --report-on-signal \
 --report-on-fatalerror app.js
 ```
 
-* `--report-uncaught-exception` Enables report to be generated on
-  un-caught exceptions. Useful when inspecting JavaScript stack in conjunction
-  with native stack and other runtime environment data.
+* `--report-uncaught-exception` Enables report to be generated on un-caught
+  exceptions. Useful when inspecting JavaScript stack in conjunction with native
+  stack and other runtime environment data.
 
-* `--report-on-signal` Enables report to be generated upon receiving
-  the specified (or predefined) signal to the running Node.js process. (See
-  below on how to modify the signal that triggers the report.) Default signal is
+* `--report-on-signal` Enables report to be generated upon receiving the
+  specified (or predefined) signal to the running Node.js process. (See below on
+  how to modify the signal that triggers the report.) Default signal is
   `SIGUSR2`. Useful when a report needs to be triggered from another program.
   Application monitors may leverage this feature to collect report at regular
   intervals and plot rich set of internal runtime data to their views.
@@ -438,32 +438,30 @@ node --report-uncaught-exception --report-on-signal \
 Signal based report generation is not supported in Windows.
 
 Under normal circumstances, there is no need to modify the report triggering
-signal. However, if `SIGUSR2` is already used for other purposes, then this
-flag helps to change the signal for report generation and preserve the original
+signal. However, if `SIGUSR2` is already used for other purposes, then this flag
+helps to change the signal for report generation and preserve the original
 meaning of `SIGUSR2` for the said purposes.
 
 * `--report-on-fatalerror` Enables the report to be triggered on fatal errors
-  (internal errors within the Node.js runtime, such as out of memory)
-  that leads to termination of the application. Useful to inspect various
-  diagnostic data elements such as heap, stack, event loop state, resource
-  consumption etc. to reason about the fatal error.
+  (internal errors within the Node.js runtime, such as out of memory) that leads
+  to termination of the application. Useful to inspect various diagnostic data
+  elements such as heap, stack, event loop state, resource consumption etc. to
+  reason about the fatal error.
 
 * `--report-compact` Write reports in a compact format, single-line JSON, more
   easily consumable by log processing systems than the default multi-line format
   designed for human consumption.
 
-* `--report-directory` Location at which the report will be
-  generated.
+* `--report-directory` Location at which the report will be generated.
 
-* `--report-filename` Name of the file to which the report will be
-  written.
+* `--report-filename` Name of the file to which the report will be written.
 
-* `--report-signal` Sets or resets the signal for report generation
-  (not supported on Windows). Default signal is `SIGUSR2`.
+* `--report-signal` Sets or resets the signal for report generation (not
+  supported on Windows). Default signal is `SIGUSR2`.
 
 * `--report-exclude-network` Exclude `header.networkInterfaces` from the
-  diagnostic report. By default this is not set and the network interfaces
-  are included.
+  diagnostic report. By default this is not set and the network interfaces are
+  included.
 
 A report can also be triggered via an API call from a JavaScript application:
 
@@ -471,8 +469,8 @@ A report can also be triggered via an API call from a JavaScript application:
 process.report.writeReport();
 ```
 
-This function takes an optional additional argument `filename`, which is
-the name of a file into which the report is written.
+This function takes an optional additional argument `filename`, which is the
+name of a file into which the report is written.
 
 ```js
 process.report.writeReport('./foo.json');
@@ -493,8 +491,8 @@ try {
 // Any other code
 ```
 
-If both filename and error object are passed to `writeReport()` the
-error object must be the second parameter.
+If both filename and error object are passed to `writeReport()` the error object
+must be the second parameter.
 
 ```js
 try {
@@ -505,8 +503,8 @@ try {
 // Any other code
 ```
 
-The content of the diagnostic report can be returned as a JavaScript Object
-via an API call from a JavaScript application:
+The content of the diagnostic report can be returned as a JavaScript Object via
+an API call from a JavaScript application:
 
 ```js
 const report = process.report.getReport();
@@ -525,9 +523,9 @@ const report = process.report.getReport(new Error('custom error'));
 console.log(typeof report === 'object'); // true
 ```
 
-The API versions are useful when inspecting the runtime state from within
-the application, in expectation of self-adjusting the resource consumption,
-load balancing, monitoring etc.
+The API versions are useful when inspecting the runtime state from within the
+application, in expectation of self-adjusting the resource consumption, load
+balancing, monitoring etc.
 
 The content of the report consists of a header section containing the event
 type, date, time, PID, and Node.js version, sections containing JavaScript and
@@ -544,21 +542,21 @@ Node.js report completed
 >
 ```
 
-When a report is written, start and end messages are issued to stderr
-and the filename of the report is returned to the caller. The default filename
-includes the date, time, PID, and a sequence number. The sequence number helps
-in associating the report dump with the runtime state if generated multiple
-times for the same Node.js process.
+When a report is written, start and end messages are issued to stderr and the
+filename of the report is returned to the caller. The default filename includes
+the date, time, PID, and a sequence number. The sequence number helps in
+associating the report dump with the runtime state if generated multiple times
+for the same Node.js process.
 
-Diagnostic report has an associated single-digit version number (`report.header.reportVersion`),
-uniquely representing the report format. The version number is bumped
-when new key is added or removed, or the data type of a value is changed.
-Report version definitions are consistent across LTS releases.
+Diagnostic report has an associated single-digit version number
+(`report.header.reportVersion`), uniquely representing the report format. The
+version number is bumped when new key is added or removed, or the data type of a
+value is changed. Report version definitions are consistent across LTS releases.
 
 ## Configuration
 
-Additional runtime configuration of report generation is available via
-the following properties of `process.report`:
+Additional runtime configuration of report generation is available via the
+following properties of `process.report`:
 
 `reportOnFatalError` triggers diagnostic reporting on fatal errors when `true`.
 Defaults to `false`.
@@ -569,16 +567,15 @@ not supported on Windows. Defaults to `false`.
 `reportOnUncaughtException` triggers diagnostic reporting on uncaught exception
 when `true`. Defaults to `false`.
 
-`signal` specifies the POSIX signal identifier that will be used
-to intercept external triggers for report generation. Defaults to
-`'SIGUSR2'`.
+`signal` specifies the POSIX signal identifier that will be used to intercept
+external triggers for report generation. Defaults to `'SIGUSR2'`.
 
-`filename` specifies the name of the output file in the file system.
-Special meaning is attached to `stdout` and `stderr`. Usage of these
-will result in report being written to the associated standard streams.
-In cases where standard streams are used, the value in `directory` is ignored.
-URLs are not supported. Defaults to a composite filename that contains
-timestamp, PID, and sequence number.
+`filename` specifies the name of the output file in the file system. Special
+meaning is attached to `stdout` and `stderr`. Usage of these will result in
+report being written to the associated standard streams. In cases where standard
+streams are used, the value in `directory` is ignored. URLs are not supported.
+Defaults to a composite filename that contains timestamp, PID, and sequence
+number.
 
 `directory` specifies the file system directory where the report will be
 written. URLs are not supported. Defaults to the current working directory of
@@ -607,8 +604,8 @@ process.report.signal = 'SIGQUIT';
 process.report.excludeNetwork = true;
 ```
 
-Configuration on module initialization is also available via
-environment variables:
+Configuration on module initialization is also available via environment
+variables:
 
 ```bash
 NODE_OPTIONS="--report-uncaught-exception \
@@ -617,8 +614,8 @@ NODE_OPTIONS="--report-uncaught-exception \
   --report-directory=/home/nodeuser"
 ```
 
-Specific API documentation can be found under
-[`process API documentation`][] section.
+Specific API documentation can be found under [`process API documentation`][]
+section.
 
 ## Interaction with workers
 
@@ -635,8 +632,8 @@ changes:
 does.
 
 Reports will include information on any Workers that are children of the current
-thread as part of the `workers` section, with each Worker generating a report
-in the standard report format.
+thread as part of the `workers` section, with each Worker generating a report in
+the standard report format.
 
 The thread which is generating the report will wait for the reports from Worker
 threads to finish. However, the latency for this will usually be low, as both

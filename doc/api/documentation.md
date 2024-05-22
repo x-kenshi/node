@@ -10,8 +10,8 @@ Node.js is a JavaScript runtime built on the [V8 JavaScript engine][].
 
 ## Contributing
 
-Report errors in this documentation in [the issue tracker][]. See
-[the contributing guide][] for directions on how to submit pull requests.
+Report errors in this documentation in [the issue tracker][]. See [the
+contributing guide][] for directions on how to submit pull requests.
 
 ## Stability index
 
@@ -28,10 +28,10 @@ The stability indexes are as follows:
 
 <!-- separator -->
 
-> Stability: 1 - Experimental. The feature is not subject to
-> [semantic versioning][] rules. Non-backward compatible changes or removal may
-> occur in any future release. Use of the feature is not recommended in
-> production environments.
+> Stability: 1 - Experimental. The feature is not subject to \[semantic >
+> versioning]\[] rules. Non-backward compatible changes or removal may occur in
+> any future release. Use of the feature is not recommended in production
+> environments.
 >
 > Experimental features are subdivided into stages:
 >
@@ -53,7 +53,7 @@ The stability indexes are as follows:
 <!-- separator -->
 
 > Stability: 3 - Legacy. Although this feature is unlikely to be removed and is
-> still covered by semantic versioning guarantees, it is no longer actively
+> still covered by [semantic versioning][] guarantees, it is no longer actively
 > maintained, and other alternatives are available.
 
 Features are marked as legacy rather than being deprecated if their use does no
@@ -83,8 +83,8 @@ and other utilities that consume the documentation.
 
 ## System calls and man pages
 
-Node.js functions which wrap a system call will document that. The docs link
-to the corresponding man pages which describe how the system call works.
+Node.js functions which wrap a system call will document that. The docs link to
+the corresponding man pages which describe how the system call works.
 
 Most Unix system calls have Windows analogues. Still, behavior differences may
 be unavoidable.

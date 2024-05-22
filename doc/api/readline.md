@@ -76,9 +76,8 @@ added: v0.1.104
 Instances of the `InterfaceConstructor` class are constructed using the
 `readlinePromises.createInterface()` or `readline.createInterface()` method.
 Every instance is associated with a single `input` [Readable][] stream and a
-single `output` [Writable][] stream.
-The `output` stream is used to print prompts for user input that arrives on,
-and is read from, the `input` stream.
+single `output` [Writable][] stream. The `output` stream is used to print
+prompts for user input that arrives on, and is read from, the `input` stream.
 
 ### Event: `'close'`
 
@@ -134,14 +133,13 @@ added:
 
 The `'history'` event is emitted whenever the history array has changed.
 
-The listener function is called with an array containing the history array.
-It will reflect all changes, added lines and removed lines due to
-`historySize` and `removeHistoryDuplicates`.
+The listener function is called with an array containing the history array. It
+will reflect all changes, added lines and removed lines due to `historySize` and
+`removeHistoryDuplicates`.
 
-The primary purpose is to allow a listener to persist the history.
-It is also possible for the listener to change the history object. This
-could be useful to prevent certain lines to be added to the history, like
-a password.
+The primary purpose is to allow a listener to persist the history. It is also
+possible for the listener to change the history object. This could be useful to
+prevent certain lines to be added to the history, like a password.
 
 ```js
 rl.on('history', (history) => {
@@ -215,10 +213,9 @@ The `'SIGCONT'` event is _not_ supported on Windows.
 added: v0.3.0
 -->
 
-The `'SIGINT'` event is emitted whenever the `input` stream receives
-a <kbd>Ctrl+C</kbd> input, known typically as `SIGINT`. If there are no
-`'SIGINT'` event listeners registered when the `input` stream receives a
-`SIGINT`, the `'pause'` event will be emitted.
+The `'SIGINT'` event is emitted whenever the `input` stream receives a <kbd>Ctrl+C</kbd> input, known typically as `SIGINT`. If there are no `'SIGINT'`
+event listeners registered when the `input` stream receives a `SIGINT`, the
+`'pause'` event will be emitted.
 
 The listener function is invoked without passing any arguments.
 
@@ -236,8 +233,7 @@ rl.on('SIGINT', () => {
 added: v0.7.5
 -->
 
-The `'SIGTSTP'` event is emitted when the `input` stream receives
-a <kbd>Ctrl</kbd>+<kbd>Z</kbd> input, typically known as `SIGTSTP`. If there are
+The `'SIGTSTP'` event is emitted when the `input` stream receives a <kbd>Ctrl</kbd>+<kbd>Z</kbd> input, typically known as `SIGTSTP`. If there are
 no `'SIGTSTP'` event listeners registered when the `input` stream receives a
 `SIGTSTP`, the Node.js process will be sent to the background.
 
@@ -266,8 +262,8 @@ added: v0.1.98
 -->
 
 The `rl.close()` method closes the `InterfaceConstructor` instance and
-relinquishes control over the `input` and `output` streams. When called,
-the `'close'` event will be emitted.
+relinquishes control over the `input` and `output` streams. When called, the
+`'close'` event will be emitted.
 
 Calling `rl.close()` does not immediately stop other events (including `'line'`)
 from being emitted by the `InterfaceConstructor` instance.
@@ -290,15 +286,14 @@ Calling `rl.pause()` does not immediately pause other events (including
 added: v0.1.98
 -->
 
-* `preserveCursor` {boolean} If `true`, prevents the cursor placement from
-  being reset to `0`.
+* `preserveCursor` {boolean} If `true`, prevents the cursor placement from being
+  reset to `0`.
 
 The `rl.prompt()` method writes the `InterfaceConstructor` instances configured
 `prompt` to a new line in `output` in order to provide a user with a new
 location at which to provide input.
 
-When called, `rl.prompt()` will resume the `input` stream if it has been
-paused.
+When called, `rl.prompt()` will resume the `input` stream if it has been paused.
 
 If the `InterfaceConstructor` was created with `output` set to `null` or
 `undefined` the prompt is not written.
@@ -347,15 +342,13 @@ added: v0.1.98
   * `shift` {boolean} `true` to indicate the <kbd>Shift</kbd> key.
   * `name` {string} The name of the a key.
 
-The `rl.write()` method will write either `data` or a key sequence identified
-by `key` to the `output`. The `key` argument is supported only if `output` is
-a [TTY][] text terminal. See [TTY keybindings][] for a list of key
-combinations.
+The `rl.write()` method will write either `data` or a key sequence identified by
+`key` to the `output`. The `key` argument is supported only if `output` is a
+[TTY][] text terminal. See [TTY keybindings][] for a list of key combinations.
 
 If `key` is specified, `data` is ignored.
 
-When called, `rl.write()` will resume the `input` stream if it has been
-paused.
+When called, `rl.write()` will resume the `input` stream if it has been paused.
 
 If the `InterfaceConstructor` was created with `output` set to `null` or
 `undefined` the `data` and `key` are not written.
@@ -391,9 +384,9 @@ stream as a string. This method allows asynchronous iteration of
 
 Errors in the input stream are not forwarded.
 
-If the loop is terminated with `break`, `throw`, or `return`,
-[`rl.close()`][] will be called. In other words, iterating over a
-`InterfaceConstructor` will always consume the input stream fully.
+If the loop is terminated with `break`, `throw`, or `return`, [`rl.close()`][]
+will be called. In other words, iterating over a `InterfaceConstructor` will
+always consume the input stream fully.
 
 Performance is not on par with the traditional `'line'` event API. Use `'line'`
 instead for performance-sensitive applications.
@@ -431,10 +424,9 @@ changes:
 
 The current input data being processed by node.
 
-This can be used when collecting input from a TTY stream to retrieve the
-current value that has been processed thus far, prior to the `line` event
-being emitted. Once the `line` event has been emitted, this property will
-be an empty string.
+This can be used when collecting input from a TTY stream to retrieve the current
+value that has been processed thus far, prior to the `line` event being emitted.
+Once the `line` event has been emitted, this property will be an empty string.
 
 Be aware that modifying the value during the instance runtime may have
 unintended consequences if `rl.cursor` is not also controlled.
@@ -447,10 +439,7 @@ One possible use case would be as follows:
 const values = ['lorem ipsum', 'dolor sit amet'];
 const rl = readline.createInterface(process.stdin);
 const showResults = debounce(() => {
-  console.log(
-    '\n',
-    values.filter((val) => val.startsWith(rl.line)).join(' '),
-  );
+  console.log('\n', values.filter((val) => val.startsWith(rl.line)).join(' '));
 }, 300);
 process.stdin.on('keypress', (c, k) => {
   showResults();
@@ -467,10 +456,10 @@ added: v0.1.98
 
 The cursor position relative to `rl.line`.
 
-This will track where the current cursor lands in the input string, when
-reading input from a TTY stream. The position of cursor determines the
-portion of the input string that will be modified as input is processed,
-as well as the column where the terminal caret will be rendered.
+This will track where the current cursor lands in the input string, when reading
+input from a TTY stream. The position of cursor determines the portion of the
+input string that will be modified as input is processed, as well as the column
+where the terminal caret will be rendered.
 
 ### `rl.getCursorPos()`
 
@@ -484,9 +473,9 @@ added:
   * `rows` {number} the row of the prompt the cursor currently lands on
   * `cols` {number} the screen column the cursor currently lands on
 
-Returns the real position of the cursor in relation to the input
-prompt + string. Long input (wrapping) strings, as well as multiple
-line prompts are included in the calculations.
+Returns the real position of the cursor in relation to the input prompt +
+string. Long input (wrapping) strings, as well as multiple line prompts are
+included in the calculations.
 
 ## Promises API
 
@@ -507,8 +496,8 @@ added: v17.0.0
 Instances of the `readlinePromises.Interface` class are constructed using the
 `readlinePromises.createInterface()` method. Every instance is associated with a
 single `input` [Readable][] stream and a single `output` [Writable][] stream.
-The `output` stream is used to print prompts for user input that arrives on,
-and is read from, the `input` stream.
+The `output` stream is used to print prompts for user input that arrives on, and
+is read from, the `input` stream.
 
 #### `rl.question(query[, options])`
 
@@ -521,8 +510,8 @@ added: v17.0.0
 * `options` {Object}
   * `signal` {AbortSignal} Optionally allows the `question()` to be canceled
     using an `AbortSignal`.
-* Returns: {Promise} A promise that is fulfilled with the user's
-  input in response to the `query`.
+* Returns: {Promise} A promise that is fulfilled with the user's input in
+  response to the `query`.
 
 The `rl.question()` method displays the `query` by writing it to the `output`,
 waits for user input to be provided on `input`, then invokes the `callback`
@@ -548,9 +537,13 @@ Using an `AbortSignal` to cancel a question.
 ```mjs
 const signal = AbortSignal.timeout(10_000);
 
-signal.addEventListener('abort', () => {
-  console.log('The food question timed out');
-}, { once: true });
+signal.addEventListener(
+  'abort',
+  () => {
+    console.log('The food question timed out');
+  },
+  { once: true },
+);
 
 const answer = await rl.question('What is your favorite food? ', { signal });
 console.log(`Oh, so your favorite food is ${answer}`);
@@ -586,9 +579,8 @@ added: v17.0.0
 
 The `rl.clearLine()` method adds to the internal list of pending action an
 action that clears current line of the associated `stream` in a specified
-direction identified by `dir`.
-Call `rl.commit()` to see the effect of this method, unless `autoCommit: true`
-was passed to the constructor.
+direction identified by `dir`. Call `rl.commit()` to see the effect of this
+method, unless `autoCommit: true` was passed to the constructor.
 
 #### `rl.clearScreenDown()`
 
@@ -599,10 +591,9 @@ added: v17.0.0
 * Returns: this
 
 The `rl.clearScreenDown()` method adds to the internal list of pending action an
-action that clears the associated stream from the current position of the
-cursor down.
-Call `rl.commit()` to see the effect of this method, unless `autoCommit: true`
-was passed to the constructor.
+action that clears the associated stream from the current position of the cursor
+down. Call `rl.commit()` to see the effect of this method, unless
+`autoCommit: true` was passed to the constructor.
 
 #### `rl.commit()`
 
@@ -626,9 +617,9 @@ added: v17.0.0
 * Returns: this
 
 The `rl.cursorTo()` method adds to the internal list of pending action an action
-that moves cursor to the specified position in the associated `stream`.
-Call `rl.commit()` to see the effect of this method, unless `autoCommit: true`
-was passed to the constructor.
+that moves cursor to the specified position in the associated `stream`. Call
+`rl.commit()` to see the effect of this method, unless `autoCommit: true` was
+passed to the constructor.
 
 #### `rl.moveCursor(dx, dy)`
 
@@ -642,9 +633,8 @@ added: v17.0.0
 
 The `rl.moveCursor()` method adds to the internal list of pending action an
 action that moves the cursor _relative_ to its current position in the
-associated `stream`.
-Call `rl.commit()` to see the effect of this method, unless `autoCommit: true`
-was passed to the constructor.
+associated `stream`. Call `rl.commit()` to see the effect of this method, unless
+`autoCommit: true` was passed to the constructor.
 
 #### `rl.rollback()`
 
@@ -685,23 +675,23 @@ added: v17.0.0
     to the history list duplicates an older one, this removes the older line
     from the list. **Default:** `false`.
   * `prompt` {string} The prompt string to use. **Default:** `'> '`.
-  * `crlfDelay` {number} If the delay between `\r` and `\n` exceeds
-    `crlfDelay` milliseconds, both `\r` and `\n` will be treated as separate
-    end-of-line input. `crlfDelay` will be coerced to a number no less than
-    `100`. It can be set to `Infinity`, in which case `\r` followed by `\n`
-    will always be considered a single newline (which may be reasonable for
-    [reading files][] with `\r\n` line delimiter). **Default:** `100`.
+  * `crlfDelay` {number} If the delay between `\r` and `\n` exceeds `crlfDelay`
+    milliseconds, both `\r` and `\n` will be treated as separate end-of-line
+    input. `crlfDelay` will be coerced to a number no less than `100`. It can be
+    set to `Infinity`, in which case `\r` followed by `\n` will always be
+    considered a single newline (which may be reasonable for [reading files][]
+    with `\r\n` line delimiter). **Default:** `100`.
   * `escapeCodeTimeout` {number} The duration `readlinePromises` will wait for a
     character (when reading an ambiguous key sequence in milliseconds one that
     can both form a complete key sequence using the input read so far and can
-    take additional input to complete a longer key sequence).
-    **Default:** `500`.
+    take additional input to complete a longer key sequence). **Default:**
+    `500`.
   * `tabSize` {integer} The number of spaces a tab is equal to (minimum 1).
     **Default:** `8`.
 * Returns: {readlinePromises.Interface}
 
-The `readlinePromises.createInterface()` method creates a new `readlinePromises.Interface`
-instance.
+The `readlinePromises.createInterface()` method creates a new
+`readlinePromises.Interface` instance.
 
 ```js
 const readlinePromises = require('node:readline/promises');
@@ -720,15 +710,15 @@ rl.on('line', (line) => {
 });
 ```
 
-If `terminal` is `true` for this instance then the `output` stream will get
-the best compatibility if it defines an `output.columns` property and emits
-a `'resize'` event on the `output` if or when the columns ever change
+If `terminal` is `true` for this instance then the `output` stream will get the
+best compatibility if it defines an `output.columns` property and emits a
+`'resize'` event on the `output` if or when the columns ever change
 ([`process.stdout`][] does this automatically when it is a TTY).
 
 #### Use of the `completer` function
 
-The `completer` function takes the current line entered by the user
-as an argument, and returns an `Array` with 2 entries:
+The `completer` function takes the current line entered by the user as an
+argument, and returns an `Array` with 2 entries:
 
 * An `Array` with matching entries for the completion.
 * The substring that was used for the matching.
@@ -772,10 +762,10 @@ changes:
 * Extends: {readline.InterfaceConstructor}
 
 Instances of the `readline.Interface` class are constructed using the
-`readline.createInterface()` method. Every instance is associated with a
-single `input` [Readable][] stream and a single `output` [Writable][] stream.
-The `output` stream is used to print prompts for user input that arrives on,
-and is read from, the `input` stream.
+`readline.createInterface()` method. Every instance is associated with a single
+`input` [Readable][] stream and a single `output` [Writable][] stream. The
+`output` stream is used to print prompts for user input that arrives on, and is
+read from, the `input` stream.
 
 #### `rl.question(query[, options], callback)`
 
@@ -802,8 +792,8 @@ If the `readline.Interface` was created with `output` set to `null` or
 `undefined` the `query` is not written.
 
 The `callback` function passed to `rl.question()` does not follow the typical
-pattern of accepting an `Error` object or `null` as the first argument.
-The `callback` is called with the provided answer as the only argument.
+pattern of accepting an `Error` object or `null` as the first argument. The
+`callback` is called with the provided answer as the only argument.
 
 An error will be thrown if calling `rl.question()` after `rl.close()`.
 
@@ -825,9 +815,13 @@ rl.question('What is your favorite food? ', { signal }, (answer) => {
   console.log(`Oh, so your favorite food is ${answer}`);
 });
 
-signal.addEventListener('abort', () => {
-  console.log('The food question timed out');
-}, { once: true });
+signal.addEventListener(
+  'abort',
+  () => {
+    console.log('The food question timed out');
+  },
+  { once: true },
+);
 
 setTimeout(() => ac.abort(), 10000);
 ```
@@ -857,8 +851,8 @@ changes:
   the `'drain'` event to be emitted before continuing to write additional data;
   otherwise `true`.
 
-The `readline.clearLine()` method clears current line of given [TTY][] stream
-in a specified direction identified by `dir`.
+The `readline.clearLine()` method clears current line of given [TTY][] stream in
+a specified direction identified by `dir`.
 
 ### `readline.clearScreenDown(stream[, callback])`
 
@@ -881,8 +875,8 @@ changes:
   the `'drain'` event to be emitted before continuing to write additional data;
   otherwise `true`.
 
-The `readline.clearScreenDown()` method clears the given [TTY][] stream from
-the current position of the cursor down.
+The `readline.clearScreenDown()` method clears the given [TTY][] stream from the
+current position of the cursor down.
 
 ### `readline.createInterface(options)`
 
@@ -940,17 +934,17 @@ changes:
     to the history list duplicates an older one, this removes the older line
     from the list. **Default:** `false`.
   * `prompt` {string} The prompt string to use. **Default:** `'> '`.
-  * `crlfDelay` {number} If the delay between `\r` and `\n` exceeds
-    `crlfDelay` milliseconds, both `\r` and `\n` will be treated as separate
-    end-of-line input. `crlfDelay` will be coerced to a number no less than
-    `100`. It can be set to `Infinity`, in which case `\r` followed by `\n`
-    will always be considered a single newline (which may be reasonable for
-    [reading files][] with `\r\n` line delimiter). **Default:** `100`.
+  * `crlfDelay` {number} If the delay between `\r` and `\n` exceeds `crlfDelay`
+    milliseconds, both `\r` and `\n` will be treated as separate end-of-line
+    input. `crlfDelay` will be coerced to a number no less than `100`. It can be
+    set to `Infinity`, in which case `\r` followed by `\n` will always be
+    considered a single newline (which may be reasonable for [reading files][]
+    with `\r\n` line delimiter). **Default:** `100`.
   * `escapeCodeTimeout` {number} The duration `readline` will wait for a
     character (when reading an ambiguous key sequence in milliseconds one that
     can both form a complete key sequence using the input read so far and can
-    take additional input to complete a longer key sequence).
-    **Default:** `500`.
+    take additional input to complete a longer key sequence). **Default:**
+    `500`.
   * `tabSize` {integer} The number of spaces a tab is equal to (minimum 1).
     **Default:** `8`.
   * `signal` {AbortSignal} Allows closing the interface using an AbortSignal.
@@ -977,19 +971,19 @@ rl.on('line', (line) => {
 });
 ```
 
-If `terminal` is `true` for this instance then the `output` stream will get
-the best compatibility if it defines an `output.columns` property and emits
-a `'resize'` event on the `output` if or when the columns ever change
+If `terminal` is `true` for this instance then the `output` stream will get the
+best compatibility if it defines an `output.columns` property and emits a
+`'resize'` event on the `output` if or when the columns ever change
 ([`process.stdout`][] does this automatically when it is a TTY).
 
-When creating a `readline.Interface` using `stdin` as input, the program
-will not terminate until it receives an [EOF character][]. To exit without
-waiting for user input, call `process.stdin.unref()`.
+When creating a `readline.Interface` using `stdin` as input, the program will
+not terminate until it receives an [EOF character][]. To exit without waiting
+for user input, call `process.stdin.unref()`.
 
 #### Use of the `completer` function
 
-The `completer` function takes the current line entered by the user
-as an argument, and returns an `Array` with 2 entries:
+The `completer` function takes the current line entered by the user as an
+argument, and returns an `Array` with 2 entries:
 
 * An `Array` with matching entries for the completion.
 * The substring that was used for the matching.
@@ -1075,8 +1069,8 @@ added: v0.7.7
 * `stream` {stream.Readable}
 * `interface` {readline.InterfaceConstructor}
 
-The `readline.emitKeypressEvents()` method causes the given [Readable][]
-stream to begin emitting `'keypress'` events corresponding to received input.
+The `readline.emitKeypressEvents()` method causes the given [Readable][] stream
+to begin emitting `'keypress'` events corresponding to received input.
 
 Optionally, `interface` specifies a `readline.Interface` instance for which
 autocompletion is disabled when copy-pasted input is detected.
@@ -1084,13 +1078,12 @@ autocompletion is disabled when copy-pasted input is detected.
 If the `stream` is a [TTY][], then it must be in raw mode.
 
 This is automatically called by any readline instance on its `input` if the
-`input` is a terminal. Closing the `readline` instance does not stop
-the `input` from emitting `'keypress'` events.
+`input` is a terminal. Closing the `readline` instance does not stop the `input`
+from emitting `'keypress'` events.
 
 ```js
 readline.emitKeypressEvents(process.stdin);
-if (process.stdin.isTTY)
-  process.stdin.setRawMode(true);
+if (process.stdin.isTTY) process.stdin.setRawMode(true);
 ```
 
 ## Example: Tiny CLI
@@ -1126,9 +1119,9 @@ rl.on('line', (line) => {
 
 ## Example: Read file stream line-by-Line
 
-A common use case for `readline` is to consume an input file one line at a
-time. The easiest way to do so is leveraging the [`fs.ReadStream`][] API as
-well as a `for await...of` loop:
+A common use case for `readline` is to consume an input file one line at a time.
+The easiest way to do so is leveraging the [`fs.ReadStream`][] API as well as a
+`for await...of` loop:
 
 ```js
 const fs = require('node:fs');
@@ -1169,8 +1162,8 @@ rl.on('line', (line) => {
 });
 ```
 
-Currently, `for await...of` loop can be a bit slower. If `async` / `await`
-flow and speed are both essential, a mixed approach can be applied:
+Currently, `for await...of` loop can be a bit slower. If `async` / `await` flow
+and speed are both essential, a mixed approach can be applied:
 
 ```js
 const { once } = require('node:events');

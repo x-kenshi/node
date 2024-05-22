@@ -56,11 +56,10 @@ path.posix.basename('/tmp/myfile.html');
 // Returns: 'myfile.html'
 ```
 
-On Windows Node.js follows the concept of per-drive working directory.
-This behavior can be observed when using a drive path without a backslash. For
+On Windows Node.js follows the concept of per-drive working directory. This
+behavior can be observed when using a drive path without a backslash. For
 example, `path.resolve('C:\\')` can potentially return a different result than
-`path.resolve('C:')`. For more information, see
-[this MSDN page][MSDN-Rel-Path].
+`path.resolve('C:')`. For more information, see [this MSDN page][MSDN-Rel-Path].
 
 ## `path.basename(path[, suffix])`
 
@@ -176,9 +175,9 @@ changes:
 
 The `path.extname()` method returns the extension of the `path`, from the last
 occurrence of the `.` (period) character to end of string in the last portion of
-the `path`. If there is no `.` in the last portion of the `path`, or if
-there are no `.` characters other than the first character of
-the basename of `path` (see `path.basename()`) , an empty string is returned.
+the `path`. If there is no `.` in the last portion of the `path`, or if there
+are no `.` characters other than the first character of the basename of `path`
+(see `path.basename()`) , an empty string is returned.
 
 ```js
 path.extname('index.html');
@@ -296,21 +295,21 @@ For example, on POSIX:
 
 ```js
 path.isAbsolute('/foo/bar'); // true
-path.isAbsolute('/baz/..');  // true
-path.isAbsolute('qux/');     // false
-path.isAbsolute('.');        // false
+path.isAbsolute('/baz/..'); // true
+path.isAbsolute('qux/'); // false
+path.isAbsolute('.'); // false
 ```
 
 On Windows:
 
 ```js
-path.isAbsolute('//server');    // true
-path.isAbsolute('\\\\server');  // true
-path.isAbsolute('C:/foo/..');   // true
+path.isAbsolute('//server'); // true
+path.isAbsolute('\\\\server'); // true
+path.isAbsolute('C:/foo/..'); // true
 path.isAbsolute('C:\\foo\\..'); // true
-path.isAbsolute('bar\\baz');    // false
-path.isAbsolute('bar/baz');     // false
-path.isAbsolute('.');           // false
+path.isAbsolute('bar\\baz'); // false
+path.isAbsolute('bar/baz'); // false
+path.isAbsolute('.'); // false
 ```
 
 A [`TypeError`][] is thrown if `path` is not a string.
@@ -328,8 +327,8 @@ The `path.join()` method joins all given `path` segments together using the
 platform-specific separator as a delimiter, then normalizes the resulting path.
 
 Zero-length `path` segments are ignored. If the joined path string is a
-zero-length string then `'.'` will be returned, representing the current
-working directory.
+zero-length string then `'.'` will be returned, representing the current working
+directory.
 
 ```js
 path.join('/foo', 'bar', 'baz/asdf', 'quux', '..');
@@ -353,10 +352,10 @@ added: v0.1.23
 The `path.normalize()` method normalizes the given `path`, resolving `'..'` and
 `'.'` segments.
 
-When multiple, sequential path segment separation characters are found (e.g.
-`/` on POSIX and either `\` or `/` on Windows), they are replaced by a single
-instance of the platform-specific path segment separator (`/` on POSIX and
-`\` on Windows). Trailing separators are preserved.
+When multiple, sequential path segment separation characters are found (e.g. `/`
+on POSIX and either `\` or `/` on Windows), they are replaced by a single
+instance of the platform-specific path segment separator (`/` on POSIX and `\`
+on Windows). Trailing separators are preserved.
 
 If the `path` is a zero-length string, `'.'` is returned, representing the
 current working directory.
@@ -472,10 +471,11 @@ changes:
 
 * {Object}
 
-The `path.posix` property provides access to POSIX specific implementations
-of the `path` methods.
+The `path.posix` property provides access to POSIX specific implementations of
+the `path` methods.
 
-The API is accessible via `require('node:path').posix` or `require('node:path/posix')`.
+The API is accessible via `require('node:path').posix` or
+`require('node:path/posix')`.
 
 ## `path.relative(from, to)`
 
@@ -528,10 +528,10 @@ The `path.resolve()` method resolves a sequence of paths or path segments into
 an absolute path.
 
 The given sequence of paths is processed from right to left, with each
-subsequent `path` prepended until an absolute path is constructed.
-For instance, given the sequence of path segments: `/foo`, `/bar`, `baz`,
-calling `path.resolve('/foo', '/bar', 'baz')` would return `/bar/baz`
-because `'baz'` is not an absolute path but `'/bar' + '/' + 'baz'` is.
+subsequent `path` prepended until an absolute path is constructed. For instance,
+given the sequence of path segments: `/foo`, `/bar`, `baz`, calling
+`path.resolve('/foo', '/bar', 'baz')` would return `/bar/baz` because `'baz'` is
+not an absolute path but `'/bar' + '/' + 'baz'` is.
 
 If, after processing all given `path` segments, an absolute path has not yet
 been generated, the current working directory is used.
@@ -602,8 +602,8 @@ On Windows systems only, returns an equivalent [namespace-prefixed path][] for
 the given `path`. If `path` is not a string, `path` will be returned without
 modifications.
 
-This method is meaningful only on Windows systems. On POSIX systems, the
-method is non-operational and always returns `path` without modifications.
+This method is meaningful only on Windows systems. On POSIX systems, the method
+is non-operational and always returns `path` without modifications.
 
 ## `path.win32`
 
@@ -617,10 +617,11 @@ changes:
 
 * {Object}
 
-The `path.win32` property provides access to Windows-specific implementations
-of the `path` methods.
+The `path.win32` property provides access to Windows-specific implementations of
+the `path` methods.
 
-The API is accessible via `require('node:path').win32` or `require('node:path/win32')`.
+The API is accessible via `require('node:path').win32` or
+`require('node:path/win32')`.
 
 [MSDN-Rel-Path]: https://docs.microsoft.com/en-us/windows/desktop/FileIO/naming-a-file#fully-qualified-vs-relative-paths
 [`TypeError`]: errors.md#class-typeerror

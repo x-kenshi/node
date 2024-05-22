@@ -26,14 +26,13 @@ try {
 }
 ```
 
-When using the lexical ESM `import` keyword, the error can only be
-caught if a handler for `process.on('uncaughtException')` is registered
-_before_ any attempt to load the module is made (using, for instance,
-a preload module).
+When using the lexical ESM `import` keyword, the error can only be caught if a
+handler for `process.on('uncaughtException')` is registered _before_ any attempt
+to load the module is made (using, for instance, a preload module).
 
-When using ESM, if there is a chance that the code may be run on a build
-of Node.js where crypto support is not enabled, consider using the
-[`import()`][] function instead of the lexical `import` keyword:
+When using ESM, if there is a chance that the code may be run on a build of
+Node.js where crypto support is not enabled, consider using the [`import()`][]
+function instead of the lexical `import` keyword:
 
 ```mjs
 let https;
@@ -71,16 +70,16 @@ changes:
                  specified using an IP address.
 -->
 
-* `options` {Object} Set of configurable options to set on the agent.
-  Can have the same fields as for [`http.Agent(options)`][], and
-  * `maxCachedSessions` {number} maximum number of TLS cached sessions.
-    Use `0` to disable TLS session caching. **Default:** `100`.
-  * `servername` {string} the value of
-    [Server Name Indication extension][sni wiki] to be sent to the server. Use
-    empty string `''` to disable sending the extension.
-    **Default:** host name of the target server, unless the target server
-    is specified using an IP address, in which case the default is `''` (no
-    extension).
+* `options` {Object} Set of configurable options to set on the agent. Can have
+  the same fields as for [`http.Agent(options)`][], and
+
+  * `maxCachedSessions` {number} maximum number of TLS cached sessions. Use `0`
+    to disable TLS session caching. **Default:** `100`.
+  * `servername` {string} the value of [Server Name Indication
+    extension][sni wiki] to be sent to the server. Use empty string `''` to
+    disable sending the extension. **Default:** host name of the target server,
+    unless the target server is specified using an IP address, in which case the
+    default is `''` (no extension).
 
     See [`Session Resumption`][] for information about TLS session reuse.
 
@@ -98,9 +97,9 @@ added:
 
 The `keylog` event is emitted when key material is generated or received by a
 connection managed by this agent (typically before handshake has completed, but
-not necessarily). This keying material can be stored for debugging, as it
-allows captured TLS traffic to be decrypted. It may be emitted multiple times
-for each socket.
+not necessarily). This keying material can be stored for debugging, as it allows
+captured TLS traffic to be decrypted. It may be emitted multiple times for each
+socket.
 
 A typical use case is to append received lines to a common text file, which is
 later used by software (such as Wireshark) to decrypt the traffic:
@@ -141,8 +140,8 @@ added: v20.4.0
 
 > Stability: 1 - Experimental
 
-Calls [`server.close()`][httpsServerClose] and returns a promise that
-fulfills when the server has closed.
+Calls [`server.close()`][httpsServerClose] and returns a promise that fulfills
+when the server has closed.
 
 ### `server.closeAllConnections()`
 
@@ -172,8 +171,8 @@ See [`server.headersTimeout`][] in the `node:http` module.
 
 ### `server.listen()`
 
-Starts the HTTPS server listening for encrypted connections.
-This method is identical to [`server.listen()`][] from [`net.Server`][].
+Starts the HTTPS server listening for encrypted connections. This method is
+identical to [`server.listen()`][] from [`net.Server`][].
 
 ### `server.maxHeadersCount`
 
@@ -253,10 +252,12 @@ const options = {
   cert: fs.readFileSync('test/fixtures/keys/agent2-cert.pem'),
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('hello world\n');
-}).listen(8000);
+https
+  .createServer(options, (req, res) => {
+    res.writeHead(200);
+    res.end('hello world\n');
+  })
+  .listen(8000);
 ```
 
 Or
@@ -270,10 +271,12 @@ const options = {
   passphrase: 'sample',
 };
 
-https.createServer(options, (req, res) => {
-  res.writeHead(200);
-  res.end('hello world\n');
-}).listen(8000);
+https
+  .createServer(options, (req, res) => {
+    res.writeHead(200);
+    res.end('hello world\n');
+  })
+  .listen(8000);
 ```
 
 ## `https.get(options[, callback])`
@@ -306,17 +309,18 @@ object, it will be automatically converted to an ordinary `options` object.
 ```js
 const https = require('node:https');
 
-https.get('https://encrypted.google.com/', (res) => {
-  console.log('statusCode:', res.statusCode);
-  console.log('headers:', res.headers);
+https
+  .get('https://encrypted.google.com/', (res) => {
+    console.log('statusCode:', res.statusCode);
+    console.log('headers:', res.headers);
 
-  res.on('data', (d) => {
-    process.stdout.write(d);
+    res.on('data', (d) => {
+      process.stdout.write(d);
+    });
+  })
+  .on('error', (e) => {
+    console.error(e);
   });
-
-}).on('error', (e) => {
-  console.error(e);
-});
 ```
 
 ## `https.globalAgent`
@@ -386,9 +390,9 @@ The following additional `options` from [`tls.connect()`][] are also accepted:
 string, it is automatically parsed with [`new URL()`][]. If it is a [`URL`][]
 object, it will be automatically converted to an ordinary `options` object.
 
-`https.request()` returns an instance of the [`http.ClientRequest`][]
-class. The `ClientRequest` instance is a writable stream. If one needs to
-upload a file with a POST request, then write to the `ClientRequest` object.
+`https.request()` returns an instance of the [`http.ClientRequest`][] class. The
+`ClientRequest` instance is a writable stream. If one needs to upload a file
+with a POST request, then write to the `ClientRequest` object.
 
 ```js
 const https = require('node:https');
@@ -487,17 +491,20 @@ const options = {
     // Pin the public key, similar to HPKP pin-sha256 pinning
     const pubkey256 = 'pL1+qb9HTMRZJmuC/bB/ZI9d302BYrrqiVuRyW+DGrU=';
     if (sha256(cert.pubkey) !== pubkey256) {
-      const msg = 'Certificate verification error: ' +
+      const msg =
+        'Certificate verification error: ' +
         `The public key of '${cert.subject.CN}' ` +
         'does not match our pinned fingerprint';
       return new Error(msg);
     }
 
     // Pin the exact certificate, rather than the pub key
-    const cert256 = '25:FE:39:32:D9:63:8C:8A:FC:A1:9A:29:87:' +
+    const cert256 =
+      '25:FE:39:32:D9:63:8C:8A:FC:A1:9A:29:87:' +
       'D8:3E:4C:1D:98:DB:71:E4:1A:48:03:98:EA:22:6A:BD:8B:93:16';
     if (cert.fingerprint256 !== cert256) {
-      const msg = 'Certificate verification error: ' +
+      const msg =
+        'Certificate verification error: ' +
         `The certificate of '${cert.subject.CN}' ` +
         'does not match our pinned fingerprint';
       return new Error(msg);
@@ -518,7 +525,6 @@ const options = {
       lastprint256 = cert.fingerprint256;
       cert = cert.issuerCertificate;
     } while (cert.fingerprint256 !== lastprint256);
-
   },
 };
 

@@ -16,8 +16,8 @@ changes:
 
 <!-- source_link=lib/test.js -->
 
-The `node:test` module facilitates the creation of JavaScript tests.
-To access it:
+The `node:test` module facilitates the creation of JavaScript tests. To access
+it:
 
 ```mjs
 import test from 'node:test';
@@ -51,8 +51,7 @@ processed in one of three ways:
    considered passing. If the test function receives a callback function and
    also returns a `Promise`, the test will fail.
 
-The following example illustrates how tests are written using the
-`test` module.
+The following example illustrates how tests are written using the `test` module.
 
 ```js
 test('synchronous passing test', (t) => {
@@ -105,12 +104,11 @@ If any tests fail, the process exit code is set to `1`.
 
 ## Subtests
 
-The test context's `test()` method allows subtests to be created.
-It allows you to structure your tests in a hierarchical manner,
-where you can create nested tests within a larger test.
-This method behaves identically to the top level `test()` function.
-The following example demonstrates the creation of a
-top level test with two subtests.
+The test context's `test()` method allows subtests to be created. It allows you
+to structure your tests in a hierarchical manner, where you can create nested
+tests within a larger test. This method behaves identically to the top level
+`test()` function. The following example demonstrates the creation of a top
+level test with two subtests.
 
 ```js
 test('top level test', async (t) => {
@@ -124,21 +122,19 @@ test('top level test', async (t) => {
 });
 ```
 
-> **Note:** `beforeEach` and `afterEach` hooks are triggered
-> between each subtest execution.
+> **Note:** `beforeEach` and `afterEach` hooks are triggered between each
+> subtest execution.
 
 In this example, `await` is used to ensure that both subtests have completed.
-This is necessary because tests do not wait for their subtests to
-complete, unlike tests created within suites.
-Any subtests that are still outstanding when their parent finishes
-are cancelled and treated as failures. Any subtest failures cause the parent
-test to fail.
+This is necessary because tests do not wait for their subtests to complete,
+unlike tests created within suites. Any subtests that are still outstanding when
+their parent finishes are cancelled and treated as failures. Any subtest
+failures cause the parent test to fail.
 
 ## Skipping tests
 
 Individual tests can be skipped by passing the `skip` option to the test, or by
-calling the test context's `skip()` method as shown in the
-following example.
+calling the test context's `skip()` method as shown in the following example.
 
 ```js
 // The skip option is used, but no message is provided.
@@ -230,20 +226,18 @@ const { describe, it } = require('node:test');
 ## `only` tests
 
 If Node.js is started with the [`--test-only`][] command-line option, it is
-possible to skip all tests except for a selected subset by passing
-the `only` option to the tests that should run. When a test with the `only`
-option is set, all subtests are also run.
-If a suite has the `only` option set, all tests within the suite are run,
-unless it has descendants with the `only` option set, in which case only those
-tests are run.
+possible to skip all tests except for a selected subset by passing the `only`
+option to the tests that should run. When a test with the `only` option is set,
+all subtests are also run. If a suite has the `only` option set, all tests
+within the suite are run, unless it has descendants with the `only` option set,
+in which case only those tests are run.
 
-When using [subtests][] within a `test()`/`it()`, it is required to mark
-all ancestor tests with the `only` option to run only a
-selected subset of tests.
+When using [subtests][] within a `test()`/`it()`, it is required to mark all
+ancestor tests with the `only` option to run only a selected subset of tests.
 
-The test context's `runOnly()`
-method can be used to implement the same behavior at the subtest level. Tests
-that are not executed are omitted from the test runner output.
+The test context's `runOnly()` method can be used to implement the same behavior
+at the subtest level. Tests that are not executed are omitted from the test
+runner output.
 
 ```js
 // Assume Node.js is run with the --test-only command-line option.
@@ -298,15 +292,14 @@ describe.only('a suite', () => {
 
 ## Filtering tests by name
 
-The [`--test-name-pattern`][] command-line option can be used to only run
-tests whose name matches the provided pattern, and the
-[`--test-skip-pattern`][] option can be used to skip tests whose name
-matches the provided pattern. Test name patterns are interpreted as
-JavaScript regular expressions. The `--test-name-pattern` and
-`--test-skip-pattern` options can be specified multiple times in order to run
-nested tests. For each test that is executed, any corresponding test hooks,
-such as `beforeEach()`, are also run. Tests that are not executed are omitted
-from the test runner output.
+The [`--test-name-pattern`][] command-line option can be used to only run tests
+whose name matches the provided pattern, and the [`--test-skip-pattern`][]
+option can be used to skip tests whose name matches the provided pattern. Test
+name patterns are interpreted as JavaScript regular expressions. The
+`--test-name-pattern` and `--test-skip-pattern` options can be specified
+multiple times in order to run nested tests. For each test that is executed, any
+corresponding test hooks, such as `beforeEach()`, are also run. Tests that are
+not executed are omitted from the test runner output.
 
 Given the following test file, starting Node.js with the
 `--test-name-pattern="test [1-3]"` option would cause the test runner to execute
@@ -330,12 +323,13 @@ test('Test 4', async (t) => {
 
 Test name patterns can also be specified using regular expression literals. This
 allows regular expression flags to be used. In the previous example, starting
-Node.js with `--test-name-pattern="/test [4-5]/i"` (or `--test-skip-pattern="/test [4-5]/i"`)
-would match `Test 4` and `Test 5` because the pattern is case-insensitive.
+Node.js with `--test-name-pattern="/test [4-5]/i"` (or
+`--test-skip-pattern="/test [4-5]/i"`) would match `Test 4` and `Test 5` because
+the pattern is case-insensitive.
 
 To match a single test with a pattern, you can prefix it with all its ancestor
-test names separated by space, to ensure it is unique.
-For example, given the following test file:
+test names separated by space, to ensure it is unique. For example, given the
+following test file:
 
 ```js
 describe('test 1', (t) => {
@@ -347,27 +341,27 @@ describe('test 2', (t) => {
 });
 ```
 
-Starting Node.js with `--test-name-pattern="test 1 some test"` would match
-only `some test` in `test 1`.
+Starting Node.js with `--test-name-pattern="test 1 some test"` would match only
+`some test` in `test 1`.
 
 Test name patterns do not change the set of files that the test runner executes.
 
-If both `--test-name-pattern` and `--test-skip-pattern` are supplied,
-tests must satisfy **both** requirements in order to be executed.
+If both `--test-name-pattern` and `--test-skip-pattern` are supplied, tests must
+satisfy **both** requirements in order to be executed.
 
 ## Extraneous asynchronous activity
 
-Once a test function finishes executing, the results are reported as quickly
-as possible while maintaining the order of the tests. However, it is possible
-for the test function to generate asynchronous activity that outlives the test
+Once a test function finishes executing, the results are reported as quickly as
+possible while maintaining the order of the tests. However, it is possible for
+the test function to generate asynchronous activity that outlives the test
 itself. The test runner handles this type of activity, but does not delay the
 reporting of test results in order to accommodate it.
 
-In the following example, a test completes with two `setImmediate()`
-operations still outstanding. The first `setImmediate()` attempts to create a
-new subtest. Because the parent test has already finished and output its
-results, the new subtest is immediately marked as failed, and reported later
-to the {TestsStream}.
+In the following example, a test completes with two `setImmediate()` operations
+still outstanding. The first `setImmediate()` attempts to create a new subtest.
+Because the parent test has already finished and output its results, the new
+subtest is immediately marked as failed, and reported later to the
+{TestsStream}.
 
 The second `setImmediate()` creates an `uncaughtException` event.
 `uncaughtException` and `unhandledRejection` events originating from a completed
@@ -400,16 +394,17 @@ added:
 
 > Stability: 1 - Experimental
 
-The Node.js test runner supports running in watch mode by passing the `--watch` flag:
+The Node.js test runner supports running in watch mode by passing the `--watch`
+flag:
 
 ```bash
 node --test --watch
 ```
 
-In watch mode, the test runner will watch for changes to test files and
-their dependencies. When a change is detected, the test runner will
-rerun the tests affected by the change.
-The test runner will continue to run until the process is terminated.
+In watch mode, the test runner will watch for changes to test files and their
+dependencies. When a change is detected, the test runner will rerun the tests
+affected by the change. The test runner will continue to run until the process
+is terminated.
 
 ## Running tests from the command line
 
@@ -429,19 +424,18 @@ By default, Node.js will run all files matching these patterns:
 * `**/test.?(c|m)js`
 * `**/test/**/*.?(c|m)js`
 
-Alternatively, one or more glob patterns can be provided as the
-final argument(s) to the Node.js command, as shown below.
-Glob patterns follow the behavior of [`glob(7)`][].
-The glob patterns should be enclosed in double quotes on the command line to
-prevent shell expansion, which can reduce portability across systems.
+Alternatively, one or more glob patterns can be provided as the final
+argument(s) to the Node.js command, as shown below. Glob patterns follow the
+behavior of [`glob(7)`][]. The glob patterns should be enclosed in double quotes
+on the command line to prevent shell expansion, which can reduce portability
+across systems.
 
 ```bash
 node --test "**/*.test.js" "**/*.spec.js"
 ```
 
-Matching files are executed as test files.
-More information on the test file execution can be found
-in the [test runner execution model][] section.
+Matching files are executed as test files. More information on the test file
+execution can be found in the [test runner execution model][] section.
 
 ### Test runner execution model
 
@@ -461,17 +455,16 @@ executed within a single application thread, regardless of the value of the
 
 > Stability: 1 - Experimental
 
-When Node.js is started with the [`--experimental-test-coverage`][]
-command-line flag, code coverage is collected and statistics are reported once
-all tests have completed. If the [`NODE_V8_COVERAGE`][] environment variable is
-used to specify a code coverage directory, the generated V8 coverage files are
-written to that directory. Node.js core modules and files within
-`node_modules/` directories are not included in the coverage report. If
-coverage is enabled, the coverage report is sent to any [test reporters][] via
-the `'test:coverage'` event.
+When Node.js is started with the [`--experimental-test-coverage`][] command-line
+flag, code coverage is collected and statistics are reported once all tests have
+completed. If the [`NODE_V8_COVERAGE`][] environment variable is used to specify
+a code coverage directory, the generated V8 coverage files are written to that
+directory. Node.js core modules and files within `node_modules/` directories are
+not included in the coverage report. If coverage is enabled, the coverage report
+is sent to any [test reporters][] via the `'test:coverage'` event.
 
-Coverage can be disabled on a series of lines using the following
-comment syntax:
+Coverage can be disabled on a series of lines using the following comment
+syntax:
 
 ```js
 /* node:coverage disable */
@@ -490,7 +483,9 @@ number of lines is not explicitly provided, a single line is ignored.
 
 ```js
 /* node:coverage ignore next */
-if (anAlwaysFalseCondition) { console.log('this is never executed'); }
+if (anAlwaysFalseCondition) {
+  console.log('this is never executed');
+}
 
 /* node:coverage ignore next 3 */
 if (anAlwaysFalseCondition) {
@@ -501,8 +496,8 @@ if (anAlwaysFalseCondition) {
 ### Coverage reporters
 
 The tap and spec reporters will print a summary of the coverage statistics.
-There is also an lcov reporter that will generate an lcov file which can be
-used as an in depth coverage report.
+There is also an lcov reporter that will generate an lcov file which can be used
+as an in depth coverage report.
 
 ```bash
 node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=lcov.info
@@ -599,23 +594,23 @@ test('spies on an object method', (t) => {
 ### Timers
 
 Mocking timers is a technique commonly used in software testing to simulate and
-control the behavior of timers, such as `setInterval` and `setTimeout`,
-without actually waiting for the specified time intervals.
+control the behavior of timers, such as `setInterval` and `setTimeout`, without
+actually waiting for the specified time intervals.
 
 Refer to the [`MockTimers`][] class for a full list of methods and features.
 
-This allows developers to write more reliable and
-predictable tests for time-dependent functionality.
+This allows developers to write more reliable and predictable tests for
+time-dependent functionality.
 
-The example below shows how to mock `setTimeout`.
-Using `.enable({ apis: ['setTimeout'] });`
-it will mock the `setTimeout` functions in the [node:timers](./timers.md) and
-[node:timers/promises](./timers.md#timers-promises-api) modules,
-as well as from the Node.js global context.
+The example below shows how to mock `setTimeout`. Using
+`.enable({ apis: ['setTimeout'] });` it will mock the `setTimeout` functions in
+the [node:timers](./timers.md) and
+[node:timers/promises](./timers.md#timers-promises-api) modules, as well as from
+the Node.js global context.
 
 **Note:** Destructuring functions such as
-`import { setTimeout } from 'node:timers'`
-is currently not supported by this API.
+`import { setTimeout } from 'node:timers'` is currently not supported by this
+API.
 
 ```mjs
 import assert from 'node:assert';
@@ -665,9 +660,9 @@ test('mocks setTimeout to be executed synchronously without having to actually w
 });
 ```
 
-The same mocking functionality is also exposed in the mock property on the [`TestContext`][] object
-of each test. The benefit of mocking via the test context is
-that the test runner will automatically restore all mocked timers
+The same mocking functionality is also exposed in the mock property on the
+[`TestContext`][] object of each test. The benefit of mocking via the test
+context is that the test runner will automatically restore all mocked timers
 functionality once the test finishes.
 
 ```mjs
@@ -709,8 +704,8 @@ test('mocks setTimeout to be executed synchronously without having to actually w
 ### Dates
 
 The mock timers API also allows the mocking of the `Date` object. This is a
-useful feature for testing time-dependent functionality, or to simulate
-internal calendar functions such as `Date.now()`.
+useful feature for testing time-dependent functionality, or to simulate internal
+calendar functions such as `Date.now()`.
 
 The dates implementation is also part of the [`MockTimers`][] class. Refer to it
 for a full list of methods and features.
@@ -793,8 +788,8 @@ test('mocks the Date object with initial time', (context) => {
 You can use the `.setTime()` method to manually move the mocked date to another
 time. This method only accepts a positive integer.
 
-**Note:** This method will execute any mocked timers that are in the past
-from the new time.
+**Note:** This method will execute any mocked timers that are in the past from
+the new time.
 
 In the below example we are setting a new time for the mocked date.
 
@@ -934,35 +929,31 @@ changes:
     description: Reporters are now exposed at `node:test/reporters`.
 -->
 
-The `node:test` module supports passing [`--test-reporter`][]
-flags for the test runner to use a specific reporter.
+The `node:test` module supports passing [`--test-reporter`][] flags for the test
+runner to use a specific reporter.
 
 The following built-reporters are supported:
 
-* `tap`
-  The `tap` reporter outputs the test results in the [TAP][] format.
+* `tap` The `tap` reporter outputs the test results in the [TAP][] format.
 
-* `spec`
-  The `spec` reporter outputs the test results in a human-readable format.
+* `spec` The `spec` reporter outputs the test results in a human-readable
+  format.
 
-* `dot`
-  The `dot` reporter outputs the test results in a compact format,
-  where each passing test is represented by a `.`,
-  and each failing test is represented by a `X`.
+* `dot` The `dot` reporter outputs the test results in a compact format, where
+  each passing test is represented by a `.`, and each failing test is
+  represented by a `X`.
 
-* `junit`
-  The junit reporter outputs test results in a jUnit XML format
+* `junit` The junit reporter outputs test results in a jUnit XML format
 
-* `lcov`
-  The `lcov` reporter outputs test coverage when used with the
+* `lcov` The `lcov` reporter outputs test coverage when used with the
   [`--experimental-test-coverage`][] flag.
 
-When `stdout` is a [TTY][], the `spec` reporter is used by default.
-Otherwise, the `tap` reporter is used by default.
+When `stdout` is a [TTY][], the `spec` reporter is used by default. Otherwise,
+the `tap` reporter is used by default.
 
 The exact output of these reporters is subject to change between versions of
-Node.js, and should not be relied on programmatically. If programmatic access
-to the test runner's output is required, use the events emitted by the
+Node.js, and should not be relied on programmatically. If programmatic access to
+the test runner's output is required, use the events emitted by the
 {TestsStream}.
 
 The reporters are available via the `node:test/reporters` module:
@@ -977,9 +968,8 @@ const { tap, spec, dot, junit, lcov } = require('node:test/reporters');
 
 ### Custom reporters
 
-[`--test-reporter`][] can be used to specify a path to custom reporter.
-A custom reporter is a module that exports a value
-accepted by [stream.compose][].
+[`--test-reporter`][] can be used to specify a path to custom reporter. A custom
+reporter is a module that exports a value accepted by [stream.compose][].
 Reporters should transform events emitted by a {TestsStream}
 
 Example of a custom reporter using {stream.Transform}:
@@ -1077,7 +1067,7 @@ module.exports = customReporter;
 Example of a custom reporter using a generator function:
 
 ```mjs
-export default async function * customReporter(source) {
+export default async function* customReporter(source) {
   for await (const event of source) {
     switch (event.type) {
       case 'test:dequeue':
@@ -1117,7 +1107,7 @@ export default async function * customReporter(source) {
 ```
 
 ```cjs
-module.exports = async function * customReporter(source) {
+module.exports = async function* customReporter(source) {
   for await (const event of source) {
     switch (event.type) {
       case 'test:dequeue':
@@ -1162,15 +1152,13 @@ The value provided to `--test-reporter` should be a string like one used in an
 ### Multiple reporters
 
 The [`--test-reporter`][] flag can be specified multiple times to report test
-results in several formats. In this situation
-it is required to specify a destination for each reporter
-using [`--test-reporter-destination`][].
-Destination can be `stdout`, `stderr`, or a file path.
-Reporters and destinations are paired according
-to the order they were specified.
+results in several formats. In this situation it is required to specify a
+destination for each reporter using [`--test-reporter-destination`][].
+Destination can be `stdout`, `stderr`, or a file path. Reporters and
+destinations are paired according to the order they were specified.
 
-In the following example, the `spec` reporter will output to `stdout`,
-and the `dot` reporter will output to `file.txt`:
+In the following example, the `spec` reporter will output to `stdout`, and the
+`dot` reporter will output to `file.txt`:
 
 ```bash
 node --test-reporter=spec --test-reporter=dot --test-reporter-destination=stdout --test-reporter-destination=file.txt
@@ -1198,51 +1186,48 @@ changes:
 
 * `options` {Object} Configuration options for running tests. The following
   properties are supported:
-  * `concurrency` {number|boolean} If a number is provided,
-    then that many test processes would run in parallel, where each process
-    corresponds to one test file.
-    If `true`, it would run `os.availableParallelism() - 1` test files in
-    parallel.
-    If `false`, it would only run one test file at a time.
+  * `concurrency` {number|boolean} If a number is provided, then that many test
+    processes would run in parallel, where each process corresponds to one test
+    file. If `true`, it would run `os.availableParallelism() - 1` test files in
+    parallel. If `false`, it would only run one test file at a time.
     **Default:** `false`.
-  * `files`: {Array} An array containing the list of files to run.
-    **Default** matching files from [test runner execution model][].
+  * `files`: {Array} An array containing the list of files to run. **Default**
+    matching files from [test runner execution model][].
   * `forceExit`: {boolean} Configures the test runner to exit the process once
     all known tests have finished executing even if the event loop would
     otherwise remain active. **Default:** `false`.
   * `inspectPort` {number|Function} Sets inspector port of test child process.
     This can be a number, or a function that takes no arguments and returns a
     number. If a nullish value is provided, each process gets its own port,
-    incremented from the primary's `process.debugPort`.
-    **Default:** `undefined`.
-  * `only`: {boolean} If truthy, the test context will only run tests that
-    have the `only` option set
-  * `setup` {Function} A function that accepts the `TestsStream` instance
-    and can be used to setup listeners before any tests are run.
-    **Default:** `undefined`.
+    incremented from the primary's `process.debugPort`. **Default:**
+    `undefined`.
+  * `only`: {boolean} If truthy, the test context will only run tests that have
+    the `only` option set
+  * `setup` {Function} A function that accepts the `TestsStream` instance and
+    can be used to setup listeners before any tests are run. **Default:**
+    `undefined`.
   * `signal` {AbortSignal} Allows aborting an in-progress test execution.
   * `testNamePatterns` {string|RegExp|Array} A String, RegExp or a RegExp Array,
     that can be used to only run tests whose name matches the provided pattern.
-    Test name patterns are interpreted as JavaScript regular expressions.
-    For each test that is executed, any corresponding test hooks, such as
-    `beforeEach()`, are also run.
-    **Default:** `undefined`.
-  * `timeout` {number} A number of milliseconds the test execution will
-    fail after.
-    If unspecified, subtests inherit this value from their parent.
+    Test name patterns are interpreted as JavaScript regular expressions. For
+    each test that is executed, any corresponding test hooks, such as
+    `beforeEach()`, are also run. **Default:** `undefined`.
+  * `timeout` {number} A number of milliseconds the test execution will fail
+    after. If unspecified, subtests inherit this value from their parent.
     **Default:** `Infinity`.
   * `watch` {boolean} Whether to run in watch mode or not. **Default:** `false`.
-  * `shard` {Object} Running tests in a specific shard. **Default:** `undefined`.
-    * `index` {number} is a positive integer between 1 and `<total>`
-      that specifies the index of the shard to run. This option is _required_.
-    * `total` {number} is a positive integer that specifies the total number
-      of shards to split the test files to. This option is _required_.
+  * `shard` {Object} Running tests in a specific shard. **Default:**
+    `undefined`.
+    * `index` {number} is a positive integer between 1 and `<total>` that
+      specifies the index of the shard to run. This option is _required_.
+    * `total` {number} is a positive integer that specifies the total number of
+      shards to split the test files to. This option is _required_.
 * Returns: {TestsStream}
 
 **Note:** `shard` is used to horizontally parallelize test running across
 machines or processes, ideal for large-scale executions across varied
-environments. It's incompatible with `watch` mode, tailored for rapid
-code iteration by automatically rerunning tests on file changes.
+environments. It's incompatible with `watch` mode, tailored for rapid code
+iteration by automatically rerunning tests on file changes.
 
 ```mjs
 import { tap } from 'node:test/reporters';
@@ -1251,11 +1236,11 @@ import process from 'node:process';
 import path from 'node:path';
 
 run({ files: [path.resolve('./tests/test.js')] })
- .on('test:fail', () => {
-   process.exitCode = 1;
- })
- .compose(tap)
- .pipe(process.stdout);
+  .on('test:fail', () => {
+    process.exitCode = 1;
+  })
+  .compose(tap)
+  .pipe(process.stdout);
 ```
 
 ```cjs
@@ -1264,11 +1249,11 @@ const { run } = require('node:test');
 const path = require('node:path');
 
 run({ files: [path.resolve('./tests/test.js')] })
- .on('test:fail', () => {
-   process.exitCode = 1;
- })
- .compose(tap)
- .pipe(process.stdout);
+  .on('test:fail', () => {
+    process.exitCode = 1;
+  })
+  .compose(tap)
+  .pipe(process.stdout);
 ```
 
 ## `suite([name][, options][, fn])`
@@ -1282,8 +1267,8 @@ added:
 * `name` {string} The name of the suite, which is displayed when reporting test
   results. **Default:** The `name` property of `fn`, or `'<anonymous>'` if `fn`
   does not have a name.
-* `options` {Object} Optional configuration options for the suite.
-  This supports the same options as `test([name][, options][, fn])`.
+* `options` {Object} Optional configuration options for the suite. This supports
+  the same options as `test([name][, options][, fn])`.
 * `fn` {Function|AsyncFunction} The suite function declaring nested tests and
   suites. The first argument to this function is a [`SuiteContext`][] object.
   **Default:** A no-op function.
@@ -1353,35 +1338,33 @@ changes:
   does not have a name.
 * `options` {Object} Configuration options for the test. The following
   properties are supported:
-  * `concurrency` {number|boolean} If a number is provided,
-    then that many tests would run in parallel within the application thread.
-    If `true`, all scheduled asynchronous tests run concurrently within the
-    thread. If `false`, only one test runs at a time.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `false`.
-  * `only` {boolean} If truthy, and the test context is configured to run
-    `only` tests, then this test will be run. Otherwise, the test is skipped.
+  * `concurrency` {number|boolean} If a number is provided, then that many tests
+    would run in parallel within the application thread. If `true`, all
+    scheduled asynchronous tests run concurrently within the thread. If `false`,
+    only one test runs at a time. If unspecified, subtests inherit this value
+    from their parent. **Default:** `false`.
+  * `only` {boolean} If truthy, and the test context is configured to run `only`
+    tests, then this test will be run. Otherwise, the test is skipped.
     **Default:** `false`.
   * `signal` {AbortSignal} Allows aborting an in-progress test.
   * `skip` {boolean|string} If truthy, the test is skipped. If a string is
     provided, that string is displayed in the test results as the reason for
     skipping the test. **Default:** `false`.
-  * `todo` {boolean|string} If truthy, the test marked as `TODO`. If a string
-    is provided, that string is displayed in the test results as the reason why
-    the test is `TODO`. **Default:** `false`.
-  * `timeout` {number} A number of milliseconds the test will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
-  * `plan` {number} The number of assertions and subtests expected to be run in the test.
-    If the number of assertions run in the test does not match the number
-    specified in the plan, the test will fail.
-    **Default:** `undefined`.
-* `fn` {Function|AsyncFunction} The function under test. The first argument
-  to this function is a [`TestContext`][] object. If the test uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+  * `todo` {boolean|string} If truthy, the test marked as `TODO`. If a string is
+    provided, that string is displayed in the test results as the reason why the
+    test is `TODO`. **Default:** `false`.
+  * `timeout` {number} A number of milliseconds the test will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
+  * `plan` {number} The number of assertions and subtests expected to be run in
+    the test. If the number of assertions run in the test does not match the
+    number specified in the plan, the test will fail. **Default:** `undefined`.
+* `fn` {Function|AsyncFunction} The function under test. The first argument to
+  this function is a [`TestContext`][] object. If the test uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
-* Returns: {Promise} Fulfilled with `undefined` once
-  the test completes, or immediately if the test runs within a suite.
+* Returns: {Promise} Fulfilled with `undefined` once the test completes, or
+  immediately if the test runs within a suite.
 
 The `test()` function is the value imported from the `test` module. Each
 invocation of this function results in reporting the test to the {TestsStream}.
@@ -1390,12 +1373,11 @@ The `TestContext` object passed to the `fn` argument can be used to perform
 actions related to the current test. Examples include skipping the test, adding
 additional diagnostic information, or creating subtests.
 
-`test()` returns a `Promise` that fulfills once the test completes.
-if `test()` is called within a suite, it fulfills immediately.
-The return value can usually be discarded for top level tests.
-However, the return value from subtests should be used to prevent the parent
-test from finishing first and cancelling the subtest
-as shown in the following example.
+`test()` returns a `Promise` that fulfills once the test completes. if `test()`
+is called within a suite, it fulfills immediately. The return value can usually
+be discarded for top level tests. However, the return value from subtests should
+be used to prevent the parent test from finishing first and cancelling the
+subtest as shown in the following example.
 
 ```js
 test('top level test', async (t) => {
@@ -1417,18 +1399,18 @@ thus prevent the scheduled cancellation.
 
 ## `test.skip([name][, options][, fn])`
 
-Shorthand for skipping a test,
-same as [`test([name], { skip: true }[, fn])`][it options].
+Shorthand for skipping a test, same as
+[`test([name], { skip: true }[, fn])`][it options].
 
 ## `test.todo([name][, options][, fn])`
 
-Shorthand for marking a test as `TODO`,
-same as [`test([name], { todo: true }[, fn])`][it options].
+Shorthand for marking a test as `TODO`, same as
+[`test([name], { todo: true }[, fn])`][it options].
 
 ## `test.only([name][, options][, fn])`
 
-Shorthand for marking a test as `only`,
-same as [`test([name], { only: true }[, fn])`][it options].
+Shorthand for marking a test as `only`, same as
+[`test([name], { only: true }[, fn])`][it options].
 
 ## `describe([name][, options][, fn])`
 
@@ -1477,13 +1459,13 @@ The `it()` function is imported from the `node:test` module.
 
 ## `it.skip([name][, options][, fn])`
 
-Shorthand for skipping a test,
-same as [`it([name], { skip: true }[, fn])`][it options].
+Shorthand for skipping a test, same as
+[`it([name], { skip: true }[, fn])`][it options].
 
 ## `it.todo([name][, options][, fn])`
 
-Shorthand for marking a test as `TODO`,
-same as [`it([name], { todo: true }[, fn])`][it options].
+Shorthand for marking a test as `TODO`, same as
+[`it([name], { todo: true }[, fn])`][it options].
 
 ## `it.only([name][, options][, fn])`
 
@@ -1493,8 +1475,8 @@ added:
   - v18.15.0
 -->
 
-Shorthand for marking a test as `only`,
-same as [`it([name], { only: true }[, fn])`][it options].
+Shorthand for marking a test as `only`, same as
+[`it([name], { only: true }[, fn])`][it options].
 
 ## `before([fn][, options])`
 
@@ -1504,16 +1486,15 @@ added:
   - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function.
-  If the hook uses callbacks,
+* `fn` {Function|AsyncFunction} The hook function. If the hook uses callbacks,
   the callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
 This function creates a hook that runs before executing a suite.
 
@@ -1534,16 +1515,15 @@ added:
  - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function.
-  If the hook uses callbacks,
+* `fn` {Function|AsyncFunction} The hook function. If the hook uses callbacks,
   the callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
 This function creates a hook that runs after executing a suite.
 
@@ -1556,8 +1536,8 @@ describe('tests', async () => {
 });
 ```
 
-**Note:** The `after` hook is guaranteed to run,
-even if tests within the suite fail.
+**Note:** The `after` hook is guaranteed to run, even if tests within the suite
+fail.
 
 ## `beforeEach([fn][, options])`
 
@@ -1567,16 +1547,15 @@ added:
   - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function.
-  If the hook uses callbacks,
+* `fn` {Function|AsyncFunction} The hook function. If the hook uses callbacks,
   the callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
 This function creates a hook that runs before each test in the current suite.
 
@@ -1597,19 +1576,18 @@ added:
   - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function.
-  If the hook uses callbacks,
+* `fn` {Function|AsyncFunction} The hook function. If the hook uses callbacks,
   the callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
-This function creates a hook that runs after each test in the current suite.
-The `afterEach()` hook is run even if the test fails.
+This function creates a hook that runs after each test in the current suite. The
+`afterEach()` hook is run even if the test fails.
 
 ```js
 describe('tests', async () => {
@@ -1828,8 +1806,8 @@ added:
     will automatically restore the behavior of `original`. This value must be an
     integer greater than zero. **Default:** `Infinity`.
 * Returns: {Proxy} The mocked function. The mocked function contains a special
-  `mock` property, which is an instance of [`MockFunctionContext`][], and can
-  be used for inspecting and changing the behavior of the mocked function.
+  `mock` property, which is an instance of [`MockFunctionContext`][], and can be
+  used for inspecting and changing the behavior of the mocked function.
 
 This function is used to create a mock function.
 
@@ -1896,8 +1874,8 @@ added:
     will automatically restore the original behavior. This value must be an
     integer greater than zero. **Default:** `Infinity`.
 * Returns: {Proxy} The mocked method. The mocked method contains a special
-  `mock` property, which is an instance of [`MockFunctionContext`][], and can
-  be used for inspecting and changing the behavior of the mocked method.
+  `mock` property, which is an instance of [`MockFunctionContext`][], and can be
+  used for inspecting and changing the behavior of the mocked method.
 
 This function is used to create a mock on an existing object method. The
 following example demonstrates how a mock is created on an existing object
@@ -1939,20 +1917,21 @@ added: REPLACEME
 * `options` {Object} Optional configuration options for the mock module. The
   following properties are supported:
   * `cache` {boolean} If `false`, each call to `require()` or `import()`
-    generates a new mock module. If `true`, subsequent calls will return the same
-    module mock, and the mock module is inserted into the CommonJS cache.
+    generates a new mock module. If `true`, subsequent calls will return the
+    same module mock, and the mock module is inserted into the CommonJS cache.
     **Default:** false.
   * `defaultExport` {any} An optional value used as the mocked module's default
     export. If this value is not provided, ESM mocks do not include a default
     export. If the mock is a CommonJS or builtin module, this setting is used as
-    the value of `module.exports`. If this value is not provided, CJS and builtin
-    mocks use an empty object as the value of `module.exports`.
+    the value of `module.exports`. If this value is not provided, CJS and
+    builtin mocks use an empty object as the value of `module.exports`.
   * `namedExports` {Object} An optional object whose keys and values are used to
     create the named exports of the mock module. If the mock is a CommonJS or
-    builtin module, these values are copied onto `module.exports`. Therefore, if a
-    mock is created with both named exports and a non-object default export, the
-    mock will throw an exception when used as a CJS or builtin module.
-* Returns: {MockModuleContext} An object that can be used to manipulate the mock.
+    builtin module, these values are copied onto `module.exports`. Therefore, if
+    a mock is created with both named exports and a non-object default export,
+    the mock will throw an exception when used as a CJS or builtin module.
+* Returns: {MockModuleContext} An object that can be used to manipulate the
+  mock.
 
 This function is used to mock the exports of ECMAScript modules, CommonJS
 modules, and Node.js builtin modules. Any references to the original module
@@ -1964,7 +1943,11 @@ test('mocks a builtin module in both module systems', async (t) => {
   // Create a mock of 'node:readline' with a named export named 'fn', which
   // does not exist in the original 'node:readline' module.
   const mock = t.mock.module('node:readline', {
-    namedExports: { fn() { return 42; } },
+    namedExports: {
+      fn() {
+        return 42;
+      },
+    },
   });
 
   let esmImpl = await import('node:readline');
@@ -1998,10 +1981,10 @@ added:
 -->
 
 This function restores the default behavior of all mocks that were previously
-created by this `MockTracker` and disassociates the mocks from the
-`MockTracker` instance. Once disassociated, the mocks can still be used, but the
-`MockTracker` instance can no longer be used to reset their behavior or
-otherwise interact with them.
+created by this `MockTracker` and disassociates the mocks from the `MockTracker`
+instance. Once disassociated, the mocks can still be used, but the `MockTracker`
+instance can no longer be used to reset their behavior or otherwise interact
+with them.
 
 After each test completes, this function is called on the test context's
 `MockTracker`. If the global `MockTracker` is used extensively, calling this
@@ -2041,13 +2024,13 @@ added:
 > Stability: 1 - Experimental
 
 Mocking timers is a technique commonly used in software testing to simulate and
-control the behavior of timers, such as `setInterval` and `setTimeout`,
-without actually waiting for the specified time intervals.
+control the behavior of timers, such as `setInterval` and `setTimeout`, without
+actually waiting for the specified time intervals.
 
 MockTimers is also able to mock the `Date` object.
 
-The [`MockTracker`][] provides a top-level `timers` export
-which is a `MockTimers` instance.
+The [`MockTracker`][] provides a top-level `timers` export which is a
+`MockTimers` instance.
 
 ### `timers.enable([enableOptions])`
 
@@ -2068,21 +2051,22 @@ Enables timer mocking for the specified timers.
 
 * `enableOptions` {Object} Optional configuration options for enabling timer
   mocking. The following properties are supported:
-  * `apis` {Array} An optional array containing the timers to mock.
-    The currently supported timer values are `'setInterval'`, `'setTimeout'`, `'setImmediate'`,
-    and `'Date'`. **Default:** `['setInterval', 'setTimeout', 'setImmediate', 'Date']`.
-    If no array is provided, all time related APIs (`'setInterval'`, `'clearInterval'`,
+  * `apis` {Array} An optional array containing the timers to mock. The
+    currently supported timer values are `'setInterval'`, `'setTimeout'`,
+    `'setImmediate'`, and `'Date'`. **Default:**
+    `['setInterval', 'setTimeout', 'setImmediate', 'Date']`. If no array is
+    provided, all time related APIs (`'setInterval'`, `'clearInterval'`,
     `'setTimeout'`, `'clearTimeout'`, `'setImmediate'`, `'clearImmediate'`, and
     `'Date'`) will be mocked by default.
   * `now` {number | Date} An optional number or Date object representing the
-    initial time (in milliseconds) to use as the value
-    for `Date.now()`. **Default:** `0`.
+    initial time (in milliseconds) to use as the value for `Date.now()`.
+    **Default:** `0`.
 
-**Note:** When you enable mocking for a specific timer, its associated
-clear function will also be implicitly mocked.
+**Note:** When you enable mocking for a specific timer, its associated clear
+function will also be implicitly mocked.
 
-**Note:** Mocking `Date` will affect the behavior of the mocked timers
-as they use the same internal clock.
+**Note:** Mocking `Date` will affect the behavior of the mocked timers as they
+use the same internal clock.
 
 Example usage without setting initial time:
 
@@ -2096,11 +2080,11 @@ const { mock } = require('node:test');
 mock.timers.enable({ apis: ['setInterval'] });
 ```
 
-The above example enables mocking for the `setInterval` timer and
-implicitly mocks the `clearInterval` function. Only the `setInterval`
-and `clearInterval` functions from [node:timers](./timers.md),
-[node:timers/promises](./timers.md#timers-promises-api), and
-`globalThis` will be mocked.
+The above example enables mocking for the `setInterval` timer and implicitly
+mocks the `clearInterval` function. Only the `setInterval` and `clearInterval`
+functions from [node:timers](./timers.md),
+[node:timers/promises](./timers.md#timers-promises-api), and `globalThis` will
+be mocked.
 
 Example usage with initial time set
 
@@ -2128,10 +2112,10 @@ mock.timers.enable({ apis: ['Date'], now: new Date() });
 
 Alternatively, if you call `mock.timers.enable()` without any parameters:
 
-All timers (`'setInterval'`, `'clearInterval'`, `'setTimeout'`, `'clearTimeout'`,
-`'setImmediate'`, and `'clearImmediate'`) will be mocked. The `setInterval`,
-`clearInterval`, `setTimeout`, `clearTimeout`, `setImmediate`, and
-`clearImmediate` functions from `node:timers`, `node:timers/promises`, and
+All timers (`'setInterval'`, `'clearInterval'`, `'setTimeout'`,
+`'clearTimeout'`, `'setImmediate'`, and `'clearImmediate'`) will be mocked. The
+`setInterval`, `clearInterval`, `setTimeout`, `clearTimeout`, `setImmediate`,
+and `clearImmediate` functions from `node:timers`, `node:timers/promises`, and
 `globalThis` will be mocked. As well as the global `Date` object.
 
 ### `timers.reset()`
@@ -2143,11 +2127,11 @@ added:
 -->
 
 This function restores the default behavior of all mocks that were previously
-created by this  `MockTimers` instance and disassociates the mocks
-from the  `MockTracker` instance.
+created by this `MockTimers` instance and disassociates the mocks from the
+`MockTracker` instance.
 
-**Note:** After each test completes, this function is called on
-the test context's  `MockTracker`.
+**Note:** After each test completes, this function is called on the test
+context's `MockTracker`.
 
 ```mjs
 import { mock } from 'node:test';
@@ -2173,16 +2157,15 @@ added:
 
 Advances time for all mocked timers.
 
-* `milliseconds` {number} The amount of time, in milliseconds,
-  to advance the timers. **Default:** `1`.
+* `milliseconds` {number} The amount of time, in milliseconds, to advance the
+  timers. **Default:** `1`.
 
 **Note:** This diverges from how `setTimeout` in Node.js behaves and accepts
-only positive numbers. In Node.js, `setTimeout` with negative numbers is
-only supported for web compatibility reasons.
+only positive numbers. In Node.js, `setTimeout` with negative numbers is only
+supported for web compatibility reasons.
 
-The following example mocks a `setTimeout` function and
-by using `.tick` advances in
-time triggering all pending timers.
+The following example mocks a `setTimeout` function and by using `.tick`
+advances in time triggering all pending timers.
 
 ```mjs
 import assert from 'node:assert';
@@ -2306,8 +2289,9 @@ test('mocks setTimeout to be executed synchronously without having to actually w
 
 #### Using clear functions
 
-As mentioned, all clear functions from timers (`clearTimeout` and `clearInterval`)
-are implicity mocked. Take a look at this example using `setTimeout`:
+As mentioned, all clear functions from timers (`clearTimeout` and
+`clearInterval`) are implicity mocked. Take a look at this example using
+`setTimeout`:
 
 ```mjs
 import assert from 'node:assert';
@@ -2352,12 +2336,12 @@ test('mocks setTimeout to be executed synchronously without having to actually w
 #### Working with Node.js timers modules
 
 Once you enable mocking timers, [node:timers](./timers.md),
-[node:timers/promises](./timers.md#timers-promises-api) modules,
-and timers from the Node.js global context are enabled:
+[node:timers/promises](./timers.md#timers-promises-api) modules, and timers from
+the Node.js global context are enabled:
 
 **Note:** Destructuring functions such as
-`import { setTimeout } from 'node:timers'` is currently
-not supported by this API.
+`import { setTimeout } from 'node:timers'` is currently not supported by this
+API.
 
 ```mjs
 import assert from 'node:assert';
@@ -2413,8 +2397,9 @@ test('mocks setTimeout to be executed synchronously without having to actually w
 });
 ```
 
-In Node.js, `setInterval` from [node:timers/promises](./timers.md#timers-promises-api)
-is an `AsyncGenerator` and is also supported by this API:
+In Node.js, `setInterval` from
+[node:timers/promises](./timers.md#timers-promises-api) is an `AsyncGenerator`
+and is also supported by this API:
 
 ```mjs
 import assert from 'node:assert';
@@ -2428,7 +2413,10 @@ test('should tick five times testing a real use case', async (context) => {
   const startedAt = Date.now();
   async function run() {
     const times = [];
-    for await (const time of nodeTimersPromises.setInterval(interval, startedAt)) {
+    for await (const time of nodeTimersPromises.setInterval(
+      interval,
+      startedAt,
+    )) {
       times.push(time);
       if (times.length === expectedIterations) break;
     }
@@ -2443,7 +2431,7 @@ test('should tick five times testing a real use case', async (context) => {
   const timeResults = await r;
   assert.strictEqual(timeResults.length, expectedIterations);
   for (let it = 1; it < expectedIterations; it++) {
-    assert.strictEqual(timeResults[it - 1], startedAt + (interval * it));
+    assert.strictEqual(timeResults[it - 1], startedAt + interval * it);
   }
 });
 ```
@@ -2460,7 +2448,10 @@ test('should tick five times testing a real use case', async (context) => {
   const startedAt = Date.now();
   async function run() {
     const times = [];
-    for await (const time of nodeTimersPromises.setInterval(interval, startedAt)) {
+    for await (const time of nodeTimersPromises.setInterval(
+      interval,
+      startedAt,
+    )) {
       times.push(time);
       if (times.length === expectedIterations) break;
     }
@@ -2475,7 +2466,7 @@ test('should tick five times testing a real use case', async (context) => {
   const timeResults = await r;
   assert.strictEqual(timeResults.length, expectedIterations);
   for (let it = 1; it < expectedIterations; it++) {
-    assert.strictEqual(timeResults[it - 1], startedAt + (interval * it));
+    assert.strictEqual(timeResults[it - 1], startedAt + interval * it);
   }
 });
 ```
@@ -2491,8 +2482,8 @@ added:
 Triggers all pending mocked timers immediately. If the `Date` object is also
 mocked, it will also advance the `Date` object to the furthest timer's time.
 
-The example below triggers all pending timers immediately,
-causing them to execute without any delay.
+The example below triggers all pending timers immediately, causing them to
+execute without any delay.
 
 ```mjs
 import assert from 'node:assert';
@@ -2540,9 +2531,8 @@ test('runAll functions following the given order', (context) => {
 });
 ```
 
-**Note:** The `runAll()` function is specifically designed for
-triggering timers in the context of timer mocking.
-It does not have any effect on real-time system
+**Note:** The `runAll()` function is specifically designed for triggering timers
+in the context of timer mocking. It does not have any effect on real-time system
 clocks or actual timers outside of the mocking environment.
 
 ### `timers.setTime(milliseconds)`
@@ -2649,8 +2639,8 @@ changes:
 
 * Extends {Readable}
 
-A successful call to [`run()`][] method will return a new {TestsStream}
-object, streaming a series of events representing the execution of the tests.
+A successful call to [`run()`][] method will return a new {TestsStream} object,
+streaming a series of events representing the execution of the tests.
 `TestsStream` will emit events, in the order of the tests definition
 
 Some of the events are guaranteed to be emitted in the same order as the tests
@@ -2680,8 +2670,8 @@ are defined, while others are emitted in the order that the tests execute.
       * `branches` {Array} An array of branches representing branch coverage.
         * `line` {number} The line number where the branch is defined.
         * `count` {number} The number of times the branch was taken.
-      * `lines` {Array} An array of lines representing line
-        numbers and the number of times they were covered.
+      * `lines` {Array} An array of lines representing line numbers and the
+        number of times they were covered.
         * `line` {number} The line number.
         * `count` {number} The number of times the line was covered.
     * `totals` {Object} An object containing a summary of coverage for all
@@ -2715,8 +2705,8 @@ Emitted when code coverage is enabled and all tests have completed.
       * `cause` {Error} The actual error thrown by the test.
     * `type` {string|undefined} The type of the test, used to denote whether
       this is a suite.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
@@ -2725,50 +2715,48 @@ Emitted when code coverage is enabled and all tests have completed.
   * `todo` {string|boolean|undefined} Present if [`context.todo`][] is called
   * `skip` {string|boolean|undefined} Present if [`context.skip`][] is called
 
-Emitted when a test completes its execution.
-This event is not emitted in the same order as the tests are
-defined.
-The corresponding declaration ordered events are `'test:pass'` and `'test:fail'`.
+Emitted when a test completes its execution. This event is not emitted in the
+same order as the tests are defined. The corresponding declaration ordered
+events are `'test:pass'` and `'test:fail'`.
 
 ### Event: `'test:dequeue'`
 
 * `data` {Object}
   * `column` {number|undefined} The column number where the test is defined, or
     `undefined` if the test was run through the REPL.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
   * `nesting` {number} The nesting level of the test.
 
-Emitted when a test is dequeued, right before it is executed.
-This event is not guaranteed to be emitted in the same order as the tests are
-defined. The corresponding declaration ordered event is `'test:start'`.
+Emitted when a test is dequeued, right before it is executed. This event is not
+guaranteed to be emitted in the same order as the tests are defined. The
+corresponding declaration ordered event is `'test:start'`.
 
 ### Event: `'test:diagnostic'`
 
 * `data` {Object}
   * `column` {number|undefined} The column number where the test is defined, or
     `undefined` if the test was run through the REPL.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `message` {string} The diagnostic message.
   * `nesting` {number} The nesting level of the test.
 
-Emitted when [`context.diagnostic`][] is called.
-This event is guaranteed to be emitted in the same order as the tests are
-defined.
+Emitted when [`context.diagnostic`][] is called. This event is guaranteed to be
+emitted in the same order as the tests are defined.
 
 ### Event: `'test:enqueue'`
 
 * `data` {Object}
   * `column` {number|undefined} The column number where the test is defined, or
     `undefined` if the test was run through the REPL.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
@@ -2787,8 +2775,8 @@ Emitted when a test is enqueued for execution.
       * `cause` {Error} The actual error thrown by the test.
     * `type` {string|undefined} The type of the test, used to denote whether
       this is a suite.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
@@ -2797,10 +2785,9 @@ Emitted when a test is enqueued for execution.
   * `todo` {string|boolean|undefined} Present if [`context.todo`][] is called
   * `skip` {string|boolean|undefined} Present if [`context.skip`][] is called
 
-Emitted when a test fails.
-This event is guaranteed to be emitted in the same order as the tests are
-defined.
-The corresponding execution ordered event is `'test:complete'`.
+Emitted when a test fails. This event is guaranteed to be emitted in the same
+order as the tests are defined. The corresponding execution ordered event is
+`'test:complete'`.
 
 ### Event: `'test:pass'`
 
@@ -2811,8 +2798,8 @@ The corresponding execution ordered event is `'test:complete'`.
     * `duration_ms` {number} The duration of the test in milliseconds.
     * `type` {string|undefined} The type of the test, used to denote whether
       this is a suite.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
@@ -2821,43 +2808,40 @@ The corresponding execution ordered event is `'test:complete'`.
   * `todo` {string|boolean|undefined} Present if [`context.todo`][] is called
   * `skip` {string|boolean|undefined} Present if [`context.skip`][] is called
 
-Emitted when a test passes.
-This event is guaranteed to be emitted in the same order as the tests are
-defined.
-The corresponding execution ordered event is `'test:complete'`.
+Emitted when a test passes. This event is guaranteed to be emitted in the same
+order as the tests are defined. The corresponding execution ordered event is
+`'test:complete'`.
 
 ### Event: `'test:plan'`
 
 * `data` {Object}
   * `column` {number|undefined} The column number where the test is defined, or
     `undefined` if the test was run through the REPL.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `nesting` {number} The nesting level of the test.
   * `count` {number} The number of subtests that have ran.
 
-Emitted when all subtests have completed for a given test.
-This event is guaranteed to be emitted in the same order as the tests are
-defined.
+Emitted when all subtests have completed for a given test. This event is
+guaranteed to be emitted in the same order as the tests are defined.
 
 ### Event: `'test:start'`
 
 * `data` {Object}
   * `column` {number|undefined} The column number where the test is defined, or
     `undefined` if the test was run through the REPL.
-  * `file` {string|undefined} The path of the test file,
-    `undefined` if test was run through the REPL.
+  * `file` {string|undefined} The path of the test file, `undefined` if test was
+    run through the REPL.
   * `line` {number|undefined} The line number where the test is defined, or
     `undefined` if the test was run through the REPL.
   * `name` {string} The test name.
   * `nesting` {number} The nesting level of the test.
 
-Emitted when a test starts reporting its own and its subtests status.
-This event is guaranteed to be emitted in the same order as the tests are
-defined.
-The corresponding execution ordered event is `'test:dequeue'`.
+Emitted when a test starts reporting its own and its subtests status. This event
+is guaranteed to be emitted in the same order as the tests are defined. The
+corresponding execution ordered event is `'test:dequeue'`.
 
 ### Event: `'test:stderr'`
 
@@ -2869,10 +2853,9 @@ The corresponding execution ordered event is `'test:dequeue'`.
     `undefined` if the test was run through the REPL.
   * `message` {string} The message written to `stderr`.
 
-Emitted when a running test writes to `stderr`.
-This event is only emitted if `--test` flag is passed.
-This event is not guaranteed to be emitted in the same order as the tests are
-defined.
+Emitted when a running test writes to `stderr`. This event is only emitted if
+`--test` flag is passed. This event is not guaranteed to be emitted in the same
+order as the tests are defined.
 
 ### Event: `'test:stdout'`
 
@@ -2884,10 +2867,9 @@ defined.
     `undefined` if the test was run through the REPL.
   * `message` {string} The message written to `stdout`.
 
-Emitted when a running test writes to `stdout`.
-This event is only emitted if `--test` flag is passed.
-This event is not guaranteed to be emitted in the same order as the tests are
-defined.
+Emitted when a running test writes to `stdout`. This event is only emitted if
+`--test` flag is passed. This event is not guaranteed to be emitted in the same
+order as the tests are defined.
 
 ### Event: `'test:watch:drained'`
 
@@ -2919,19 +2901,19 @@ added:
   - v18.17.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function. The first argument
-  to this function is a [`TestContext`][] object. If the hook uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+* `fn` {Function|AsyncFunction} The hook function. The first argument to this
+  function is a [`TestContext`][] object. If the hook uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
-This function is used to create a hook running before
-subtest of the current test.
+This function is used to create a hook running before subtest of the current
+test.
 
 ### `context.beforeEach([fn][, options])`
 
@@ -2941,29 +2923,26 @@ added:
   - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function. The first argument
-  to this function is a [`TestContext`][] object. If the hook uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+* `fn` {Function|AsyncFunction} The hook function. The first argument to this
+  function is a [`TestContext`][] object. If the hook uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
-This function is used to create a hook running
-before each subtest of the current test.
+This function is used to create a hook running before each subtest of the
+current test.
 
 ```js
 test('top level test', async (t) => {
   t.beforeEach((t) => t.diagnostic(`about to run ${t.name}`));
-  await t.test(
-    'This is a subtest',
-    (t) => {
-      assert.ok('some relevant assertion here');
-    },
-  );
+  await t.test('This is a subtest', (t) => {
+    assert.ok('some relevant assertion here');
+  });
 });
 ```
 
@@ -2975,16 +2954,16 @@ added:
   - v18.13.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function. The first argument
-  to this function is a [`TestContext`][] object. If the hook uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+* `fn` {Function|AsyncFunction} The hook function. The first argument to this
+  function is a [`TestContext`][] object. If the hook uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
 This function is used to create a hook that runs after the current test
 finishes.
@@ -3004,29 +2983,26 @@ added:
   - v16.18.0
 -->
 
-* `fn` {Function|AsyncFunction} The hook function. The first argument
-  to this function is a [`TestContext`][] object. If the hook uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+* `fn` {Function|AsyncFunction} The hook function. The first argument to this
+  function is a [`TestContext`][] object. If the hook uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
 * `options` {Object} Configuration options for the hook. The following
   properties are supported:
   * `signal` {AbortSignal} Allows aborting an in-progress hook.
-  * `timeout` {number} A number of milliseconds the hook will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
+  * `timeout` {number} A number of milliseconds the hook will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
 
-This function is used to create a hook running
-after each subtest of the current test.
+This function is used to create a hook running after each subtest of the current
+test.
 
 ```js
 test('top level test', async (t) => {
   t.afterEach((t) => t.diagnostic(`finished running ${t.name}`));
-  await t.test(
-    'This is a subtest',
-    (t) => {
-      assert.ok('some relevant assertion here');
-    },
-  );
+  await t.test('This is a subtest', (t) => {
+    assert.ok('some relevant assertion here');
+  });
 });
 ```
 
@@ -3041,8 +3017,8 @@ added:
 * `message` {string} Message to be reported.
 
 This function is used to write diagnostics to the output. Any diagnostic
-information is included at the end of the test's results. This function does
-not return a value.
+information is included at the end of the test's results. This function does not
+return a value.
 
 ```js
 test('top level test', (t) => {
@@ -3069,13 +3045,15 @@ added:
 
 > Stability: 1 - Experimental
 
-* `count` {number} The number of assertions and subtests that are expected to run.
+* `count` {number} The number of assertions and subtests that are expected to
+  run.
 
-This function is used to set the number of assertions and subtests that are expected to run
-within the test. If the number of assertions and subtests that run does not match the
-expected count, the test will fail.
+This function is used to set the number of assertions and subtests that are
+expected to run within the test. If the number of assertions and subtests that
+run does not match the expected count, the test will fail.
 
-> Note: To make sure assertions are tracked, `t.assert` must be used instead of `assert` directly.
+> Note: To make sure assertions are tracked, `t.assert` must be used instead of
+> `assert` directly.
 
 ```js
 test('top level test', (t) => {
@@ -3085,8 +3063,8 @@ test('top level test', (t) => {
 });
 ```
 
-When working with asynchronous code, the `plan` function can be used to ensure that the
-correct number of assertions are run:
+When working with asynchronous code, the `plan` function can be used to ensure
+that the correct number of assertions are run:
 
 ```js
 test('planning with streams', (t, done) => {
@@ -3163,9 +3141,8 @@ added:
 * `message` {string} Optional skip message.
 
 This function causes the test's output to indicate the test as skipped. If
-`message` is provided, it is included in the output. Calling `skip()` does
-not terminate execution of the test function. This function does not return a
-value.
+`message` is provided, it is included in the output. Calling `skip()` does not
+terminate execution of the test function. This function does not return a value.
 
 ```js
 test('top level test', (t) => {
@@ -3219,32 +3196,30 @@ changes:
   `fn` does not have a name.
 * `options` {Object} Configuration options for the subtest. The following
   properties are supported:
-  * `concurrency` {number|boolean|null} If a number is provided,
-    then that many tests would run in parallel within the application thread.
-    If `true`, it would run all subtests in parallel.
-    If `false`, it would only run one test at a time.
-    If unspecified, subtests inherit this value from their parent.
+  * `concurrency` {number|boolean|null} If a number is provided, then that many
+    tests would run in parallel within the application thread. If `true`, it
+    would run all subtests in parallel. If `false`, it would only run one test
+    at a time. If unspecified, subtests inherit this value from their parent.
     **Default:** `null`.
-  * `only` {boolean} If truthy, and the test context is configured to run
-    `only` tests, then this test will be run. Otherwise, the test is skipped.
+  * `only` {boolean} If truthy, and the test context is configured to run `only`
+    tests, then this test will be run. Otherwise, the test is skipped.
     **Default:** `false`.
   * `signal` {AbortSignal} Allows aborting an in-progress test.
   * `skip` {boolean|string} If truthy, the test is skipped. If a string is
     provided, that string is displayed in the test results as the reason for
     skipping the test. **Default:** `false`.
-  * `todo` {boolean|string} If truthy, the test marked as `TODO`. If a string
-    is provided, that string is displayed in the test results as the reason why
-    the test is `TODO`. **Default:** `false`.
-  * `timeout` {number} A number of milliseconds the test will fail after.
-    If unspecified, subtests inherit this value from their parent.
-    **Default:** `Infinity`.
-  * `plan` {number} The number of assertions and subtests expected to be run in the test.
-    If the number of assertions run in the test does not match the number
-    specified in the plan, the test will fail.
-    **Default:** `undefined`.
-* `fn` {Function|AsyncFunction} The function under test. The first argument
-  to this function is a [`TestContext`][] object. If the test uses callbacks,
-  the callback function is passed as the second argument. **Default:** A no-op
+  * `todo` {boolean|string} If truthy, the test marked as `TODO`. If a string is
+    provided, that string is displayed in the test results as the reason why the
+    test is `TODO`. **Default:** `false`.
+  * `timeout` {number} A number of milliseconds the test will fail after. If
+    unspecified, subtests inherit this value from their parent. **Default:**
+    `Infinity`.
+  * `plan` {number} The number of assertions and subtests expected to be run in
+    the test. If the number of assertions run in the test does not match the
+    number specified in the plan, the test will fail. **Default:** `undefined`.
+* `fn` {Function|AsyncFunction} The function under test. The first argument to
+  this function is a [`TestContext`][] object. If the test uses callbacks, the
+  callback function is passed as the second argument. **Default:** A no-op
   function.
 * Returns: {Promise} Fulfilled with `undefined` once the test completes.
 

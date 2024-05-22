@@ -10,9 +10,9 @@ added: v0.3.7
 
 * {Object}
 
-Provides general utility methods when interacting with instances of
-`Module`, the [`module`][] variable often seen in [CommonJS][] modules. Accessed
-via `import 'node:module'` or `require('node:module')`.
+Provides general utility methods when interacting with instances of `Module`,
+the [`module`][] variable often seen in [CommonJS][] modules. Accessed via
+`import 'node:module'` or `require('node:module')`.
 
 ### `module.builtinModules`
 
@@ -25,11 +25,11 @@ added:
 
 * {string\[]}
 
-A list of the names of all modules provided by Node.js. Can be used to verify
-if a module is maintained by a third party or not.
+A list of the names of all modules provided by Node.js. Can be used to verify if
+a module is maintained by a third party or not.
 
-`module` in this context isn't the same object that's provided
-by the [module wrapper][]. To access it, require the `Module` module:
+`module` in this context isn't the same object that's provided by the [module
+wrapper][]. To access it, require the `Module` module:
 
 ```mjs
 // module.mjs
@@ -49,9 +49,8 @@ const builtin = require('node:module').builtinModules;
 added: v12.2.0
 -->
 
-* `filename` {string|URL} Filename to be used to construct the require
-  function. Must be a file URL object, file URL string, or absolute path
-  string.
+* `filename` {string|URL} Filename to be used to construct the require function.
+  Must be a file URL object, file URL string, or absolute path string.
 * Returns: {require} Require function
 
 ```mjs
@@ -186,9 +185,9 @@ changes:
 ### Enabling
 
 Module resolution and loading can be customized by registering a file which
-exports a set of hooks. This can be done using the [`register`][] method
-from `node:module`, which you can run before your application code by
-using the `--import` flag:
+exports a set of hooks. This can be done using the [`register`][] method from
+`node:module`, which you can run before your application code by using the
+`--import` flag:
 
 ```bash
 node --import ./register-hooks.js ./my-app.js
@@ -216,8 +215,8 @@ node --import some-package/register ./my-app.js
 ```
 
 Where `some-package` has an [`"exports"`][] field defining the `/register`
-export to map to a file that calls `register()`, like the following `register-hooks.js`
-example.
+export to map to a file that calls `register()`, like the following
+`register-hooks.js` example.
 
 Using `--import` ensures that the hooks are registered before any application
 files are imported, including the entry point of the application. Alternatively,
@@ -255,8 +254,8 @@ evaluated from the leaves of the tree first, then back to the trunk. There can
 be static imports _within_ `my-app.js`, which will not be evaluated until
 `my-app.js` is dynamically imported.
 
-`my-app.js` can also be CommonJS. Customization hooks will run for any
-modules that it references via `import` (and optionally `require`).
+`my-app.js` can also be CommonJS. Customization hooks will run for any modules
+that it references via `import` (and optionally `require`).
 
 Finally, if all you want to do is register hooks before your app runs and you
 don't want to create a separate file for that purpose, you can pass a `data:`
@@ -292,16 +291,15 @@ import('./my-app.mjs');
 
 In this example, the registered hooks will form chains. These chains run
 last-in, first out (LIFO). If both `foo.mjs` and `bar.mjs` define a `resolve`
-hook, they will be called like so (note the right-to-left):
-node's default ← `./foo.mjs` ← `./bar.mjs`
-(starting with `./bar.mjs`, then `./foo.mjs`, then the Node.js default).
-The same applies to all the other hooks.
+hook, they will be called like so (note the right-to-left): node's default ←
+`./foo.mjs` ← `./bar.mjs` (starting with `./bar.mjs`, then `./foo.mjs`, then the
+Node.js default). The same applies to all the other hooks.
 
-The registered hooks also affect `register` itself. In this example,
-`bar.mjs` will be resolved and loaded via the hooks registered by `foo.mjs`
-(because `foo`'s hooks will have already been added to the chain). This allows
-for things like writing hooks in non-JavaScript languages, so long as
-earlier registered hooks transpile into JavaScript.
+The registered hooks also affect `register` itself. In this example, `bar.mjs`
+will be resolved and loaded via the hooks registered by `foo.mjs` (because
+`foo`'s hooks will have already been added to the chain). This allows for things
+like writing hooks in non-JavaScript languages, so long as earlier registered
+hooks transpile into JavaScript.
 
 The `register` method cannot be called from within the module that defines the
 hooks.
@@ -376,8 +374,8 @@ export async function load(url, context, nextLoad) {
 }
 ```
 
-Hooks are part of a [chain][], even if that chain consists of only one
-custom (user-provided) hook and the default hook, which is always present. Hook
+Hooks are part of a [chain][], even if that chain consists of only one custom
+(user-provided) hook and the default hook, which is always present. Hook
 functions nest: each one must always return a plain object, and chaining happens
 as a result of each function calling `next<hookName>()`, which is a reference to
 the subsequent loader's hook (in LIFO order).
@@ -409,8 +407,8 @@ The `initialize` hook provides a way to define a custom function that runs in
 the hooks thread when the hooks module is initialized. Initialization happens
 when the hooks module is registered via [`register`][].
 
-This hook can receive data from a [`register`][] invocation, including
-ports and other transferrable objects. The return value of `initialize` can be a
+This hook can receive data from a [`register`][] invocation, including ports and
+other transferrable objects. The return value of `initialize` can be a
 {Promise}, in which case it will be awaited before the main application thread
 execution resumes.
 
@@ -510,8 +508,7 @@ changes:
   * `context` {Object}
 * Returns: {Object|Promise}
   * `format` {string|null|undefined} A hint to the load hook (it might be
-    ignored)
-    `'builtin' | 'commonjs' | 'json' | 'module' | 'wasm'`
+    ignored) `'builtin' | 'commonjs' | 'json' | 'module' | 'wasm'`
   * `importAttributes` {Object|undefined} The import attributes to use when
     caching the module (optional; if excluded the input will be used)
   * `shortCircuit` {undefined|boolean} A signal that this hook intends to
@@ -534,14 +531,14 @@ the internal module cache. The `resolve` hook is responsible for returning an
 `importAttributes` object if the module should be cached with different
 attributes than were present in the source code.
 
-The `conditions` property in `context` is an array of conditions for
-[package exports conditions][Conditional exports] that apply to this resolution
-request. They can be used for looking up conditional mappings elsewhere or to
-modify the list when calling the default resolution logic.
+The `conditions` property in `context` is an array of conditions for [package
+exports conditions][Conditional exports] that apply to this resolution request.
+They can be used for looking up conditional mappings elsewhere or to modify the
+list when calling the default resolution logic.
 
-The current [package exports conditions][Conditional exports] are always in
-the `context.conditions` array passed into the hook. To guarantee _default
-Node.js module specifier resolution behavior_ when calling `defaultResolve`, the
+The current [package exports conditions][Conditional exports] are always in the
+`context.conditions` array passed into the hook. To guarantee _default Node.js
+module specifier resolution behavior_ when calling `defaultResolve`, the
 `context.conditions` array passed to it _must_ include _all_ elements of the
 `context.conditions` array originally passed into the `resolve` hook.
 
@@ -549,7 +546,8 @@ Node.js module specifier resolution behavior_ when calling `defaultResolve`, the
 export async function resolve(specifier, context, nextResolve) {
   const { parentURL = null } = context;
 
-  if (Math.random() > 0.5) { // Some condition.
+  if (Math.random() > 0.5) {
+    // Some condition.
     // For some or all specifiers, do some custom logic for resolving.
     // Always return an object of the form {url: <string>}.
     return {
@@ -560,7 +558,8 @@ export async function resolve(specifier, context, nextResolve) {
     };
   }
 
-  if (Math.random() < 0.5) { // Another condition.
+  if (Math.random() < 0.5) {
+    // Another condition.
     // When calling `defaultResolve`, the arguments can be modified. In this
     // case it's adding another value for matching conditional exports.
     return nextResolve(specifier, {
@@ -599,8 +598,8 @@ changes:
   * `format` {string|null|undefined} The format optionally supplied by the
     `resolve` hook chain
   * `importAttributes` {Object}
-* `nextLoad` {Function} The subsequent `load` hook in the chain, or the
-  Node.js default `load` hook after the last user-supplied `load` hook
+* `nextLoad` {Function} The subsequent `load` hook in the chain, or the Node.js
+  default `load` hook after the last user-supplied `load` hook
   * `specifier` {string}
   * `context` {Object}
 * Returns: {Object}
@@ -641,10 +640,10 @@ Omitting vs providing a `source` for `'commonjs'` has very different effects:
   future, nullish `source` will not be supported.
 
 When `node` is run with `--experimental-default-type=commonjs`, the Node.js
-internal `load` implementation, which is the value of `next` for the
-last hook in the `load` chain, returns `null` for `source` when `format` is
-`'commonjs'` for backward compatibility. Here is an example hook that would
-opt-in to using the non-default behavior:
+internal `load` implementation, which is the value of `next` for the last hook
+in the `load` chain, returns `null` for `source` when `format` is `'commonjs'`
+for backward compatibility. Here is an example hook that would opt-in to using
+the non-default behavior:
 
 ```mjs
 import { readFile } from 'node:fs/promises';
@@ -667,8 +666,8 @@ export async function load(url, context, nextLoad) {
 * The specific [`ArrayBuffer`][] object is a [`SharedArrayBuffer`][].
 * The specific [`TypedArray`][] object is a [`Uint8Array`][].
 
-If the source value of a text-based format (i.e., `'json'`, `'module'`)
-is not a string, it is converted to a string using [`util.TextDecoder`][].
+If the source value of a text-based format (i.e., `'json'`, `'module'`) is not a
+string, it is converted to a string using [`util.TextDecoder`][].
 
 The `load` hook provides a way to define a custom method for retrieving the
 source code of a resolved URL. This would allow a loader to potentially avoid
@@ -679,7 +678,8 @@ a supported one, for example `yaml` to `module`.
 export async function load(url, context, nextLoad) {
   const { format } = context;
 
-  if (Math.random() > 0.5) { // Some condition
+  if (Math.random() > 0.5) {
+    // Some condition
     /*
       For some or all URLs, do some custom logic for retrieving the source.
       Always return an object of the form {
@@ -731,14 +731,16 @@ export function load(url, context, nextLoad) {
       get(url, (res) => {
         let data = '';
         res.setEncoding('utf8');
-        res.on('data', (chunk) => data += chunk);
-        res.on('end', () => resolve({
-          // This example assumes all network-provided JavaScript is ES module
-          // code.
-          format: 'module',
-          shortCircuit: true,
-          source: data,
-        }));
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () =>
+          resolve({
+            // This example assumes all network-provided JavaScript is ES module
+            // code.
+            format: 'module',
+            shortCircuit: true,
+            source: data,
+          }),
+        );
       }).on('error', (err) => reject(err));
     });
   }
@@ -813,9 +815,7 @@ async function getPackageType(url) {
   // extensionless files or a url ending in a trailing space)
   const isFilePath = !!extname(url);
   // If it is a file path, get the directory it's in
-  const dir = isFilePath ?
-    dirname(fileURLToPath(url)) :
-    url;
+  const dir = isFilePath ? dirname(fileURLToPath(url)) : url;
   // Compose a file path to a package.json in the same directory,
   // which may or may not exist
   const packagePath = resolvePath(dir, 'package.json');
@@ -897,7 +897,8 @@ import 'a-module';
 console.log('some module!');
 ```
 
-Running `node --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register(pathToFileURL("./import-map-hooks.js"));' main.js`
+Running
+`node --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register(pathToFileURL("./import-map-hooks.js"));' main.js`
 should print `some module!`.
 
 ## Source map v3 support
@@ -910,9 +911,9 @@ added:
 
 > Stability: 1 - Experimental
 
-Helpers for interacting with the source map cache. This cache is
-populated when source map parsing is enabled and
-[source map include directives][] are found in a modules' footer.
+Helpers for interacting with the source map cache. This cache is populated when
+source map parsing is enabled and [source map include directives][] are found in
+a modules' footer.
 
 To enable source map parsing, Node.js must be run with the flag
 [`--enable-source-maps`][], or with code coverage enabled by setting
@@ -974,8 +975,8 @@ Creates a new `sourceMap` instance.
 * `mappings`: {string}
 * `sourceRoot`: {string}
 
-`lineLengths` is an optional array of the length of each line in the
-generated code.
+`lineLengths` is an optional array of the length of each line in the generated
+code.
 
 #### `sourceMap.payload`
 
@@ -985,64 +986,62 @@ Getter for the payload used to construct the [`SourceMap`][] instance.
 
 #### `sourceMap.findEntry(lineOffset, columnOffset)`
 
-* `lineOffset` {number} The zero-indexed line number offset in
-  the generated source
-* `columnOffset` {number} The zero-indexed column number offset
-  in the generated source
+* `lineOffset` {number} The zero-indexed line number offset in the generated
+  source
+* `columnOffset` {number} The zero-indexed column number offset in the generated
+  source
 * Returns: {Object}
 
-Given a line offset and column offset in the generated source
-file, returns an object representing the SourceMap range in the
-original file if found, or an empty object if not.
+Given a line offset and column offset in the generated source file, returns an
+object representing the SourceMap range in the original file if found, or an
+empty object if not.
 
 The object returned contains the following keys:
 
-* generatedLine: {number} The line offset of the start of the
-  range in the generated source
-* generatedColumn: {number} The column offset of start of the
-  range in the generated source
-* originalSource: {string} The file name of the original source,
-  as reported in the SourceMap
-* originalLine: {number} The line offset of the start of the
-  range in the original source
-* originalColumn: {number} The column offset of start of the
-  range in the original source
+* generatedLine: {number} The line offset of the start of the range in the
+  generated source
+* generatedColumn: {number} The column offset of start of the range in the
+  generated source
+* originalSource: {string} The file name of the original source, as reported in
+  the SourceMap
+* originalLine: {number} The line offset of the start of the range in the
+  original source
+* originalColumn: {number} The column offset of start of the range in the
+  original source
 * name: {string}
 
-The returned value represents the raw range as it appears in the
-SourceMap, based on zero-indexed offsets, _not_ 1-indexed line and
-column numbers as they appear in Error messages and CallSite
-objects.
+The returned value represents the raw range as it appears in the SourceMap,
+based on zero-indexed offsets, _not_ 1-indexed line and column numbers as they
+appear in Error messages and CallSite objects.
 
-To get the corresponding 1-indexed line and column numbers from a
-lineNumber and columnNumber as they are reported by Error stacks
-and CallSite objects, use `sourceMap.findOrigin(lineNumber,
-columnNumber)`
+To get the corresponding 1-indexed line and column numbers from a lineNumber and
+columnNumber as they are reported by Error stacks and CallSite objects, use
+`sourceMap.findOrigin(lineNumber, columnNumber)`
 
 #### `sourceMap.findOrigin(lineNumber, columnNumber)`
 
-* `lineNumber` {number} The 1-indexed line number of the call
-  site in the generated source
-* `columnNumber` {number} The 1-indexed column number
-  of the call site in the generated source
+* `lineNumber` {number} The 1-indexed line number of the call site in the
+  generated source
+* `columnNumber` {number} The 1-indexed column number of the call site in the
+  generated source
 * Returns: {Object}
 
-Given a 1-indexed `lineNumber` and `columnNumber` from a call site in
-the generated source, find the corresponding call site location
-in the original source.
+Given a 1-indexed `lineNumber` and `columnNumber` from a call site in the
+generated source, find the corresponding call site location in the original
+source.
 
-If the `lineNumber` and `columnNumber` provided are not found in any
-source map, then an empty object is returned. Otherwise, the
-returned object contains the following keys:
+If the `lineNumber` and `columnNumber` provided are not found in any source map,
+then an empty object is returned. Otherwise, the returned object contains the
+following keys:
 
-* name: {string | undefined} The name of the range in the
-  source map, if one was provided
-* fileName: {string} The file name of the original source, as
-  reported in the SourceMap
-* lineNumber: {number} The 1-indexed lineNumber of the
-  corresponding call site in the original source
-* columnNumber: {number} The 1-indexed columnNumber of the
-  corresponding call site in the original source
+* name: {string | undefined} The name of the range in the source map, if one was
+  provided
+* fileName: {string} The file name of the original source, as reported in the
+  SourceMap
+* lineNumber: {number} The 1-indexed lineNumber of the corresponding call site
+  in the original source
+* columnNumber: {number} The 1-indexed columnNumber of the corresponding call
+  site in the original source
 
 [CommonJS]: modules.md
 [Conditional exports]: packages.md#conditional-exports

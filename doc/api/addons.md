@@ -8,32 +8,29 @@ _Addons_ are dynamically-linked shared objects written in C++. The
 [`require()`][require] function can load addons as ordinary Node.js modules.
 Addons provide an interface between JavaScript and C/C++ libraries.
 
-There are three options for implementing addons: Node-API, nan, or direct
-use of internal V8, libuv, and Node.js libraries. Unless there is a need for
-direct access to functionality which is not exposed by Node-API, use Node-API.
-Refer to [C/C++ addons with Node-API](n-api.md) for more information on
-Node-API.
+There are three options for implementing addons: Node-API, nan, or direct use of
+internal V8, libuv, and Node.js libraries. Unless there is a need for direct
+access to functionality which is not exposed by Node-API, use Node-API. Refer to
+[C/C++ addons with Node-API](n-api.md) for more information on Node-API.
 
-When not using Node-API, implementing addons is complicated,
-involving knowledge of several components and APIs:
+When not using Node-API, implementing addons is complicated, involving knowledge
+of several components and APIs:
 
-* [V8][]: the C++ library Node.js uses to provide the
-  JavaScript implementation. V8 provides the mechanisms for creating objects,
-  calling functions, etc. V8's API is documented mostly in the
-  `v8.h` header file (`deps/v8/include/v8.h` in the Node.js source
-  tree), which is also available [online][v8-docs].
+* [V8][]: the C++ library Node.js uses to provide the JavaScript implementation.
+  V8 provides the mechanisms for creating objects, calling functions, etc. V8's
+  API is documented mostly in the `v8.h` header file (`deps/v8/include/v8.h` in
+  the Node.js source tree), which is also available [online][v8-docs].
 
 * [libuv][]: The C library that implements the Node.js event loop, its worker
-  threads and all of the asynchronous behaviors of the platform. It also
-  serves as a cross-platform abstraction library, giving easy, POSIX-like
-  access across all major operating systems to many common system tasks, such
-  as interacting with the file system, sockets, timers, and system events. libuv
-  also provides a threading abstraction similar to POSIX threads for
-  more sophisticated asynchronous addons that need to move beyond the
-  standard event loop. Addon authors should
-  avoid blocking the event loop with I/O or other time-intensive tasks by
-  offloading work via libuv to non-blocking system operations, worker threads,
-  or a custom use of libuv threads.
+  threads and all of the asynchronous behaviors of the platform. It also serves
+  as a cross-platform abstraction library, giving easy, POSIX-like access across
+  all major operating systems to many common system tasks, such as interacting
+  with the file system, sockets, timers, and system events. libuv also provides
+  a threading abstraction similar to POSIX threads for more sophisticated
+  asynchronous addons that need to move beyond the standard event loop. Addon
+  authors should avoid blocking the event loop with I/O or other time-intensive
+  tasks by offloading work via libuv to non-blocking system operations, worker
+  threads, or a custom use of libuv threads.
 
 * Internal Node.js libraries. Node.js itself exports C++ APIs that addons can
   use, the most important of which is the `node::ObjectWrap` class.
@@ -44,8 +41,8 @@ involving knowledge of several components and APIs:
   re-exported by Node.js and may be used to various extents by addons. See
   [Linking to libraries included with Node.js][] for additional information.
 
-All of the following examples are available for [download][] and may
-be used as the starting-point for an addon.
+All of the following examples are available for [download][] and may be used as
+the starting-point for an addon.
 
 ## Hello world
 
@@ -86,8 +83,7 @@ NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
 }  // namespace demo
 ```
 
-All Node.js addons must export an initialization function following
-the pattern:
+All Node.js addons must export an initialization function following the pattern:
 
 ```cpp
 void Initialize(Local<Object> exports);
@@ -97,11 +93,11 @@ NODE_MODULE(NODE_GYP_MODULE_NAME, Initialize)
 There is no semi-colon after `NODE_MODULE` as it's not a function (see
 `node.h`).
 
-The `module_name` must match the filename of the final binary (excluding
-the `.node` suffix).
+The `module_name` must match the filename of the final binary (excluding the
+`.node` suffix).
 
-In the `hello.cc` example, then, the initialization function is `Initialize`
-and the addon module name is `addon`.
+In the `hello.cc` example, then, the initialization function is `Initialize` and
+the addon module name is `addon`.
 
 When building addons with `node-gyp`, using the macro `NODE_GYP_MODULE_NAME` as
 the first parameter of `NODE_MODULE()` will ensure that the name of the final
@@ -116,8 +112,8 @@ There are environments in which Node.js addons may need to be loaded multiple
 times in multiple contexts. For example, the [Electron][] runtime runs multiple
 instances of Node.js in a single process. Each instance will have its own
 `require()` cache, and thus each instance will need a native addon to behave
-correctly when loaded via `require()`. This means that the addon
-must support multiple initializations.
+correctly when loaded via `require()`. This means that the addon must support
+multiple initializations.
 
 A context-aware addon can be constructed by using the macro
 `NODE_MODULE_INITIALIZER`, which expands to the name of a function which Node.js
@@ -150,12 +146,12 @@ invocation of `NODE_MODULE_INIT()`:
 
 The choice to build a context-aware addon carries with it the responsibility of
 carefully managing global static data. Since the addon may be loaded multiple
-times, potentially even from different threads, any global static data stored
-in the addon must be properly protected, and must not contain any persistent
-references to JavaScript objects. The reason for this is that JavaScript
-objects are only valid in one context, and will likely cause a crash when
-accessed from the wrong context or from a different thread than the one on which
-they were created.
+times, potentially even from different threads, any global static data stored in
+the addon must be properly protected, and must not contain any persistent
+references to JavaScript objects. The reason for this is that JavaScript objects
+are only valid in one context, and will likely cause a crash when accessed from
+the wrong context or from a different thread than the one on which they were
+created.
 
 The context-aware addon can be structured to avoid global static data by
 performing the following steps:
@@ -173,10 +169,10 @@ performing the following steps:
   instance and a pointer to `DeleteInstance()`. This will ensure the instance is
   deleted when the environment is torn down.
 * Store the instance of the class in a `v8::External`, and
-* Pass the `v8::External` to all methods exposed to JavaScript by passing it
-  to `v8::FunctionTemplate::New()` or `v8::Function::New()` which creates the
+* Pass the `v8::External` to all methods exposed to JavaScript by passing it to
+  `v8::FunctionTemplate::New()` or `v8::Function::New()` which creates the
   native-backed JavaScript functions. The third parameter of
-  `v8::FunctionTemplate::New()` or `v8::Function::New()`  accepts the
+  `v8::FunctionTemplate::New()` or `v8::Function::New()` accepts the
   `v8::External` and makes it available in the native callback using the
   `v8::FunctionCallbackInfo::Data()` method.
 
@@ -248,8 +244,8 @@ changes:
     description: Cleanup hooks may now be asynchronous.
 -->
 
-In order to be loaded from multiple Node.js environments,
-such as a main thread and a Worker thread, an add-on needs to either:
+In order to be loaded from multiple Node.js environments, such as a main thread
+and a Worker thread, an add-on needs to either:
 
 * Be an Node-API addon, or
 * Be declared as context-aware using `NODE_MODULE_INIT()` as described above
@@ -269,8 +265,8 @@ down. If necessary, such hooks can be removed before they are run using
 `RemoveEnvironmentCleanupHook()`, which has the same signature. Callbacks are
 run in last-in first-out order.
 
-If necessary, there is an additional pair of `AddEnvironmentCleanupHook()`
-and `RemoveEnvironmentCleanupHook()` overloads, where the cleanup hook takes a
+If necessary, there is an additional pair of `AddEnvironmentCleanupHook()` and
+`RemoveEnvironmentCleanupHook()` overloads, where the cleanup hook takes a
 callback function. This can be used for shutting down asynchronous resources,
 such as any libuv handles registered by the addon.
 
@@ -332,41 +328,41 @@ require('./build/Release/addon');
 ### Building
 
 Once the source code has been written, it must be compiled into the binary
-`addon.node` file. To do so, create a file called `binding.gyp` in the
-top-level of the project describing the build configuration of the module
-using a JSON-like format. This file is used by [node-gyp][], a tool written
-specifically to compile Node.js addons.
+`addon.node` file. To do so, create a file called `binding.gyp` in the top-level
+of the project describing the build configuration of the module using a
+JSON-like format. This file is used by [node-gyp][], a tool written specifically
+to compile Node.js addons.
 
 ```json
 {
   "targets": [
     {
       "target_name": "addon",
-      "sources": [ "hello.cc" ]
+      "sources": ["hello.cc"]
     }
   ]
 }
 ```
 
-A version of the `node-gyp` utility is bundled and distributed with
-Node.js as part of `npm`. This version is not made directly available for
-developers to use and is intended only to support the ability to use the
-`npm install` command to compile and install addons. Developers who wish to
-use `node-gyp` directly can install it using the command
-`npm install -g node-gyp`. See the `node-gyp` [installation instructions][] for
-more information, including platform-specific requirements.
+A version of the `node-gyp` utility is bundled and distributed with Node.js as
+part of `npm`. This version is not made directly available for developers to use
+and is intended only to support the ability to use the `npm install` command to
+compile and install addons. Developers who wish to use `node-gyp` directly can
+install it using the command `npm install -g node-gyp`. See the `node-gyp`
+[installation instructions][] for more information, including platform-specific
+requirements.
 
 Once the `binding.gyp` file has been created, use `node-gyp configure` to
-generate the appropriate project build files for the current platform. This
-will generate either a `Makefile` (on Unix platforms) or a `vcxproj` file
-(on Windows) in the `build/` directory.
+generate the appropriate project build files for the current platform. This will
+generate either a `Makefile` (on Unix platforms) or a `vcxproj` file (on
+Windows) in the `build/` directory.
 
 Next, invoke the `node-gyp build` command to generate the compiled `addon.node`
 file. This will be put into the `build/Release/` directory.
 
 When using `npm install` to install a Node.js addon, npm uses its own bundled
-version of `node-gyp` to perform this same set of actions, generating a
-compiled version of the addon for the user's platform on demand.
+version of `node-gyp` to perform this same set of actions, generating a compiled
+version of the addon for the user's platform on demand.
 
 Once built, the binary addon can be used from within Node.js by pointing
 [`require()`][require] to the built `addon.node` module:
@@ -379,9 +375,9 @@ console.log(addon.hello());
 // Prints: 'world'
 ```
 
-Because the exact path to the compiled addon binary can vary depending on how
-it is compiled (i.e. sometimes it may be in `./build/Debug/`), addons can use
-the [bindings][] package to load the compiled module.
+Because the exact path to the compiled addon binary can vary depending on how it
+is compiled (i.e. sometimes it may be in `./build/Debug/`), addons can use the
+[bindings][] package to load the compiled module.
 
 While the `bindings` package implementation is more sophisticated in how it
 locates addon modules, it is essentially using a `try…catch` pattern similar to:
@@ -415,28 +411,28 @@ aware of:
 
 ### Loading addons using `require()`
 
-The filename extension of the compiled addon binary is `.node` (as opposed
-to `.dll` or `.so`). The [`require()`][require] function is written to look for
+The filename extension of the compiled addon binary is `.node` (as opposed to
+`.dll` or `.so`). The [`require()`][require] function is written to look for
 files with the `.node` file extension and initialize those as dynamically-linked
 libraries.
 
 When calling [`require()`][require], the `.node` extension can usually be
 omitted and Node.js will still find and initialize the addon. One caveat,
 however, is that Node.js will first attempt to locate and load modules or
-JavaScript files that happen to share the same base name. For instance, if
-there is a file `addon.js` in the same directory as the binary `addon.node`,
-then [`require('addon')`][require] will give precedence to the `addon.js` file
-and load it instead.
+JavaScript files that happen to share the same base name. For instance, if there
+is a file `addon.js` in the same directory as the binary `addon.node`, then
+[`require('addon')`][require] will give precedence to the `addon.js` file and
+load it instead.
 
 ## Native abstractions for Node.js
 
-Each of the examples illustrated in this document directly use the
-Node.js and V8 APIs for implementing addons. The V8 API can, and has, changed
-dramatically from one V8 release to the next (and one major Node.js release to
-the next). With each change, addons may need to be updated and recompiled in
-order to continue functioning. The Node.js release schedule is designed to
-minimize the frequency and impact of such changes but there is little that
-Node.js can do to ensure stability of the V8 APIs.
+Each of the examples illustrated in this document directly use the Node.js and
+V8 APIs for implementing addons. The V8 API can, and has, changed dramatically
+from one V8 release to the next (and one major Node.js release to the next).
+With each change, addons may need to be updated and recompiled in order to
+continue functioning. The Node.js release schedule is designed to minimize the
+frequency and impact of such changes but there is little that Node.js can do to
+ensure stability of the V8 APIs.
 
 The [Native Abstractions for Node.js][] (or `nan`) provide a set of tools that
 addon developers are recommended to use to keep compatibility between past and
@@ -447,21 +443,19 @@ illustration of how it can be used.
 
 > Stability: 2 - Stable
 
-Node-API is an API for building native addons. It is independent from
-the underlying JavaScript runtime (e.g. V8) and is maintained as part of
-Node.js itself. This API will be Application Binary Interface (ABI) stable
-across versions of Node.js. It is intended to insulate addons from
-changes in the underlying JavaScript engine and allow modules
-compiled for one version to run on later versions of Node.js without
-recompilation. Addons are built/packaged with the same approach/tools
-outlined in this document (node-gyp, etc.). The only difference is the
-set of APIs that are used by the native code. Instead of using the V8
-or [Native Abstractions for Node.js][] APIs, the functions available
-in the Node-API are used.
+Node-API is an API for building native addons. It is independent from the
+underlying JavaScript runtime (e.g. V8) and is maintained as part of Node.js
+itself. This API will be Application Binary Interface (ABI) stable across
+versions of Node.js. It is intended to insulate addons from changes in the
+underlying JavaScript engine and allow modules compiled for one version to run
+on later versions of Node.js without recompilation. Addons are built/packaged
+with the same approach/tools outlined in this document (node-gyp, etc.). The
+only difference is the set of APIs that are used by the native code. Instead of
+using the V8 or [Native Abstractions for Node.js][] APIs, the functions
+available in the Node-API are used.
 
-Creating and maintaining an addon that benefits from the ABI stability
-provided by Node-API carries with it certain
-[implementation considerations][].
+Creating and maintaining an addon that benefits from the ABI stability provided
+by Node-API carries with it certain [implementation considerations][].
 
 To use Node-API in the above "Hello world" example, replace the content of
 `hello.cc` with the following. All other instructions remain the same.
@@ -504,10 +498,9 @@ The functions available and how to use them are documented in
 ## Addon examples
 
 Following are some example addons intended to help developers get started. The
-examples use the V8 APIs. Refer to the online [V8 reference][v8-docs]
-for help with the various V8 calls, and V8's [Embedder's Guide][] for an
-explanation of several concepts used such as handles, scopes, function
-templates, etc.
+examples use the V8 APIs. Refer to the online [V8 reference][v8-docs] for help
+with the various V8 calls, and V8's [Embedder's Guide][] for an explanation of
+several concepts used such as handles, scopes, function templates, etc.
 
 Each of these examples using the following `binding.gyp` file:
 
@@ -516,7 +509,7 @@ Each of these examples using the following `binding.gyp` file:
   "targets": [
     {
       "target_name": "addon",
-      "sources": [ "addon.cc" ]
+      "sources": ["addon.cc"]
     }
   ]
 }
@@ -540,8 +533,7 @@ node-gyp configure build
 
 Addons will typically expose objects and functions that can be accessed from
 JavaScript running within Node.js. When functions are invoked from JavaScript,
-the input arguments and return value must be mapped to and from the C/C++
-code.
+the input arguments and return value must be mapped to and from the C/C++ code.
 
 The following example illustrates how to read function arguments passed from
 JavaScript and how to return a result:
@@ -615,8 +607,8 @@ console.log('This should be eight:', addon.add(3, 5));
 ### Callbacks
 
 It is common practice within addons to pass JavaScript functions to a C++
-function and execute them from there. The following example illustrates how
-to invoke such callbacks:
+function and execute them from there. The following example illustrates how to
+invoke such callbacks:
 
 ```cpp
 // addon.cc
@@ -667,7 +659,7 @@ const addon = require('./build/Release/addon');
 
 addon((msg) => {
   console.log(msg);
-// Prints: 'hello world'
+  // Prints: 'hello world'
 });
 ```
 
@@ -730,8 +722,8 @@ console.log(obj1.msg, obj2.msg);
 
 ### Function factory
 
-Another common scenario is creating JavaScript functions that wrap C++
-functions and returning those back to JavaScript:
+Another common scenario is creating JavaScript functions that wrap C++ functions
+and returning those back to JavaScript:
 
 ```cpp
 // addon.cc
@@ -844,8 +836,8 @@ class MyObject : public node::ObjectWrap {
 #endif
 ```
 
-In `myobject.cc`, implement the various methods that are to be exposed.
-In the following code, the method `plusOne()` is exposed by adding it to the
+In `myobject.cc`, implement the various methods that are to be exposed. In the
+following code, the method `plusOne()` is exposed by adding it to the
 constructor's prototype:
 
 ```cpp
@@ -940,10 +932,7 @@ To build this example, the `myobject.cc` file must be added to the
   "targets": [
     {
       "target_name": "addon",
-      "sources": [
-        "addon.cc",
-        "myobject.cc"
-      ]
+      "sources": ["addon.cc", "myobject.cc"]
     }
   ]
 }
@@ -965,15 +954,15 @@ console.log(obj.plusOne());
 ```
 
 The destructor for a wrapper object will run when the object is
-garbage-collected. For destructor testing, there are command-line flags that
-can be used to make it possible to force garbage collection. These flags are
-provided by the underlying V8 JavaScript engine. They are subject to change
-or removal at any time. They are not documented by Node.js or V8, and they
-should never be used outside of testing.
+garbage-collected. For destructor testing, there are command-line flags that can
+be used to make it possible to force garbage collection. These flags are
+provided by the underlying V8 JavaScript engine. They are subject to change or
+removal at any time. They are not documented by Node.js or V8, and they should
+never be used outside of testing.
 
-During shutdown of the process or worker threads destructors are not called
-by the JS engine. Therefore it's the responsibility of the user to track
-these objects and ensure proper destruction to avoid resource leaks.
+During shutdown of the process or worker threads destructors are not called by
+the JS engine. Therefore it's the responsibility of the user to track these
+objects and ensure proper destruction to avoid resource leaks.
 
 ### Factory of wrapped objects
 
@@ -1155,10 +1144,7 @@ Once again, to build this example, the `myobject.cc` file must be added to the
   "targets": [
     {
       "target_name": "addon",
-      "sources": [
-        "addon.cc",
-        "myobject.cc"
-      ]
+      "sources": ["addon.cc", "myobject.cc"]
     }
   ]
 }
@@ -1191,8 +1177,8 @@ console.log(obj2.plusOne());
 
 In addition to wrapping and returning C++ objects, it is possible to pass
 wrapped objects around by unwrapping them with the Node.js helper function
-`node::ObjectWrap::Unwrap`. The following examples shows a function `add()`
-that can take two `MyObject` objects as input arguments:
+`node::ObjectWrap::Unwrap`. The following examples shows a function `add()` that
+can take two `MyObject` objects as input arguments:
 
 ```cpp
 // addon.cc

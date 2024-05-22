@@ -24,10 +24,10 @@ added: v8.2.0
 * Returns: {Function} a callback style function
 
 Takes an `async` function (or a function that returns a `Promise`) and returns a
-function following the error-first callback style, i.e. taking
-an `(err, value) => ...` callback as the last argument. In the callback, the
-first argument will be the rejection reason (or `null` if the `Promise`
-resolved), and the second argument will be the resolved value.
+function following the error-first callback style, i.e. taking an
+`(err, value) => ...` callback as the last argument. In the callback, the first
+argument will be the rejection reason (or `null` if the `Promise` resolved), and
+the second argument will be the resolved value.
 
 ```js
 const util = require('node:util');
@@ -49,9 +49,9 @@ Will print:
 hello world
 ```
 
-The callback is executed asynchronously, and will have a limited stack trace.
-If the callback throws, the process will emit an [`'uncaughtException'`][]
-event, and if not handled will exit.
+The callback is executed asynchronously, and will have a limited stack trace. If
+the callback throws, the process will emit an [`'uncaughtException'`][] event,
+and if not handled will exit.
 
 Since `null` has a special meaning as the first argument to a callback, if a
 wrapped function rejects a `Promise` with a falsy value as a reason, the value
@@ -67,7 +67,7 @@ const callbackFunction = util.callbackify(fn);
 callbackFunction((err, ret) => {
   // When the Promise was rejected with `null` it is wrapped with an Error and
   // the original value is stored in `reason`.
-  err && Object.hasOwn(err, 'reason') && err.reason === null;  // true
+  err && Object.hasOwn(err, 'reason') && err.reason === null; // true
 });
 ```
 
@@ -96,15 +96,15 @@ const debuglog = util.debuglog('foo');
 debuglog('hello from foo [%d]', 123);
 ```
 
-If this program is run with `NODE_DEBUG=foo` in the environment, then
-it will output something like:
+If this program is run with `NODE_DEBUG=foo` in the environment, then it will
+output something like:
 
 ```console
 FOO 3245: hello from foo [123]
 ```
 
-where `3245` is the process id. If it is not run with that
-environment variable set, then it will not print anything.
+where `3245` is the process id. If it is not run with that environment variable
+set, then it will not print anything.
 
 The `section` supports wildcard also:
 
@@ -112,7 +112,7 @@ The `section` supports wildcard also:
 const util = require('node:util');
 const debuglog = util.debuglog('foo-bar');
 
-debuglog('hi there, it\'s foo-bar [%d]', 2333);
+debuglog("hi there, it's foo-bar [%d]", 2333);
 ```
 
 if it is run with `NODE_DEBUG=foo*` in the environment, then it will output
@@ -126,8 +126,8 @@ Multiple comma-separated `section` names may be specified in the `NODE_DEBUG`
 environment variable: `NODE_DEBUG=fs,net,tls`.
 
 The optional `callback` argument can be used to replace the logging function
-with a different function that doesn't have any initialization or
-unnecessary wrapping.
+with a different function that doesn't have any initialization or unnecessary
+wrapping.
 
 ```js
 const util = require('node:util');
@@ -205,10 +205,10 @@ exports.obsoleteFunction = util.deprecate(() => {
 ```
 
 When called, `util.deprecate()` will return a function that will emit a
-`DeprecationWarning` using the [`'warning'`][] event. The warning will
-be emitted and printed to `stderr` the first time the returned function is
-called. After the warning is emitted, the wrapped function is called without
-emitting a warning.
+`DeprecationWarning` using the [`'warning'`][] event. The warning will be
+emitted and printed to `stderr` the first time the returned function is called.
+After the warning is emitted, the wrapped function is called without emitting a
+warning.
 
 If the same optional `code` is supplied in multiple calls to `util.deprecate()`,
 the warning will be emitted only once for that `code`.
@@ -222,9 +222,9 @@ fn1(); // Emits a deprecation warning with code DEP0001
 fn2(); // Does not emit a deprecation warning because it has the same code
 ```
 
-If either the `--no-deprecation` or `--no-warnings` command-line flags are
-used, or if the `process.noDeprecation` property is set to `true` _prior_ to
-the first deprecation warning, the `util.deprecate()` method does nothing.
+If either the `--no-deprecation` or `--no-warnings` command-line flags are used,
+or if the `process.noDeprecation` property is set to `true` _prior_ to the first
+deprecation warning, the `util.deprecate()` method does nothing.
 
 If the `--trace-deprecation` or `--trace-warnings` command-line flags are set,
 or the `process.traceDeprecation` property is set to `true`, a warning and a
@@ -316,9 +316,9 @@ util.format('%s:%s', 'foo');
 Values that are not part of the format string are formatted using
 `util.inspect()` if their type is not `string`.
 
-If there are more arguments passed to the `util.format()` method than the
-number of specifiers, the extra arguments are concatenated to the returned
-string, separated by spaces:
+If there are more arguments passed to the `util.format()` method than the number
+of specifiers, the extra arguments are concatenated to the returned string,
+separated by spaces:
 
 ```js
 util.format('%s:%s', 'foo', 'bar', 'baz');
@@ -354,8 +354,8 @@ added: v10.0.0
 * `inspectOptions` {Object}
 * `format` {string}
 
-This function is identical to [`util.format()`][], except in that it takes
-an `inspectOptions` argument which specifies options that are passed along to
+This function is identical to [`util.format()`][], except in that it takes an
+`inspectOptions` argument which specifies options that are passed along to
 [`util.inspect()`][].
 
 ```js
@@ -374,13 +374,13 @@ added: v9.7.0
 * Returns: {string}
 
 Returns the string name for a numeric error code that comes from a Node.js API.
-The mapping between error codes and error names is platform-dependent.
-See [Common System Errors][] for the names of common errors.
+The mapping between error codes and error names is platform-dependent. See
+[Common System Errors][] for the names of common errors.
 
 ```js
 fs.access('file/that/does/not/exist', (err) => {
   const name = util.getSystemErrorName(err.errno);
-  console.error(name);  // ENOENT
+  console.error(name); // ENOENT
 });
 ```
 
@@ -394,15 +394,15 @@ added:
 
 * Returns: {Map}
 
-Returns a Map of all system error codes available from the Node.js API.
-The mapping between error codes and error names is platform-dependent.
-See [Common System Errors][] for the names of common errors.
+Returns a Map of all system error codes available from the Node.js API. The
+mapping between error codes and error names is platform-dependent. See [Common
+System Errors][] for the names of common errors.
 
 ```js
 fs.access('file/that/does/not/exist', (err) => {
   const errorMap = util.getSystemErrorMap();
   const name = errorMap.get(err.errno);
-  console.error(name);  // ENOENT
+  console.error(name); // ENOENT
 });
 ```
 
@@ -422,17 +422,17 @@ changes:
 * `superConstructor` {Function}
 
 Usage of `util.inherits()` is discouraged. Please use the ES6 `class` and
-`extends` keywords to get language level inheritance support. Also note
-that the two styles are [semantically incompatible][].
+`extends` keywords to get language level inheritance support. The
+two styles are [semantically incompatible][].
 
 Inherit the prototype methods from one [constructor][] into another. The
 prototype of `constructor` will be set to a new object created from
 `superConstructor`.
 
 This mainly adds some input validation on top of
-`Object.setPrototypeOf(constructor.prototype, superConstructor.prototype)`.
-As an additional convenience, `superConstructor` will be accessible
-through the `constructor.super_` property.
+`Object.setPrototypeOf(constructor.prototype, superConstructor.prototype)`. As
+an additional convenience, `superConstructor` will be accessible through the
+`constructor.super_` property.
 
 ```js
 const util = require('node:util');
@@ -577,29 +577,27 @@ changes:
     [`WeakSet`][] entries are also included as well as user defined prototype
     properties (excluding method properties). **Default:** `false`.
   * `depth` {number} Specifies the number of times to recurse while formatting
-    `object`. This is useful for inspecting large objects. To recurse up to
-    the maximum call stack size pass `Infinity` or `null`.
-    **Default:** `2`.
-  * `colors` {boolean} If `true`, the output is styled with ANSI color
-    codes. Colors are customizable. See [Customizing `util.inspect` colors][].
+    `object`. This is useful for inspecting large objects. To recurse up to the
+    maximum call stack size pass `Infinity` or `null`. **Default:** `2`.
+  * `colors` {boolean} If `true`, the output is styled with ANSI color codes.
+    Colors are customizable. See [Customizing `util.inspect` colors][].
     **Default:** `false`.
   * `customInspect` {boolean} If `false`,
     `[util.inspect.custom](depth, opts, inspect)` functions are not invoked.
     **Default:** `true`.
-  * `showProxy` {boolean} If `true`, `Proxy` inspection includes
-    the [`target` and `handler`][] objects. **Default:** `false`.
+  * `showProxy` {boolean} If `true`, `Proxy` inspection includes the [`target`
+    and `handler`][] objects. **Default:** `false`.
   * `maxArrayLength` {integer} Specifies the maximum number of `Array`,
-    [`TypedArray`][], [`Map`][], [`Set`][], [`WeakMap`][],
-    and [`WeakSet`][] elements to include when formatting.
-    Set to `null` or `Infinity` to show all elements. Set to `0` or
-    negative to show no elements. **Default:** `100`.
+    [`TypedArray`][], [`Map`][], [`Set`][], [`WeakMap`][], and [`WeakSet`][]
+    elements to include when formatting. Set to `null` or `Infinity` to show all
+    elements. Set to `0` or negative to show no elements. **Default:** `100`.
   * `maxStringLength` {integer} Specifies the maximum number of characters to
     include when formatting. Set to `null` or `Infinity` to show all elements.
     Set to `0` or negative to show no characters. **Default:** `10000`.
   * `breakLength` {integer} The length at which input values are split across
-    multiple lines. Set to `Infinity` to format the input as a single line
-    (in combination with `compact` set to `true` or any number >= `1`).
-    **Default:** `80`.
+    multiple lines. Set to `Infinity` to format the input as a single line (in
+    combination with `compact` set to `true` or any number >= `1`). **Default:**
+    `80`.
   * `compact` {boolean|integer} Setting this to `false` causes each object key
     to be displayed on a new line. It will break on new lines in text that is
     longer than `breakLength`. If set to a number, the most `n` inner elements
@@ -612,20 +610,19 @@ changes:
     it is used as a [compare function][].
   * `getters` {boolean|string} If set to `true`, getters are inspected. If set
     to `'get'`, only getters without a corresponding setter are inspected. If
-    set to `'set'`, only getters with a corresponding setter are inspected.
-    This might cause side effects depending on the getter function.
-    **Default:** `false`.
+    set to `'set'`, only getters with a corresponding setter are inspected. This
+    might cause side effects depending on the getter function. **Default:**
+    `false`.
   * `numericSeparator` {boolean} If set to `true`, an underscore is used to
-    separate every three digits in all bigints and numbers.
-    **Default:** `false`.
+    separate every three digits in all bigints and numbers. **Default:**
+    `false`.
 * Returns: {string} The representation of `object`.
 
 The `util.inspect()` method returns a string representation of `object` that is
-intended for debugging. The output of `util.inspect` may change at any time
-and should not be depended upon programmatically. Additional `options` may be
-passed that alter the result.
-`util.inspect()` will use the constructor's name and/or `@@toStringTag` to make
-an identifiable tag for an inspected value.
+intended for debugging. The output of `util.inspect` may change at any time and
+should not be depended upon programmatically. Additional `options` may be passed
+that alter the result. `util.inspect()` will use the constructor's name and/or
+`@@toStringTag` to make an identifiable tag for an inspected value.
 
 ```js
 class Foo {
@@ -640,7 +637,7 @@ const baz = Object.create(null, { [Symbol.toStringTag]: { value: 'foo' } });
 
 util.inspect(new Foo()); // 'Foo [bar] {}'
 util.inspect(new Bar()); // 'Bar {}'
-util.inspect(baz);       // '[foo] {}'
+util.inspect(baz); // '[foo] {}'
 ```
 
 Circular references point to their anchor by using a reference index:
@@ -675,12 +672,23 @@ The following example highlights the effect of the `compact` option:
 const util = require('node:util');
 
 const o = {
-  a: [1, 2, [[
-    'Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do ' +
-      'eiusmod \ntempor incididunt ut labore et dolore magna aliqua.',
-    'test',
-    'foo']], 4],
-  b: new Map([['za', 1], ['zb', 'test']]),
+  a: [
+    1,
+    2,
+    [
+      [
+        'Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit, sed do ' +
+          'eiusmod \ntempor incididunt ut labore et dolore magna aliqua.',
+        'test',
+        'foo',
+      ],
+    ],
+    4,
+  ],
+  b: new Map([
+    ['za', 1],
+    ['zb', 'test'],
+  ]),
 };
 console.log(util.inspect(o, { compact: true, depth: 5, breakLength: 80 }));
 
@@ -795,8 +803,8 @@ be truncated.
 
 <!-- type=misc -->
 
-Color output (if enabled) of `util.inspect` is customizable globally
-via the `util.inspect.styles` and `util.inspect.colors` properties.
+Color output (if enabled) of `util.inspect` is customizable globally via the
+`util.inspect.styles` and `util.inspect.colors` properties.
 
 `util.inspect.styles` is a map associating a style name to a color from
 `util.inspect.colors`.
@@ -898,8 +906,8 @@ changes:
 
 Objects may also define their own
 [`[util.inspect.custom](depth, opts, inspect)`][util.inspect.custom] function,
-which `util.inspect()` will invoke and use the result of when inspecting
-the object.
+which `util.inspect()` will invoke and use the result of when inspecting the
+object.
 
 ```js
 const util = require('node:util');
@@ -920,8 +928,10 @@ class Box {
 
     // Five space padding because that's the size of "Box< ".
     const padding = ' '.repeat(5);
-    const inner = inspect(this.value, newOptions)
-                  .replace(/\n/g, `\n${padding}`);
+    const inner = inspect(this.value, newOptions).replace(
+      /\n/g,
+      `\n${padding}`,
+    );
     return `${options.stylize('Box', 'special')}< ${inner} >`;
   }
 }
@@ -960,9 +970,9 @@ changes:
 
 * {symbol} that can be used to declare custom inspect functions.
 
-In addition to being accessible through `util.inspect.custom`, this
-symbol is [registered globally][global symbol registry] and can be
-accessed in any environment as `Symbol.for('nodejs.util.inspect.custom')`.
+In addition to being accessible through `util.inspect.custom`, this symbol is
+[registered globally][global symbol registry] and can be accessed in any
+environment as `Symbol.for('nodejs.util.inspect.custom')`.
 
 Using this allows code to be written in a portable fashion, so that the custom
 inspect function is used in an Node.js environment and ignored in the browser.
@@ -1000,10 +1010,10 @@ added: v6.4.0
 -->
 
 The `defaultOptions` value allows customization of the default options used by
-`util.inspect`. This is useful for functions like `console.log` or
-`util.format` which implicitly call into `util.inspect`. It shall be set to an
-object containing one or more valid [`util.inspect()`][] options. Setting
-option properties directly is also supported.
+`util.inspect`. This is useful for functions like `console.log` or `util.format`
+which implicitly call into `util.inspect`. It shall be set to an object
+containing one or more valid [`util.inspect()`][] options. Setting option
+properties directly is also supported.
 
 ```js
 const util = require('node:util');
@@ -1040,15 +1050,16 @@ added:
 
 > Stability: 1 - Experimental
 
-An implementation of [the MIMEType class](https://bmeck.github.io/node-proposal-mime-api/).
+An implementation of
+[the MIMEType class](https://bmeck.github.io/node-proposal-mime-api/).
 
-In accordance with browser conventions, all properties of `MIMEType` objects
-are implemented as getters and setters on the class prototype, rather than as
-data properties on the object itself.
+In accordance with browser conventions, all properties of `MIMEType` objects are
+implemented as getters and setters on the class prototype, rather than as data
+properties on the object itself.
 
-A MIME string is a structured string containing multiple meaningful
-components. When parsed, a `MIMEType` object is returned containing
-properties for each of these components.
+A MIME string is a structured string containing multiple meaningful components.
+When parsed, a `MIMEType` object is returned containing properties for each of
+these components.
 
 ### Constructor: `new MIMEType(input)`
 
@@ -1068,9 +1079,8 @@ const { MIMEType } = require('node:util');
 const myMIME = new MIMEType('text/plain');
 ```
 
-A `TypeError` will be thrown if the `input` is not a valid MIME. Note
-that an effort will be made to coerce the given values into strings. For
-instance:
+A `TypeError` will be thrown if the `input` is not a valid MIME. An
+effort will be made to coerce the given values into strings. For instance:
 
 ```mjs
 import { MIMEType } from 'node:util';
@@ -1154,8 +1164,8 @@ console.log(String(myMIME));
 
 * {string}
 
-Gets the essence of the MIME. This property is read only.
-Use `mime.type` or `mime.subtype` to alter the MIME.
+Gets the essence of the MIME. This property is read only. Use `mime.type` or
+`mime.subtype` to alter the MIME.
 
 ```mjs
 import { MIMEType } from 'node:util';
@@ -1187,9 +1197,8 @@ console.log(String(myMIME));
 
 * {MIMEParams}
 
-Gets the [`MIMEParams`][] object representing the
-parameters of the MIME. This property is read-only. See
-[`MIMEParams`][] documentation for details.
+Gets the [`MIMEParams`][] object representing the parameters of the MIME. This
+property is read-only. See [`MIMEParams`][] documentation for details.
 
 ### `mime.toString()`
 
@@ -1197,8 +1206,8 @@ parameters of the MIME. This property is read-only. See
 
 The `toString()` method on the `MIMEType` object returns the serialized MIME.
 
-Because of the need for standard compliance, this method does not allow users
-to customize the serialization process of the MIME.
+Because of the need for standard compliance, this method does not allow users to
+customize the serialization process of the MIME.
 
 ### `mime.toJSON()`
 
@@ -1206,16 +1215,13 @@ to customize the serialization process of the MIME.
 
 Alias for [`mime.toString()`][].
 
-This method is automatically called when an `MIMEType` object is serialized
-with [`JSON.stringify()`][].
+This method is automatically called when an `MIMEType` object is serialized with
+[`JSON.stringify()`][].
 
 ```mjs
 import { MIMEType } from 'node:util';
 
-const myMIMES = [
-  new MIMEType('image/png'),
-  new MIMEType('image/gif'),
-];
+const myMIMES = [new MIMEType('image/png'), new MIMEType('image/gif')];
 console.log(JSON.stringify(myMIMES));
 // Prints: ["image/png", "image/gif"]
 ```
@@ -1223,10 +1229,7 @@ console.log(JSON.stringify(myMIMES));
 ```cjs
 const { MIMEType } = require('node:util');
 
-const myMIMES = [
-  new MIMEType('image/png'),
-  new MIMEType('image/gif'),
-];
+const myMIMES = [new MIMEType('image/png'), new MIMEType('image/gif')];
 console.log(JSON.stringify(myMIMES));
 // Prints: ["image/png", "image/gif"]
 ```
@@ -1268,9 +1271,9 @@ Remove all name-value pairs whose name is `name`.
 
 * Returns: {Iterator}
 
-Returns an iterator over each of the name-value pairs in the parameters.
-Each item of the iterator is a JavaScript `Array`. The first item of the array
-is the `name`, the second item of the array is the `value`.
+Returns an iterator over each of the name-value pairs in the parameters. Each
+item of the iterator is a JavaScript `Array`. The first item of the array is the
+`name`, the second item of the array is the `value`.
 
 ### `mimeParams.get(name)`
 
@@ -1323,9 +1326,9 @@ for (const name of params.keys()) {
 * `name` {string}
 * `value` {string}
 
-Sets the value in the `MIMEParams` object associated with `name` to
-`value`. If there are any pre-existing name-value pairs whose names are `name`,
-set the first such pair's value to `value`.
+Sets the value in the `MIMEParams` object associated with `name` to `value`. If
+there are any pre-existing name-value pairs whose names are `name`, set the
+first such pair's value to `value`.
 
 ```mjs
 import { MIMEType } from 'node:util';
@@ -1407,36 +1410,35 @@ changes:
                  using `tokens` in input `config` and returned properties.
 -->
 
-* `config` {Object} Used to provide arguments for parsing and to configure
-  the parser. `config` supports the following properties:
+* `config` {Object} Used to provide arguments for parsing and to configure the
+  parser. `config` supports the following properties:
+
   * `args` {string\[]} array of argument strings. **Default:** `process.argv`
     with `execPath` and `filename` removed.
-  * `options` {Object} Used to describe arguments known to the parser.
-    Keys of `options` are the long names of options and values are an
-    {Object} accepting the following properties:
-    * `type` {string} Type of argument, which must be either `boolean` or `string`.
-    * `multiple` {boolean} Whether this option can be provided multiple
-      times. If `true`, all values will be collected in an array. If
-      `false`, values for the option are last-wins. **Default:** `false`.
+  * `options` {Object} Used to describe arguments known to the parser. Keys of
+    `options` are the long names of options and values are an {Object} accepting
+    the following properties:
+    * `type` {string} Type of argument, which must be either `boolean` or
+      `string`.
+    * `multiple` {boolean} Whether this option can be provided multiple times.
+      If `true`, all values will be collected in an array. If `false`, values
+      for the option are last-wins. **Default:** `false`.
     * `short` {string} A single character alias for the option.
     * `default` {string | boolean | string\[] | boolean\[]} The default option
       value when it is not set by args. It must be of the same type as the
       `type` property. When `multiple` is `true`, it must be an array.
-  * `strict` {boolean} Should an error be thrown when unknown arguments
-    are encountered, or when arguments are passed that do not match the
-    `type` configured in `options`.
-    **Default:** `true`.
+  * `strict` {boolean} Should an error be thrown when unknown arguments are
+    encountered, or when arguments are passed that do not match the `type`
+    configured in `options`. **Default:** `true`.
   * `allowPositionals` {boolean} Whether this command accepts positional
-    arguments.
-    **Default:** `false` if `strict` is `true`, otherwise `true`.
+    arguments. **Default:** `false` if `strict` is `true`, otherwise `true`.
   * `tokens` {boolean} Return the parsed tokens. This is useful for extending
     the built-in behavior, from adding additional checks through to reprocessing
-    the tokens in different ways.
-    **Default:** `false`.
+    the tokens in different ways. **Default:** `false`.
 
 * Returns: {Object} The parsed command line arguments:
-  * `values` {Object} A mapping of parsed option names with their {string}
-    or {boolean} values.
+  * `values` {Object} A mapping of parsed option names with their {string} or
+    {boolean} values.
   * `positionals` {string\[]} Positional arguments.
   * `tokens` {Object\[] | undefined} See [parseArgs tokens](#parseargs-tokens)
     section. Only returned if `config` includes `tokens: true`.
@@ -1457,10 +1459,7 @@ const options = {
     type: 'string',
   },
 };
-const {
-  values,
-  positionals,
-} = parseArgs({ args, options });
+const { values, positionals } = parseArgs({ args, options });
 console.log(values, positionals);
 // Prints: [Object: null prototype] { foo: true, bar: 'b' } []
 ```
@@ -1477,10 +1476,7 @@ const options = {
     type: 'string',
   },
 };
-const {
-  values,
-  positionals,
-} = parseArgs({ args, options });
+const { values, positionals } = parseArgs({ args, options });
 console.log(values, positionals);
 // Prints: [Object: null prototype] { foo: true, bar: 'b' } []
 ```
@@ -1488,32 +1484,32 @@ console.log(values, positionals);
 ### `parseArgs` `tokens`
 
 Detailed parse information is available for adding custom behaviors by
-specifying `tokens: true` in the configuration.
-The returned tokens have properties describing:
+specifying `tokens: true` in the configuration. The returned tokens have
+properties describing:
 
 * all tokens
   * `kind` {string} One of 'option', 'positional', or 'option-terminator'.
-  * `index` {number} Index of element in `args` containing token. So the
-    source argument for a token is `args[token.index]`.
+  * `index` {number} Index of element in `args` containing token. So the source
+    argument for a token is `args[token.index]`.
 * option tokens
   * `name` {string} Long name of option.
   * `rawName` {string} How option used in args, like `-f` of `--foo`.
-  * `value` {string | undefined} Option value specified in args.
-    Undefined for boolean options.
+  * `value` {string | undefined} Option value specified in args. Undefined for
+    boolean options.
   * `inlineValue` {boolean | undefined} Whether option value specified inline,
     like `--foo=bar`.
 * positional tokens
-  * `value` {string} The value of the positional argument in args (i.e. `args[index]`).
+  * `value` {string} The value of the positional argument in args (i.e.
+    `args[index]`).
 * option-terminator token
 
-The returned tokens are in the order encountered in the input args. Options
-that appear more than once in args produce a token for each use. Short option
-groups like `-xy` expand to a token for each option. So `-xxx` produces
-three tokens.
+The returned tokens are in the order encountered in the input args. Options that
+appear more than once in args produce a token for each use. Short option groups
+like `-xy` expand to a token for each option. So `-xxx` produces three tokens.
 
-For example to use the returned tokens to add support for a negated option
-like `--no-color`, the tokens can be reprocessed to change the value stored
-for the negated option.
+For example to use the returned tokens to add support for a negated option like
+`--no-color`, the tokens can be reprocessed to change the value stored for the
+negated option.
 
 ```mjs
 import { parseArgs } from 'node:util';
@@ -1579,8 +1575,8 @@ const logfile = values.logfile ?? 'default.log';
 console.log({ logfile, color });
 ```
 
-Example usage showing negated options, and when an option is used
-multiple ways then last one wins.
+Example usage showing negated options, and when an option is used multiple ways
+then last one wins.
 
 ```console
 $ node negate.js
@@ -1639,20 +1635,22 @@ changes:
 * `original` {Function}
 * Returns: {Function}
 
-Takes a function following the common error-first callback style, i.e. taking
-an `(err, value) => ...` callback as the last argument, and returns a version
-that returns promises.
+Takes a function following the common error-first callback style, i.e. taking an
+`(err, value) => ...` callback as the last argument, and returns a version that
+returns promises.
 
 ```js
 const util = require('node:util');
 const fs = require('node:fs');
 
 const stat = util.promisify(fs.stat);
-stat('.').then((stats) => {
-  // Do something with `stats`
-}).catch((error) => {
-  // Handle the error.
-});
+stat('.')
+  .then((stats) => {
+    // Do something with `stats`
+  })
+  .catch((error) => {
+    // Handle the error.
+  });
 ```
 
 Or, equivalently using `async function`s:
@@ -1675,10 +1673,10 @@ If there is an `original[util.promisify.custom]` property present, `promisify`
 will return its value, see [Custom promisified functions][].
 
 `promisify()` assumes that `original` is a function taking a callback as its
-final argument in all cases. If `original` is not a function, `promisify()`
-will throw an error. If `original` is a function but its last argument is not
-an error-first callback, it will still be passed an error-first
-callback as its last argument.
+final argument in all cases. If `original` is not a function, `promisify()` will
+throw an error. If `original` is a function but its last argument is not an
+error-first callback, it will still be passed an error-first callback as its
+last argument.
 
 Using `promisify()` on class methods or other methods that use `this` may not
 work as expected unless handled specially:
@@ -1743,8 +1741,8 @@ doSomething[util.promisify.custom] = (foo) => {
 };
 ```
 
-If `promisify.custom` is defined but is not a function, `promisify()` will
-throw an error.
+If `promisify.custom` is defined but is not a function, `promisify()` will throw
+an error.
 
 ### `util.promisify.custom`
 
@@ -1761,9 +1759,9 @@ changes:
 * {symbol} that can be used to declare custom promisified variants of functions,
   see [Custom promisified functions][].
 
-In addition to being accessible through `util.promisify.custom`, this
-symbol is [registered globally][global symbol registry] and can be
-accessed in any environment as `Symbol.for('nodejs.util.promisify.custom')`.
+In addition to being accessible through `util.promisify.custom`, this symbol is
+[registered globally][global symbol registry] and can be accessed in any
+environment as `Symbol.for('nodejs.util.promisify.custom')`.
 
 For example, with a function that takes in
 `(foo, onSuccessCallback, onErrorCallback)`:
@@ -1804,8 +1802,8 @@ added:
   - v20.12.0
 -->
 
-* `format` {string | Array} A text format or an Array
-  of text formats defined in `util.inspect.colors`.
+* `format` {string | Array} A text format or an Array of text formats defined in
+  `util.inspect.colors`.
 * `text` {string} The text to to be formatted.
 
 This function returns a formatted text considering the `format` passed.
@@ -1831,8 +1829,8 @@ console.log(
 );
 ```
 
-When passing an array of formats, the order of the format applied
-is left to right so the following style might overwrite the previous one.
+When passing an array of formats, the order of the format applied is left to
+right so the following style might overwrite the previous one.
 
 ```cjs
 console.log(
@@ -1859,11 +1857,11 @@ console.log(decoder.decode(u8arr)); // Hello
 ### WHATWG supported encodings
 
 Per the [WHATWG Encoding Standard][], the encodings supported by the
-`TextDecoder` API are outlined in the tables below. For each encoding,
-one or more aliases may be used.
+`TextDecoder` API are outlined in the tables below. For each encoding, one or
+more aliases may be used.
 
-Different Node.js build configurations support different sets of encodings.
-(see [Internationalization][])
+Different Node.js build configurations support different sets of encodings. (see
+[Internationalization][])
 
 #### Encodings supported by default (with full ICU data)
 
@@ -1919,8 +1917,8 @@ Different Node.js build configurations support different sets of encodings.
 | `'utf-8'`    | `'unicode-1-1-utf-8'`, `'utf8'` |
 | `'utf-16le'` | `'utf-16'`                      |
 
-The `'iso-8859-16'` encoding listed in the [WHATWG Encoding Standard][]
-is not supported.
+The `'iso-8859-16'` encoding listed in the [WHATWG Encoding Standard][] is not
+supported.
 
 ### `new TextDecoder([encoding[, options]])`
 
@@ -1935,12 +1933,12 @@ changes:
 * `encoding` {string} Identifies the `encoding` that this `TextDecoder` instance
   supports. **Default:** `'utf-8'`.
 * `options` {Object}
-  * `fatal` {boolean} `true` if decoding failures are fatal.
-    This option is not supported when ICU is disabled
-    (see [Internationalization][]). **Default:** `false`.
+  * `fatal` {boolean} `true` if decoding failures are fatal. This option is not
+    supported when ICU is disabled (see [Internationalization][]). **Default:**
+    `false`.
   * `ignoreBOM` {boolean} When `true`, the `TextDecoder` will include the byte
-    order mark in the decoded result. When `false`, the byte order mark will
-    be removed from the output. This option is only used when `encoding` is
+    order mark in the decoded result. When `false`, the byte order mark will be
+    removed from the output. This option is only used when `encoding` is
     `'utf-8'`, `'utf-16be'`, or `'utf-16le'`. **Default:** `false`.
 
 Creates a new `TextDecoder` instance. The `encoding` may specify one of the
@@ -2046,9 +2044,9 @@ added:
 
 * `string` {string}
 
-Returns the `string` after replacing any surrogate code points
-(or equivalently, any unpaired surrogate code units) with the
-Unicode "replacement character" U+FFFD.
+Returns the `string` after replacing any surrogate code points (or equivalently,
+any unpaired surrogate code units) with the Unicode "replacement character"
+U+FFFD.
 
 ## `util.transferableAbortController()`
 
@@ -2095,10 +2093,10 @@ added:
 * `resource` {Object} Any non-null entity, reference to which is held weakly.
 * Returns: {Promise}
 
-Listens to abort event on the provided `signal` and
-returns a promise that is fulfilled when the `signal` is
-aborted. If the passed `resource` is garbage collected before the `signal` is
-aborted, the returned promise shall remain pending indefinitely.
+Listens to abort event on the provided `signal` and returns a promise that is
+fulfilled when the `signal` is aborted. If the passed `resource` is garbage
+collected before the `signal` is aborted, the returned promise shall remain
+pending indefinitely.
 
 ```cjs
 const { aborted } = require('node:util');
@@ -2143,11 +2141,12 @@ Unlike `instanceof` or `Object.prototype.toString.call(value)`, these checks do
 not inspect properties of the object that are accessible from JavaScript (like
 their prototype), and usually have the overhead of calling into C++.
 
-The result generally does not make any guarantees about what kinds of
-properties or behavior a value exposes in JavaScript. They are primarily
-useful for addon developers who prefer to do type checking in JavaScript.
+The result generally does not make any guarantees about what kinds of properties
+or behavior a value exposes in JavaScript. They are primarily useful for addon
+developers who prefer to do type checking in JavaScript.
 
-The API is accessible via `require('node:util').types` or `require('node:util/types')`.
+The API is accessible via `require('node:util').types` or
+`require('node:util/types')`.
 
 ### `util.types.isAnyArrayBuffer(value)`
 
@@ -2165,8 +2164,8 @@ See also [`util.types.isArrayBuffer()`][] and
 [`util.types.isSharedArrayBuffer()`][].
 
 ```js
-util.types.isAnyArrayBuffer(new ArrayBuffer());  // Returns true
-util.types.isAnyArrayBuffer(new SharedArrayBuffer());  // Returns true
+util.types.isAnyArrayBuffer(new ArrayBuffer()); // Returns true
+util.types.isAnyArrayBuffer(new SharedArrayBuffer()); // Returns true
 ```
 
 ### `util.types.isArrayBufferView(value)`
@@ -2183,10 +2182,10 @@ views, such as typed array objects or [`DataView`][]. Equivalent to
 [`ArrayBuffer.isView()`][].
 
 ```js
-util.types.isArrayBufferView(new Int8Array());  // true
+util.types.isArrayBufferView(new Int8Array()); // true
 util.types.isArrayBufferView(Buffer.from('hello world')); // true
-util.types.isArrayBufferView(new DataView(new ArrayBuffer(16)));  // true
-util.types.isArrayBufferView(new ArrayBuffer());  // false
+util.types.isArrayBufferView(new DataView(new ArrayBuffer(16))); // true
+util.types.isArrayBufferView(new ArrayBuffer()); // false
 ```
 
 ### `util.types.isArgumentsObject(value)`
@@ -2204,7 +2203,7 @@ Returns `true` if the value is an `arguments` object.
 
 ```js
 function foo() {
-  util.types.isArgumentsObject(arguments);  // Returns true
+  util.types.isArgumentsObject(arguments); // Returns true
 }
 ```
 
@@ -2217,13 +2216,13 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a built-in [`ArrayBuffer`][] instance.
-This does _not_ include [`SharedArrayBuffer`][] instances. Usually, it is
-desirable to test for both; See [`util.types.isAnyArrayBuffer()`][] for that.
+Returns `true` if the value is a built-in [`ArrayBuffer`][] instance. This does
+_not_ include [`SharedArrayBuffer`][] instances. Usually, it is desirable to
+test for both; See [`util.types.isAnyArrayBuffer()`][] for that.
 
 ```js
-util.types.isArrayBuffer(new ArrayBuffer());  // Returns true
-util.types.isArrayBuffer(new SharedArrayBuffer());  // Returns false
+util.types.isArrayBuffer(new ArrayBuffer()); // Returns true
+util.types.isArrayBuffer(new SharedArrayBuffer()); // Returns false
 ```
 
 ### `util.types.isAsyncFunction(value)`
@@ -2235,14 +2234,13 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is an [async function][].
-This only reports back what the JavaScript engine is seeing;
-in particular, the return value may not match the original source code if
-a transpilation tool was used.
+Returns `true` if the value is an [async function][]. This only reports back
+what the JavaScript engine is seeing; in particular, the return value may not
+match the original source code if a transpilation tool was used.
 
 ```js
-util.types.isAsyncFunction(function foo() {});  // Returns false
-util.types.isAsyncFunction(async function foo() {});  // Returns true
+util.types.isAsyncFunction(function foo() {}); // Returns false
+util.types.isAsyncFunction(async function foo() {}); // Returns true
 ```
 
 ### `util.types.isBigInt64Array(value)`
@@ -2257,8 +2255,8 @@ added: v10.0.0
 Returns `true` if the value is a `BigInt64Array` instance.
 
 ```js
-util.types.isBigInt64Array(new BigInt64Array());   // Returns true
-util.types.isBigInt64Array(new BigUint64Array());  // Returns false
+util.types.isBigInt64Array(new BigInt64Array()); // Returns true
+util.types.isBigInt64Array(new BigUint64Array()); // Returns false
 ```
 
 ### `util.types.isBigUint64Array(value)`
@@ -2273,8 +2271,8 @@ added: v10.0.0
 Returns `true` if the value is a `BigUint64Array` instance.
 
 ```js
-util.types.isBigUint64Array(new BigInt64Array());   // Returns false
-util.types.isBigUint64Array(new BigUint64Array());  // Returns true
+util.types.isBigUint64Array(new BigInt64Array()); // Returns false
+util.types.isBigUint64Array(new BigUint64Array()); // Returns true
 ```
 
 ### `util.types.isBooleanObject(value)`
@@ -2286,16 +2284,16 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a boolean object, e.g. created
-by `new Boolean()`.
+Returns `true` if the value is a boolean object, e.g. created by
+`new Boolean()`.
 
 ```js
-util.types.isBooleanObject(false);  // Returns false
-util.types.isBooleanObject(true);   // Returns false
+util.types.isBooleanObject(false); // Returns false
+util.types.isBooleanObject(true); // Returns false
 util.types.isBooleanObject(new Boolean(false)); // Returns true
-util.types.isBooleanObject(new Boolean(true));  // Returns true
+util.types.isBooleanObject(new Boolean(true)); // Returns true
 util.types.isBooleanObject(Boolean(false)); // Returns false
-util.types.isBooleanObject(Boolean(true));  // Returns false
+util.types.isBooleanObject(Boolean(true)); // Returns false
 ```
 
 ### `util.types.isBoxedPrimitive(value)`
@@ -2307,8 +2305,8 @@ added: v10.11.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is any boxed primitive object, e.g. created
-by `new Boolean()`, `new String()` or `Object(Symbol())`.
+Returns `true` if the value is any boxed primitive object, e.g. created by
+`new Boolean()`, `new String()` or `Object(Symbol())`.
 
 For example:
 
@@ -2344,8 +2342,8 @@ Returns `true` if the value is a built-in [`DataView`][] instance.
 
 ```js
 const ab = new ArrayBuffer(20);
-util.types.isDataView(new DataView(ab));  // Returns true
-util.types.isDataView(new Float64Array());  // Returns false
+util.types.isDataView(new DataView(ab)); // Returns true
+util.types.isDataView(new Float64Array()); // Returns false
 ```
 
 See also [`ArrayBuffer.isView()`][].
@@ -2362,7 +2360,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Date`][] instance.
 
 ```js
-util.types.isDate(new Date());  // Returns true
+util.types.isDate(new Date()); // Returns true
 ```
 
 ### `util.types.isExternal(value)`
@@ -2376,11 +2374,10 @@ added: v10.0.0
 
 Returns `true` if the value is a native `External` value.
 
-A native `External` value is a special type of object that contains a
-raw C++ pointer (`void*`) for access from native code, and has no other
-properties. Such objects are created either by Node.js internals or native
-addons. In JavaScript, they are [frozen][`Object.freeze()`] objects with a
-`null` prototype.
+A native `External` value is a special type of object that contains a raw C++
+pointer (`void*`) for access from native code, and has no other properties. Such
+objects are created either by Node.js internals or native addons. In JavaScript,
+they are [frozen][`Object.freeze()`] objects with a `null` prototype.
 
 ```c
 #include <js_native_api.h>
@@ -2423,9 +2420,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Float32Array`][] instance.
 
 ```js
-util.types.isFloat32Array(new ArrayBuffer());  // Returns false
-util.types.isFloat32Array(new Float32Array());  // Returns true
-util.types.isFloat32Array(new Float64Array());  // Returns false
+util.types.isFloat32Array(new ArrayBuffer()); // Returns false
+util.types.isFloat32Array(new Float32Array()); // Returns true
+util.types.isFloat32Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isFloat64Array(value)`
@@ -2440,9 +2437,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Float64Array`][] instance.
 
 ```js
-util.types.isFloat64Array(new ArrayBuffer());  // Returns false
-util.types.isFloat64Array(new Uint8Array());  // Returns false
-util.types.isFloat64Array(new Float64Array());  // Returns true
+util.types.isFloat64Array(new ArrayBuffer()); // Returns false
+util.types.isFloat64Array(new Uint8Array()); // Returns false
+util.types.isFloat64Array(new Float64Array()); // Returns true
 ```
 
 ### `util.types.isGeneratorFunction(value)`
@@ -2454,14 +2451,13 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a generator function.
-This only reports back what the JavaScript engine is seeing;
-in particular, the return value may not match the original source code if
-a transpilation tool was used.
+Returns `true` if the value is a generator function. This only reports back what
+the JavaScript engine is seeing; in particular, the return value may not match
+the original source code if a transpilation tool was used.
 
 ```js
-util.types.isGeneratorFunction(function foo() {});  // Returns false
-util.types.isGeneratorFunction(function* foo() {});  // Returns true
+util.types.isGeneratorFunction(function foo() {}); // Returns false
+util.types.isGeneratorFunction(function* foo() {}); // Returns true
 ```
 
 ### `util.types.isGeneratorObject(value)`
@@ -2473,16 +2469,15 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a generator object as returned from a
-built-in generator function.
-This only reports back what the JavaScript engine is seeing;
-in particular, the return value may not match the original source code if
-a transpilation tool was used.
+Returns `true` if the value is a generator object as returned from a built-in
+generator function. This only reports back what the JavaScript engine is seeing;
+in particular, the return value may not match the original source code if a
+transpilation tool was used.
 
 ```js
 function* foo() {}
 const generator = foo();
-util.types.isGeneratorObject(generator);  // Returns true
+util.types.isGeneratorObject(generator); // Returns true
 ```
 
 ### `util.types.isInt8Array(value)`
@@ -2497,9 +2492,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Int8Array`][] instance.
 
 ```js
-util.types.isInt8Array(new ArrayBuffer());  // Returns false
-util.types.isInt8Array(new Int8Array());  // Returns true
-util.types.isInt8Array(new Float64Array());  // Returns false
+util.types.isInt8Array(new ArrayBuffer()); // Returns false
+util.types.isInt8Array(new Int8Array()); // Returns true
+util.types.isInt8Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isInt16Array(value)`
@@ -2514,9 +2509,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Int16Array`][] instance.
 
 ```js
-util.types.isInt16Array(new ArrayBuffer());  // Returns false
-util.types.isInt16Array(new Int16Array());  // Returns true
-util.types.isInt16Array(new Float64Array());  // Returns false
+util.types.isInt16Array(new ArrayBuffer()); // Returns false
+util.types.isInt16Array(new Int16Array()); // Returns true
+util.types.isInt16Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isInt32Array(value)`
@@ -2531,9 +2526,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Int32Array`][] instance.
 
 ```js
-util.types.isInt32Array(new ArrayBuffer());  // Returns false
-util.types.isInt32Array(new Int32Array());  // Returns true
-util.types.isInt32Array(new Float64Array());  // Returns false
+util.types.isInt32Array(new ArrayBuffer()); // Returns false
+util.types.isInt32Array(new Int32Array()); // Returns true
+util.types.isInt32Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isKeyObject(value)`
@@ -2559,7 +2554,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Map`][] instance.
 
 ```js
-util.types.isMap(new Map());  // Returns true
+util.types.isMap(new Map()); // Returns true
 ```
 
 ### `util.types.isMapIterator(value)`
@@ -2571,15 +2566,15 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is an iterator returned for a built-in
-[`Map`][] instance.
+Returns `true` if the value is an iterator returned for a built-in [`Map`][]
+instance.
 
 ```js
 const map = new Map();
-util.types.isMapIterator(map.keys());  // Returns true
-util.types.isMapIterator(map.values());  // Returns true
-util.types.isMapIterator(map.entries());  // Returns true
-util.types.isMapIterator(map[Symbol.iterator]());  // Returns true
+util.types.isMapIterator(map.keys()); // Returns true
+util.types.isMapIterator(map.values()); // Returns true
+util.types.isMapIterator(map.entries()); // Returns true
+util.types.isMapIterator(map[Symbol.iterator]()); // Returns true
 ```
 
 ### `util.types.isModuleNamespaceObject(value)`
@@ -2596,7 +2591,7 @@ Returns `true` if the value is an instance of a [Module Namespace Object][].
 ```mjs
 import * as ns from './a.js';
 
-util.types.isModuleNamespaceObject(ns);  // Returns true
+util.types.isModuleNamespaceObject(ns); // Returns true
 ```
 
 ### `util.types.isNativeError(value)`
@@ -2608,26 +2603,25 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value was returned by the constructor of a
-[built-in `Error` type][].
+Returns `true` if the value was returned by the constructor of a [built-in `Error` type][].
 
 ```js
-console.log(util.types.isNativeError(new Error()));  // true
-console.log(util.types.isNativeError(new TypeError()));  // true
-console.log(util.types.isNativeError(new RangeError()));  // true
+console.log(util.types.isNativeError(new Error())); // true
+console.log(util.types.isNativeError(new TypeError())); // true
+console.log(util.types.isNativeError(new RangeError())); // true
 ```
 
 Subclasses of the native error types are also native errors:
 
 ```js
 class MyError extends Error {}
-console.log(util.types.isNativeError(new MyError()));  // true
+console.log(util.types.isNativeError(new MyError())); // true
 ```
 
-A value being `instanceof` a native error class is not equivalent to `isNativeError()`
-returning `true` for that value. `isNativeError()` returns `true` for errors
-which come from a different [realm][] while `instanceof Error` returns `false`
-for these errors:
+A value being `instanceof` a native error class is not equivalent to
+`isNativeError()` returning `true` for that value. `isNativeError()` returns
+`true` for errors which come from a different [realm][] while `instanceof Error`
+returns `false` for these errors:
 
 ```js
 const vm = require('node:vm');
@@ -2638,8 +2632,8 @@ console.log(myError instanceof Error); // false
 ```
 
 Conversely, `isNativeError()` returns `false` for all objects which were not
-returned by the constructor of a native error. That includes values
-which are `instanceof` native errors:
+returned by the constructor of a native error. That includes values which are
+`instanceof` native errors:
 
 ```js
 const myError = { __proto__: Error.prototype };
@@ -2656,12 +2650,11 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a number object, e.g. created
-by `new Number()`.
+Returns `true` if the value is a number object, e.g. created by `new Number()`.
 
 ```js
-util.types.isNumberObject(0);  // Returns false
-util.types.isNumberObject(new Number(0));   // Returns true
+util.types.isNumberObject(0); // Returns false
+util.types.isNumberObject(new Number(0)); // Returns true
 ```
 
 ### `util.types.isPromise(value)`
@@ -2676,7 +2669,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Promise`][].
 
 ```js
-util.types.isPromise(Promise.resolve(42));  // Returns true
+util.types.isPromise(Promise.resolve(42)); // Returns true
 ```
 
 ### `util.types.isProxy(value)`
@@ -2693,8 +2686,8 @@ Returns `true` if the value is a [`Proxy`][] instance.
 ```js
 const target = {};
 const proxy = new Proxy(target, {});
-util.types.isProxy(target);  // Returns false
-util.types.isProxy(proxy);  // Returns true
+util.types.isProxy(target); // Returns false
+util.types.isProxy(proxy); // Returns true
 ```
 
 ### `util.types.isRegExp(value)`
@@ -2709,8 +2702,8 @@ added: v10.0.0
 Returns `true` if the value is a regular expression object.
 
 ```js
-util.types.isRegExp(/abc/);  // Returns true
-util.types.isRegExp(new RegExp('abc'));  // Returns true
+util.types.isRegExp(/abc/); // Returns true
+util.types.isRegExp(new RegExp('abc')); // Returns true
 ```
 
 ### `util.types.isSet(value)`
@@ -2725,7 +2718,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Set`][] instance.
 
 ```js
-util.types.isSet(new Set());  // Returns true
+util.types.isSet(new Set()); // Returns true
 ```
 
 ### `util.types.isSetIterator(value)`
@@ -2737,15 +2730,15 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is an iterator returned for a built-in
-[`Set`][] instance.
+Returns `true` if the value is an iterator returned for a built-in [`Set`][]
+instance.
 
 ```js
 const set = new Set();
-util.types.isSetIterator(set.keys());  // Returns true
-util.types.isSetIterator(set.values());  // Returns true
-util.types.isSetIterator(set.entries());  // Returns true
-util.types.isSetIterator(set[Symbol.iterator]());  // Returns true
+util.types.isSetIterator(set.keys()); // Returns true
+util.types.isSetIterator(set.values()); // Returns true
+util.types.isSetIterator(set.entries()); // Returns true
+util.types.isSetIterator(set[Symbol.iterator]()); // Returns true
 ```
 
 ### `util.types.isSharedArrayBuffer(value)`
@@ -2757,13 +2750,13 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a built-in [`SharedArrayBuffer`][] instance.
-This does _not_ include [`ArrayBuffer`][] instances. Usually, it is
-desirable to test for both; See [`util.types.isAnyArrayBuffer()`][] for that.
+Returns `true` if the value is a built-in [`SharedArrayBuffer`][] instance. This
+does _not_ include [`ArrayBuffer`][] instances. Usually, it is desirable to test
+for both; See [`util.types.isAnyArrayBuffer()`][] for that.
 
 ```js
-util.types.isSharedArrayBuffer(new ArrayBuffer());  // Returns false
-util.types.isSharedArrayBuffer(new SharedArrayBuffer());  // Returns true
+util.types.isSharedArrayBuffer(new ArrayBuffer()); // Returns false
+util.types.isSharedArrayBuffer(new SharedArrayBuffer()); // Returns true
 ```
 
 ### `util.types.isStringObject(value)`
@@ -2775,12 +2768,11 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a string object, e.g. created
-by `new String()`.
+Returns `true` if the value is a string object, e.g. created by `new String()`.
 
 ```js
-util.types.isStringObject('foo');  // Returns false
-util.types.isStringObject(new String('foo'));   // Returns true
+util.types.isStringObject('foo'); // Returns false
+util.types.isStringObject(new String('foo')); // Returns true
 ```
 
 ### `util.types.isSymbolObject(value)`
@@ -2792,13 +2784,13 @@ added: v10.0.0
 * `value` {any}
 * Returns: {boolean}
 
-Returns `true` if the value is a symbol object, created
-by calling `Object()` on a `Symbol` primitive.
+Returns `true` if the value is a symbol object, created by calling `Object()` on
+a `Symbol` primitive.
 
 ```js
 const symbol = Symbol('foo');
-util.types.isSymbolObject(symbol);  // Returns false
-util.types.isSymbolObject(Object(symbol));   // Returns true
+util.types.isSymbolObject(symbol); // Returns false
+util.types.isSymbolObject(Object(symbol)); // Returns true
 ```
 
 ### `util.types.isTypedArray(value)`
@@ -2813,9 +2805,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`TypedArray`][] instance.
 
 ```js
-util.types.isTypedArray(new ArrayBuffer());  // Returns false
-util.types.isTypedArray(new Uint8Array());  // Returns true
-util.types.isTypedArray(new Float64Array());  // Returns true
+util.types.isTypedArray(new ArrayBuffer()); // Returns false
+util.types.isTypedArray(new Uint8Array()); // Returns true
+util.types.isTypedArray(new Float64Array()); // Returns true
 ```
 
 See also [`ArrayBuffer.isView()`][].
@@ -2832,9 +2824,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Uint8Array`][] instance.
 
 ```js
-util.types.isUint8Array(new ArrayBuffer());  // Returns false
-util.types.isUint8Array(new Uint8Array());  // Returns true
-util.types.isUint8Array(new Float64Array());  // Returns false
+util.types.isUint8Array(new ArrayBuffer()); // Returns false
+util.types.isUint8Array(new Uint8Array()); // Returns true
+util.types.isUint8Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isUint8ClampedArray(value)`
@@ -2849,9 +2841,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Uint8ClampedArray`][] instance.
 
 ```js
-util.types.isUint8ClampedArray(new ArrayBuffer());  // Returns false
-util.types.isUint8ClampedArray(new Uint8ClampedArray());  // Returns true
-util.types.isUint8ClampedArray(new Float64Array());  // Returns false
+util.types.isUint8ClampedArray(new ArrayBuffer()); // Returns false
+util.types.isUint8ClampedArray(new Uint8ClampedArray()); // Returns true
+util.types.isUint8ClampedArray(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isUint16Array(value)`
@@ -2866,9 +2858,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Uint16Array`][] instance.
 
 ```js
-util.types.isUint16Array(new ArrayBuffer());  // Returns false
-util.types.isUint16Array(new Uint16Array());  // Returns true
-util.types.isUint16Array(new Float64Array());  // Returns false
+util.types.isUint16Array(new ArrayBuffer()); // Returns false
+util.types.isUint16Array(new Uint16Array()); // Returns true
+util.types.isUint16Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isUint32Array(value)`
@@ -2883,9 +2875,9 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`Uint32Array`][] instance.
 
 ```js
-util.types.isUint32Array(new ArrayBuffer());  // Returns false
-util.types.isUint32Array(new Uint32Array());  // Returns true
-util.types.isUint32Array(new Float64Array());  // Returns false
+util.types.isUint32Array(new ArrayBuffer()); // Returns false
+util.types.isUint32Array(new Uint32Array()); // Returns true
+util.types.isUint32Array(new Float64Array()); // Returns false
 ```
 
 ### `util.types.isWeakMap(value)`
@@ -2900,7 +2892,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`WeakMap`][] instance.
 
 ```js
-util.types.isWeakMap(new WeakMap());  // Returns true
+util.types.isWeakMap(new WeakMap()); // Returns true
 ```
 
 ### `util.types.isWeakSet(value)`
@@ -2915,7 +2907,7 @@ added: v10.0.0
 Returns `true` if the value is a built-in [`WeakSet`][] instance.
 
 ```js
-util.types.isWeakSet(new WeakSet());  // Returns true
+util.types.isWeakSet(new WeakSet()); // Returns true
 ```
 
 ## Deprecated APIs

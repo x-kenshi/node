@@ -6,9 +6,9 @@
 
 <!-- source_link=lib/perf_hooks.js -->
 
-This module provides an implementation of a subset of the W3C
-[Web Performance APIs][] as well as additional APIs for
-Node.js-specific performance measurements.
+This module provides an implementation of a subset of the W3C [Web Performance
+APIs][] as well as additional APIs for Node.js-specific performance
+measurements.
 
 Node.js supports the following [Web Performance APIs][]:
 
@@ -117,8 +117,8 @@ cumulative duration of time the event loop has been both idle and active as a
 high resolution milliseconds timer. The `utilization` value is the calculated
 Event Loop Utilization (ELU).
 
-If bootstrapping has not yet finished on the main thread the properties have
-the value of `0`. The ELU is immediately available on [Worker threads][] since
+If bootstrapping has not yet finished on the main thread the properties have the
+value of `0`. The ELU is immediately available on [Worker threads][] since
 bootstrap happens within the event loop.
 
 Both `utilization1` and `utilization2` are optional parameters.
@@ -129,14 +129,14 @@ calculated and returned (similar to [`process.hrtime()`][]).
 
 If `utilization1` and `utilization2` are both passed, then the delta is
 calculated between the two arguments. This is a convenience option because,
-unlike [`process.hrtime()`][], calculating the ELU is more complex than a
-single subtraction.
+unlike [`process.hrtime()`][], calculating the ELU is more complex than a single
+subtraction.
 
 ELU is similar to CPU utilization, except that it only measures event loop
 statistics and not CPU usage. It represents the percentage of time the event
-loop has spent outside the event loop's event provider (e.g. `epoll_wait`).
-No other CPU idle time is taken into consideration. The following is an example
-of how a mostly idle process will have a high ELU.
+loop has spent outside the event loop's event provider (e.g. `epoll_wait`). No
+other CPU idle time is taken into consideration. The following is an example of
+how a mostly idle process will have a high ELU.
 
 ```js
 'use strict';
@@ -155,8 +155,8 @@ Although the CPU is mostly idle while running this script, the value of
 [`child_process.spawnSync()`][] blocks the event loop from proceeding.
 
 Passing in a user-defined object instead of the result of a previous call to
-`eventLoopUtilization()` will lead to undefined behavior. The return values
-are not guaranteed to reflect any correct state of the event loop.
+`eventLoopUtilization()` will lead to undefined behavior. The return values are
+not guaranteed to reflect any correct state of the event loop.
 
 ### `performance.getEntries()`
 
@@ -171,9 +171,9 @@ changes:
 
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order with
-respect to `performanceEntry.startTime`. If you are only interested in
-performance entries of certain types or that have certain names, see
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime`. If you are only interested in performance
+entries of certain types or that have certain names, see
 `performance.getEntriesByType()` and `performance.getEntriesByName()`.
 
 ### `performance.getEntriesByName(name[, type])`
@@ -191,10 +191,9 @@ changes:
 * `type` {string}
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order
-with respect to `performanceEntry.startTime` whose `performanceEntry.name` is
-equal to `name`, and optionally, whose `performanceEntry.entryType` is equal to
-`type`.
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime` whose `performanceEntry.name` is equal to
+`name`, and optionally, whose `performanceEntry.entryType` is equal to `type`.
 
 ### `performance.getEntriesByType(type)`
 
@@ -210,9 +209,9 @@ changes:
 * `type` {string}
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order
-with respect to `performanceEntry.startTime` whose `performanceEntry.entryType`
-is equal to `type`.
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime` whose `performanceEntry.entryType` is equal to
+`type`.
 
 ### `performance.mark(name[, options])`
 
@@ -237,8 +236,8 @@ changes:
 Creates a new `PerformanceMark` entry in the Performance Timeline. A
 `PerformanceMark` is a subclass of `PerformanceEntry` whose
 `performanceEntry.entryType` is always `'mark'`, and whose
-`performanceEntry.duration` is always `0`. Performance marks are used
-to mark specific significant moments in the Performance Timeline.
+`performanceEntry.duration` is always `0`. Performance marks are used to mark
+specific significant moments in the Performance Timeline.
 
 The created `PerformanceMark` entry is put in the global Performance Timeline
 and can be queried with `performance.getEntries`,
@@ -265,20 +264,20 @@ changes:
 * `cacheMode` {string} The cache mode must be an empty string ('') or 'local'
 * `bodyInfo` {Object} [Fetch Response Body Info][]
 * `responseStatus` {number} The response's status code
-* `deliveryType` {string} The delivery type.  **Default:** `''`.
+* `deliveryType` {string} The delivery type. **Default:** `''`.
 
 _This property is an extension by Node.js. It is not available in Web browsers._
 
 Creates a new `PerformanceResourceTiming` entry in the Resource Timeline. A
 `PerformanceResourceTiming` is a subclass of `PerformanceEntry` whose
-`performanceEntry.entryType` is always `'resource'`. Performance resources
-are used to mark moments in the Resource Timeline.
+`performanceEntry.entryType` is always `'resource'`. Performance resources are
+used to mark moments in the Resource Timeline.
 
-The created `PerformanceMark` entry is put in the global Resource Timeline
-and can be queried with `performance.getEntries`,
-`performance.getEntriesByName`, and `performance.getEntriesByType`. When the
-observation is performed, the entries should be cleared from the global
-Performance Timeline manually with `performance.clearResourceTimings`.
+The created `PerformanceMark` entry is put in the global Resource Timeline and
+can be queried with `performance.getEntries`, `performance.getEntriesByName`,
+and `performance.getEntriesByType`. When the observation is performed, the
+entries should be cleared from the global Performance Timeline manually with
+`performance.clearResourceTimings`.
 
 ### `performance.measure(name[, startMarkOrOptions[, endMark]])`
 
@@ -317,15 +316,15 @@ Creates a new `PerformanceMeasure` entry in the Performance Timeline. A
 `startMark` and `endMark`.
 
 The `startMark` argument may identify any _existing_ `PerformanceMark` in the
-Performance Timeline, or _may_ identify any of the timestamp properties
-provided by the `PerformanceNodeTiming` class. If the named `startMark` does
-not exist, an error is thrown.
+Performance Timeline, or _may_ identify any of the timestamp properties provided
+by the `PerformanceNodeTiming` class. If the named `startMark` does not exist,
+an error is thrown.
 
 The optional `endMark` argument must identify any _existing_ `PerformanceMark`
 in the Performance Timeline or any of the timestamp properties provided by the
-`PerformanceNodeTiming` class. `endMark` will be `performance.now()`
-if no parameter is passed, otherwise if the named `endMark` does not exist, an
-error will be thrown.
+`PerformanceNodeTiming` class. `endMark` will be `performance.now()` if no
+parameter is passed, otherwise if the named `endMark` does not exist, an error
+will be thrown.
 
 The created `PerformanceMeasure` entry is put in the global Performance Timeline
 and can be queried with `performance.getEntries`,
@@ -416,10 +415,7 @@ wrapped function. A `PerformanceObserver` must be subscribed to the `'function'`
 event type in order for the timing details to be accessed.
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 function someFunction() {
   console.log('hello world');
@@ -440,8 +436,8 @@ obs.observe({ entryTypes: ['function'] });
 wrapped();
 ```
 
-If the wrapped function returns a promise, a finally handler will be attached
-to the promise and the duration will be reported once the finally handler is
+If the wrapped function returns a promise, a finally handler will be attached to
+the promise and the duration will be reported once the finally handler is
 invoked.
 
 ### `performance.toJSON()`
@@ -455,8 +451,8 @@ changes:
                  the receiver.
 -->
 
-An object which is JSON representation of the `performance` object. It
-is similar to [`window.performance.toJSON`][] in browsers.
+An object which is JSON representation of the `performance` object. It is
+similar to [`window.performance.toJSON`][] in browsers.
 
 #### Event: `'resourcetimingbufferfull'`
 
@@ -467,8 +463,8 @@ added: v18.8.0
 The `'resourcetimingbufferfull'` event is fired when the global performance
 resource timing buffer is full. Adjust resource timing buffer size with
 `performance.setResourceTimingBufferSize()` or clear the buffer with
-`performance.clearResourceTimings()` in the event listener to allow
-more entries to be added to the performance timeline buffer.
+`performance.clearResourceTimings()` in the event listener to allow more entries
+to be added to the performance timeline buffer.
 
 ## Class: `PerformanceEntry`
 
@@ -491,8 +487,8 @@ changes:
 
 * {number}
 
-The total number of milliseconds elapsed for this entry. This value will not
-be meaningful for all Performance Entry types.
+The total number of milliseconds elapsed for this entry. This value will not be
+meaningful for all Performance Entry types.
 
 ### `performanceEntry.entryType`
 
@@ -651,8 +647,8 @@ changes:
 * {number}
 
 When `performanceEntry.entryType` is equal to `'gc'`, the `performance.flags`
-property contains additional information about garbage collection operation.
-The value may be one of:
+property contains additional information about garbage collection operation. The
+value may be one of:
 
 * `perf_hooks.constants.NODE_PERFORMANCE_GC_FLAGS_NO`
 * `perf_hooks.constants.NODE_PERFORMANCE_GC_FLAGS_CONSTRUCT_RETAINED`
@@ -678,8 +674,8 @@ changes:
 * {number}
 
 When `performanceEntry.entryType` is equal to `'gc'`, the `performance.kind`
-property identifies the type of garbage collection operation that occurred.
-The value may be one of:
+property identifies the type of garbage collection operation that occurred. The
+value may be one of:
 
 * `perf_hooks.constants.NODE_PERFORMANCE_GC_MAJOR`
 * `perf_hooks.constants.NODE_PERFORMANCE_GC_MINOR`
@@ -708,30 +704,30 @@ When `performanceEntry.type` is equal to `'gc'`, the
 ### HTTP ('http') Details
 
 When `performanceEntry.type` is equal to `'http'`, the
-`performanceNodeEntry.detail` property will be an {Object} containing
-additional information.
+`performanceNodeEntry.detail` property will be an {Object} containing additional
+information.
 
-If `performanceEntry.name` is equal to `HttpClient`, the `detail`
-will contain the following properties: `req`, `res`. And the `req` property
-will be an {Object} containing `method`, `url`, `headers`, the `res` property
-will be an {Object} containing `statusCode`, `statusMessage`, `headers`.
+If `performanceEntry.name` is equal to `HttpClient`, the `detail` will contain
+the following properties: `req`, `res`. And the `req` property will be an
+{Object} containing `method`, `url`, `headers`, the `res` property will be an
+{Object} containing `statusCode`, `statusMessage`, `headers`.
 
-If `performanceEntry.name` is equal to `HttpRequest`, the `detail`
-will contain the following properties: `req`, `res`. And the `req` property
-will be an {Object} containing `method`, `url`, `headers`, the `res` property
-will be an {Object} containing `statusCode`, `statusMessage`, `headers`.
+If `performanceEntry.name` is equal to `HttpRequest`, the `detail` will contain
+the following properties: `req`, `res`. And the `req` property will be an
+{Object} containing `method`, `url`, `headers`, the `res` property will be an
+{Object} containing `statusCode`, `statusMessage`, `headers`.
 
-This could add additional memory overhead and should only be used for
-diagnostic purposes, not left turned on in production by default.
+This could add additional memory overhead and should only be used for diagnostic
+purposes, not left turned on in production by default.
 
 ### HTTP/2 ('http2') Details
 
 When `performanceEntry.type` is equal to `'http2'`, the
-`performanceNodeEntry.detail` property will be an {Object} containing
-additional performance information.
+`performanceNodeEntry.detail` property will be an {Object} containing additional
+performance information.
 
-If `performanceEntry.name` is equal to `Http2Stream`, the `detail`
-will contain the following properties:
+If `performanceEntry.name` is equal to `Http2Stream`, the `detail` will contain
+the following properties:
 
 * `bytesRead` {number} The number of `DATA` frame bytes received for this
   `Http2Stream`.
@@ -740,13 +736,13 @@ will contain the following properties:
 * `id` {number} The identifier of the associated `Http2Stream`
 * `timeToFirstByte` {number} The number of milliseconds elapsed between the
   `PerformanceEntry` `startTime` and the reception of the first `DATA` frame.
-* `timeToFirstByteSent` {number} The number of milliseconds elapsed between
-  the `PerformanceEntry` `startTime` and sending of the first `DATA` frame.
+* `timeToFirstByteSent` {number} The number of milliseconds elapsed between the
+  `PerformanceEntry` `startTime` and sending of the first `DATA` frame.
 * `timeToFirstHeader` {number} The number of milliseconds elapsed between the
   `PerformanceEntry` `startTime` and the reception of the first header.
 
-If `performanceEntry.name` is equal to `Http2Session`, the `detail` will
-contain the following properties:
+If `performanceEntry.name` is equal to `Http2Session`, the `detail` will contain
+the following properties:
 
 * `bytesRead` {number} The number of bytes received for this `Http2Session`.
 * `bytesWritten` {number} The number of bytes sent for this `Http2Session`.
@@ -756,46 +752,45 @@ contain the following properties:
 * `maxConcurrentStreams` {number} The maximum number of streams concurrently
   open during the lifetime of the `Http2Session`.
 * `pingRTT` {number} The number of milliseconds elapsed since the transmission
-  of a `PING` frame and the reception of its acknowledgment. Only present if
-  a `PING` frame has been sent on the `Http2Session`.
+  of a `PING` frame and the reception of its acknowledgment. Only present if a
+  `PING` frame has been sent on the `Http2Session`.
 * `streamAverageDuration` {number} The average duration (in milliseconds) for
   all `Http2Stream` instances.
-* `streamCount` {number} The number of `Http2Stream` instances processed by
-  the `Http2Session`.
+* `streamCount` {number} The number of `Http2Stream` instances processed by the
+  `Http2Session`.
 * `type` {string} Either `'server'` or `'client'` to identify the type of
   `Http2Session`.
 
 ### Timerify ('function') Details
 
 When `performanceEntry.type` is equal to `'function'`, the
-`performanceNodeEntry.detail` property will be an {Array} listing
-the input arguments to the timed function.
+`performanceNodeEntry.detail` property will be an {Array} listing the input
+arguments to the timed function.
 
 ### Net ('net') Details
 
 When `performanceEntry.type` is equal to `'net'`, the
-`performanceNodeEntry.detail` property will be an {Object} containing
-additional information.
+`performanceNodeEntry.detail` property will be an {Object} containing additional
+information.
 
-If `performanceEntry.name` is equal to `connect`, the `detail`
-will contain the following properties: `host`, `port`.
+If `performanceEntry.name` is equal to `connect`, the `detail` will contain the
+following properties: `host`, `port`.
 
 ### DNS ('dns') Details
 
 When `performanceEntry.type` is equal to `'dns'`, the
-`performanceNodeEntry.detail` property will be an {Object} containing
-additional information.
+`performanceNodeEntry.detail` property will be an {Object} containing additional
+information.
 
-If `performanceEntry.name` is equal to `lookup`, the `detail`
-will contain the following properties: `hostname`, `family`, `hints`, `verbatim`,
-`addresses`.
+If `performanceEntry.name` is equal to `lookup`, the `detail` will contain the
+following properties: `hostname`, `family`, `hints`, `verbatim`, `addresses`.
 
 If `performanceEntry.name` is equal to `lookupService`, the `detail` will
 contain the following properties: `host`, `port`, `hostname`, `service`.
 
-If `performanceEntry.name` is equal to `queryxxx` or `getHostByAddr`, the `detail` will
-contain the following properties: `host`, `ttl`, `result`. The value of `result` is
-same as the result of `queryxxx` or `getHostByAddr`.
+If `performanceEntry.name` is equal to `queryxxx` or `getHostByAddr`, the
+`detail` will contain the following properties: `host`, `ttl`, `result`. The
+value of `result` is same as the result of `queryxxx` or `getHostByAddr`.
 
 ## Class: `PerformanceNodeTiming`
 
@@ -807,8 +802,8 @@ added: v8.5.0
 
 _This property is an extension by Node.js. It is not available in Web browsers._
 
-Provides timing details for Node.js itself. The constructor of this class
-is not exposed to users.
+Provides timing details for Node.js itself. The constructor of this class is not
+exposed to users.
 
 ### `performanceNodeTiming.bootstrapComplete`
 
@@ -818,9 +813,9 @@ added: v8.5.0
 
 * {number}
 
-The high resolution millisecond timestamp at which the Node.js process
-completed bootstrapping. If bootstrapping has not yet finished, the property
-has the value of -1.
+The high resolution millisecond timestamp at which the Node.js process completed
+bootstrapping. If bootstrapping has not yet finished, the property has the value
+of -1.
 
 ### `performanceNodeTiming.environment`
 
@@ -846,8 +841,8 @@ added:
 The high resolution millisecond timestamp of the amount of time the event loop
 has been idle within the event loop's event provider (e.g. `epoll_wait`). This
 does not take CPU usage into consideration. If the event loop has not yet
-started (e.g., in the first tick of the main script), the property has the
-value of 0.
+started (e.g., in the first tick of the main script), the property has the value
+of 0.
 
 ### `performanceNodeTiming.loopExit`
 
@@ -925,8 +920,8 @@ changes:
 
 * {number}
 
-The high resolution millisecond timestamp at immediately before dispatching
-the `fetch` request. If the resource is not intercepted by a worker the property
+The high resolution millisecond timestamp at immediately before dispatching the
+`fetch` request. If the resource is not intercepted by a worker the property
 will always return 0.
 
 ### `performanceResourceTiming.redirectStart`
@@ -944,8 +939,8 @@ changes:
 
 * {number}
 
-The high resolution millisecond timestamp that represents the start time
-of the fetch which initiates the redirect.
+The high resolution millisecond timestamp that represents the start time of the
+fetch which initiates the redirect.
 
 ### `performanceResourceTiming.redirectEnd`
 
@@ -1035,8 +1030,8 @@ changes:
 * {number}
 
 The high resolution millisecond timestamp representing the time immediately
-before Node.js starts to establish the connection to the server to retrieve
-the resource.
+before Node.js starts to establish the connection to the server to retrieve the
+resource.
 
 ### `performanceResourceTiming.connectEnd`
 
@@ -1054,8 +1049,8 @@ changes:
 * {number}
 
 The high resolution millisecond timestamp representing the time immediately
-after Node.js finishes establishing the connection to the server to retrieve
-the resource.
+after Node.js finishes establishing the connection to the server to retrieve the
+resource.
 
 ### `performanceResourceTiming.secureConnectionStart`
 
@@ -1109,8 +1104,8 @@ changes:
 * {number}
 
 The high resolution millisecond timestamp representing the time immediately
-after Node.js receives the last byte of the resource or immediately before
-the transport connection is closed, whichever comes first.
+after Node.js receives the last byte of the resource or immediately before the
+transport connection is closed, whichever comes first.
 
 ### `performanceResourceTiming.transferSize`
 
@@ -1145,9 +1140,8 @@ changes:
 
 * {number}
 
-A number representing the size (in octets) received from the fetch
-(HTTP or cache), of the payload body, before removing any applied
-content-codings.
+A number representing the size (in octets) received from the fetch (HTTP or
+cache), of the payload body, before removing any applied content-codings.
 
 ### `performanceResourceTiming.decodedBodySize`
 
@@ -1164,9 +1158,8 @@ changes:
 
 * {number}
 
-A number representing the size (in octets) received from the fetch
-(HTTP or cache), of the message body, after removing any applied
-content-codings.
+A number representing the size (in octets) received from the fetch (HTTP or
+cache), of the message body, after removing any applied content-codings.
 
 ### `performanceResourceTiming.toJSON()`
 
@@ -1216,14 +1209,11 @@ changes:
   * `list` {PerformanceObserverEntryList}
   * `observer` {PerformanceObserver}
 
-`PerformanceObserver` objects provide notifications when new
-`PerformanceEntry` instances have been added to the Performance Timeline.
+`PerformanceObserver` objects provide notifications when new `PerformanceEntry`
+instances have been added to the Performance Timeline.
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const obs = new PerformanceObserver((list, observer) => {
   console.log(list.getEntries());
@@ -1239,11 +1229,11 @@ performance.mark('test');
 
 Because `PerformanceObserver` instances introduce their own additional
 performance overhead, instances should not be left subscribed to notifications
-indefinitely. Users should disconnect observers as soon as they are no
-longer needed.
+indefinitely. Users should disconnect observers as soon as they are no longer
+needed.
 
-The `callback` is invoked when a `PerformanceObserver` is
-notified about new `PerformanceEntry` instances. The callback receives a
+The `callback` is invoked when a `PerformanceObserver` is notified about new
+`PerformanceEntry` instances. The callback receives a
 `PerformanceObserverEntryList` instance and a reference to the
 `PerformanceObserver`.
 
@@ -1271,33 +1261,29 @@ changes:
 -->
 
 * `options` {Object}
-  * `type` {string} A single {PerformanceEntry} type. Must not be given
-    if `entryTypes` is already specified.
+  * `type` {string} A single {PerformanceEntry} type. Must not be given if
+    `entryTypes` is already specified.
   * `entryTypes` {string\[]} An array of strings identifying the types of
-    {PerformanceEntry} instances the observer is interested in. If not
-    provided an error will be thrown.
-  * `buffered` {boolean} If true, the observer callback is called with a
-    list global `PerformanceEntry` buffered entries. If false, only
-    `PerformanceEntry`s created after the time point are sent to the
-    observer callback. **Default:** `false`.
+    {PerformanceEntry} instances the observer is interested in. If not provided
+    an error will be thrown.
+  * `buffered` {boolean} If true, the observer callback is called with a list
+    global `PerformanceEntry` buffered entries. If false, only
+    `PerformanceEntry`s created after the time point are sent to the observer
+    callback. **Default:** `false`.
 
 Subscribes the {PerformanceObserver} instance to notifications of new
-{PerformanceEntry} instances identified either by `options.entryTypes`
-or `options.type`:
+{PerformanceEntry} instances identified either by `options.entryTypes` or
+`options.type`:
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const obs = new PerformanceObserver((list, observer) => {
   // Called once asynchronously. `list` contains three items.
 });
 obs.observe({ type: 'mark' });
 
-for (let n = 0; n < 3; n++)
-  performance.mark(`test${n}`);
+for (let n = 0; n < 3; n++) performance.mark(`test${n}`);
 ```
 
 ## Class: `PerformanceObserverEntryList`
@@ -1307,8 +1293,8 @@ added: v8.5.0
 -->
 
 The `PerformanceObserverEntryList` class is used to provide access to the
-`PerformanceEntry` instances passed to a `PerformanceObserver`.
-The constructor of this class is not exposed to users.
+`PerformanceEntry` instances passed to a `PerformanceObserver`. The constructor
+of this class is not exposed to users.
 
 ### `performanceObserverEntryList.getEntries()`
 
@@ -1318,14 +1304,11 @@ added: v8.5.0
 
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order
-with respect to `performanceEntry.startTime`.
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime`.
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const obs = new PerformanceObserver((perfObserverList, observer) => {
   console.log(perfObserverList.getEntries());
@@ -1368,16 +1351,12 @@ added: v8.5.0
 * `type` {string}
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order
-with respect to `performanceEntry.startTime` whose `performanceEntry.name` is
-equal to `name`, and optionally, whose `performanceEntry.entryType` is equal to
-`type`.
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime` whose `performanceEntry.name` is equal to
+`name`, and optionally, whose `performanceEntry.entryType` is equal to `type`.
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const obs = new PerformanceObserver((perfObserverList, observer) => {
   console.log(perfObserverList.getEntriesByName('meow'));
@@ -1427,15 +1406,12 @@ added: v8.5.0
 * `type` {string}
 * Returns: {PerformanceEntry\[]}
 
-Returns a list of `PerformanceEntry` objects in chronological order
-with respect to `performanceEntry.startTime` whose `performanceEntry.entryType`
-is equal to `type`.
+Returns a list of `PerformanceEntry` objects in chronological order with respect
+to `performanceEntry.startTime` whose `performanceEntry.entryType` is equal to
+`type`.
 
 ```js
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const obs = new PerformanceObserver((perfObserverList, observer) => {
   console.log(perfObserverList.getEntriesByType('mark'));
@@ -1479,8 +1455,8 @@ added:
   * `lowest` {number|bigint} The lowest discernible value. Must be an integer
     value greater than 0. **Default:** `1`.
   * `highest` {number|bigint} The highest recordable value. Must be an integer
-    value that is equal to or greater than two times `lowest`.
-    **Default:** `Number.MAX_SAFE_INTEGER`.
+    value that is equal to or greater than two times `lowest`. **Default:**
+    `Number.MAX_SAFE_INTEGER`.
   * `figures` {number} The number of accuracy digits. Must be a number between
     `1` and `5`. **Default:** `3`.
 * Returns: {RecordableHistogram}
@@ -1503,11 +1479,10 @@ _This property is an extension by Node.js. It is not available in Web browsers._
 Creates an `IntervalHistogram` object that samples and reports the event loop
 delay over time. The delays will be reported in nanoseconds.
 
-Using a timer to detect approximate event loop delay works because the
-execution of timers is tied specifically to the lifecycle of the libuv
-event loop. That is, a delay in the loop will cause a delay in the execution
-of the timer, and those delays are specifically what this API is intended to
-detect.
+Using a timer to detect approximate event loop delay works because the execution
+of timers is tied specifically to the lifecycle of the libuv event loop. That
+is, a delay in the loop will cause a delay in the execution of the timer, and
+those delays are specifically what this API is intended to detect.
 
 ```js
 const { monitorEventLoopDelay } = require('node:perf_hooks');
@@ -1562,8 +1537,8 @@ added: v11.10.0
 
 * {number}
 
-The number of times the event loop delay exceeded the maximum 1 hour event
-loop delay threshold.
+The number of times the event loop delay exceeded the maximum 1 hour event loop
+delay threshold.
 
 ### `histogram.exceedsBigInt`
 
@@ -1575,8 +1550,8 @@ added:
 
 * {bigint}
 
-The number of times the event loop delay exceeded the maximum 1 hour event
-loop delay threshold.
+The number of times the event loop delay exceeded the maximum 1 hour event loop
+delay threshold.
 
 ### `histogram.max`
 
@@ -1708,8 +1683,8 @@ added: v11.10.0
 
 * Returns: {boolean}
 
-Disables the update interval timer. Returns `true` if the timer was
-stopped, `false` if it was already stopped.
+Disables the update interval timer. Returns `true` if the timer was stopped,
+`false` if it was already stopped.
 
 ### `histogram.enable()`
 
@@ -1719,8 +1694,8 @@ added: v11.10.0
 
 * Returns: {boolean}
 
-Enables the update interval timer. Returns `true` if the timer was
-started, `false` if it was already started.
+Enables the update interval timer. Returns `true` if the timer was started,
+`false` if it was already started.
 
 ### Cloning an `IntervalHistogram`
 
@@ -1780,10 +1755,7 @@ to execute the callback).
 ```js
 'use strict';
 const async_hooks = require('node:async_hooks');
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 
 const set = new Set();
 const hook = async_hooks.createHook({
@@ -1797,9 +1769,11 @@ const hook = async_hooks.createHook({
     if (set.has(id)) {
       set.delete(id);
       performance.mark(`Timeout-${id}-Destroy`);
-      performance.measure(`Timeout-${id}`,
-                          `Timeout-${id}-Init`,
-                          `Timeout-${id}-Destroy`);
+      performance.measure(
+        `Timeout-${id}`,
+        `Timeout-${id}-Init`,
+        `Timeout-${id}-Destroy`,
+      );
     }
   },
 });
@@ -1825,15 +1799,13 @@ dependencies:
 
 ```js
 'use strict';
-const {
-  performance,
-  PerformanceObserver,
-} = require('node:perf_hooks');
+const { performance, PerformanceObserver } = require('node:perf_hooks');
 const mod = require('node:module');
 
 // Monkey patch the require function
-mod.Module.prototype.require =
-  performance.timerify(mod.Module.prototype.require);
+mod.Module.prototype.require = performance.timerify(
+  mod.Module.prototype.require,
+);
 require = performance.timerify(require);
 
 // Activate the observer
@@ -1854,10 +1826,10 @@ require('some-module');
 ### Measuring how long one HTTP round-trip takes
 
 The following example is used to trace the time spent by HTTP client
-(`OutgoingMessage`) and HTTP request (`IncomingMessage`). For HTTP client,
-it means the time interval between starting the request and receiving the
-response, and for HTTP request, it means the time interval between receiving
-the request and sending the response:
+(`OutgoingMessage`) and HTTP request (`IncomingMessage`). For HTTP client, it
+means the time interval between starting the request and receiving the response,
+and for HTTP request, it means the time interval between receiving the request
+and sending the response:
 
 ```js
 'use strict';
@@ -1874,11 +1846,13 @@ obs.observe({ entryTypes: ['http'] });
 
 const PORT = 8080;
 
-http.createServer((req, res) => {
-  res.end('ok');
-}).listen(PORT, () => {
-  http.get(`http://127.0.0.1:${PORT}`);
-});
+http
+  .createServer((req, res) => {
+    res.end('ok');
+  })
+  .listen(PORT, () => {
+    http.get(`http://127.0.0.1:${PORT}`);
+  });
 ```
 
 ### Measuring how long the `net.connect` (only for TCP) takes when the connection is successful
@@ -1894,11 +1868,13 @@ const obs = new PerformanceObserver((items) => {
 });
 obs.observe({ entryTypes: ['net'] });
 const PORT = 8080;
-net.createServer((socket) => {
-  socket.destroy();
-}).listen(PORT, () => {
-  net.connect(PORT);
-});
+net
+  .createServer((socket) => {
+    socket.destroy();
+  })
+  .listen(PORT, () => {
+    net.connect(PORT);
+  });
 ```
 
 ### Measuring how long the DNS takes when the request is successful

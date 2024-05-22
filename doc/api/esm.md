@@ -154,18 +154,17 @@ There are three types of specifiers:
   is always necessary for these._
 
 * _Bare specifiers_ like `'some-package'` or `'some-package/shuffle'`. They can
-  refer to the main entry point of a package by the package name, or a
-  specific feature module within a package prefixed by the package name as per
-  the examples respectively. _Including the file extension is only necessary
-  for packages without an [`"exports"`][] field._
+  refer to the main entry point of a package by the package name, or a specific
+  feature module within a package prefixed by the package name as per the
+  examples respectively. _Including the file extension is only necessary for
+  packages without an [`"exports"`][] field._
 
 * _Absolute specifiers_ like `'file:///opt/nodejs/config.js'`. They refer
   directly and explicitly to a full path.
 
-Bare specifier resolutions are handled by the [Node.js module
-resolution and loading algorithm][].
-All other specifier resolutions are always only resolved with
-the standard relative [URL][] resolution semantics.
+Bare specifier resolutions are handled by the [Node.js module resolution and
+loading algorithm][]. All other specifier resolutions are always only resolved
+with the standard relative [URL][] resolution semantics.
 
 Like in CommonJS, module files within packages can be accessed by appending a
 path to the package name unless the package's [`package.json`][] contains an
@@ -195,8 +194,8 @@ a [custom HTTPS loader][].
 
 #### `file:` URLs
 
-Modules are loaded multiple times if the `import` specifier used to resolve
-them has a different query or fragment.
+Modules are loaded multiple times if the `import` specifier used to resolve them
+has a different query or fragment.
 
 ```js
 import './foo.mjs?query=1'; // loads ./foo.mjs with query of "?query=1"
@@ -224,12 +223,11 @@ import 'data:text/javascript,console.log("hello!");';
 import _ from 'data:application/json,"world!"' with { type: 'json' };
 ```
 
-`data:` URLs only resolve [bare specifiers][Terminology] for builtin modules
-and [absolute specifiers][Terminology]. Resolving
-[relative specifiers][Terminology] does not work because `data:` is not a
-[special scheme][]. For example, attempting to load `./foo`
-from `data:text/javascript,import "./foo";` fails to resolve because there
-is no concept of relative resolution for `data:` URLs.
+`data:` URLs only resolve [bare specifiers][Terminology] for builtin modules and
+[absolute specifiers][Terminology]. Resolving [relative specifiers][Terminology]
+does not work because `data:` is not a [special scheme][]. For example,
+attempting to load `./foo` from `data:text/javascript,import "./foo";` fails to
+resolve because there is no concept of relative resolution for `data:` URLs.
 
 #### `node:` imports
 
@@ -282,8 +280,9 @@ statements to pass on more information alongside the module specifier.
 ```js
 import fooData from './foo.json' with { type: 'json' };
 
-const { default: barData } =
-  await import('./bar.json', { with: { type: 'json' } });
+const { default: barData } = await import('./bar.json', {
+  with: { type: 'json' },
+});
 ```
 
 Node.js supports the following `type` values, for which the attribute is
@@ -295,10 +294,10 @@ mandatory:
 
 ## Builtin modules
 
-[Core modules][] provide named exports of their public API. A
-default export is also provided which is the value of the CommonJS exports.
-The default export can be used for, among other things, modifying the named
-exports. Named exports of builtin modules are updated only by calling
+[Core modules][] provide named exports of their public API. A default export is
+also provided which is the value of the CommonJS exports. The default export can
+be used for, among other things, modifying the named exports. Named exports of
+builtin modules are updated only by calling
 [`module.syncBuiltinESMExports()`][].
 
 ```js
@@ -420,8 +419,8 @@ changes:
 
 > Stability: 1.2 - Release candidate
 
-* `specifier` {string} The module specifier to resolve relative to the
-  current module.
+* `specifier` {string} The module specifier to resolve relative to the current
+  module.
 * Returns: {string} The absolute URL string that the specifier would resolve to.
 
 [`import.meta.resolve`][] is a module-relative resolution function scoped to
@@ -439,10 +438,10 @@ resolutions are subject to the permitted exports resolutions within the package.
 
 **Caveats**:
 
-* This can result in synchronous file-system operations, which
-  can impact performance similarly to `require.resolve`.
-* This feature is not available within custom loaders (it would
-  create a deadlock).
+* This can result in synchronous file-system operations, which can impact
+  performance similarly to `require.resolve`.
+* This feature is not available within custom loaders (it would create a
+  deadlock).
 
 **Non-standard API**:
 
@@ -456,14 +455,13 @@ a second argument:
 
 ### `import` statements
 
-An `import` statement can reference an ES module or a CommonJS module.
-`import` statements are permitted only in ES modules, but dynamic [`import()`][]
+An `import` statement can reference an ES module or a CommonJS module. `import`
+statements are permitted only in ES modules, but dynamic [`import()`][]
 expressions are supported in CommonJS for loading ES modules.
 
-When importing [CommonJS modules](#commonjs-namespaces), the
-`module.exports` object is provided as the default export. Named exports may be
-available, provided by static analysis as a convenience for better ecosystem
-compatibility.
+When importing [CommonJS modules](#commonjs-namespaces), the `module.exports`
+object is provided as the default export. Named exports may be available,
+provided by static analysis as a convenience for better ecosystem compatibility.
 
 ### `require`
 
@@ -495,9 +493,9 @@ console.log(cjs === cjsSugar);
 //   true
 ```
 
-The ECMAScript Module Namespace representation of a CommonJS module is always
-a namespace with a `default` export key pointing to the CommonJS
-`module.exports` value.
+The ECMAScript Module Namespace representation of a CommonJS module is always a
+namespace with a `default` export key pointing to the CommonJS `module.exports`
+value.
 
 This Module Namespace Exotic Object can be directly observed either when using
 `import * as m from 'cjs'` or a dynamic import:
@@ -507,14 +505,14 @@ This Module Namespace Exotic Object can be directly observed either when using
 ```js
 import * as m from 'cjs';
 console.log(m);
-console.log(m === await import('cjs'));
+console.log(m === (await import('cjs')));
 // Prints:
 //   [Module] { default: <module.exports> }
 //   true
 ```
 
-For better compatibility with existing usage in the JS ecosystem, Node.js
-in addition attempts to determine the CommonJS named exports of every imported
+For better compatibility with existing usage in the JS ecosystem, Node.js in
+addition attempts to determine the CommonJS named exports of every imported
 CommonJS module to provide them as separate ES module exports using a static
 analysis process.
 
@@ -551,8 +549,8 @@ Live binding updates or new exports added to `module.exports` are not detected
 for these named exports.
 
 The detection of named exports is based on common syntax patterns but does not
-always correctly detect named exports. In these cases, using the default
-import form described above can be a better option.
+always correctly detect named exports. In these cases, using the default import
+form described above can be a better option.
 
 Named exports detection covers many common export patterns, reexport patterns
 and build tool and transpiler outputs. See [cjs-module-lexer][] for the exact
@@ -592,8 +590,8 @@ Alternatively `module.createRequire()` can be used.
 
 #### No `NODE_PATH`
 
-`NODE_PATH` is not part of resolving `import` specifiers. Please use symlinks
-if this behavior is desired.
+`NODE_PATH` is not part of resolving `import` specifiers. Please use symlinks if
+this behavior is desired.
 
 #### No `require.extensions`
 
@@ -631,11 +629,11 @@ imported from the same path.
 > Stability: 1 - Experimental
 
 Importing WebAssembly modules is supported under the
-`--experimental-wasm-modules` flag, allowing any `.wasm` files to be
-imported as normal modules while also supporting their module imports.
+`--experimental-wasm-modules` flag, allowing any `.wasm` files to be imported as
+normal modules while also supporting their module imports.
 
-This integration is in line with the
-[ES Module Integration Proposal for WebAssembly][].
+This integration is in line with the [ES Module Integration Proposal for
+WebAssembly][].
 
 For example, an `index.mjs` containing:
 
@@ -713,8 +711,8 @@ Automatic protocol negotiation for HTTP/2 and HTTP/3 is not yet supported.
 
 ### HTTP is limited to loopback addresses
 
-`http:` is vulnerable to man-in-the-middle attacks and is not allowed to be
-used for addresses outside of the IPv4 address `127.0.0.0/8` (`127.0.0.1` to
+`http:` is vulnerable to man-in-the-middle attacks and is not allowed to be used
+for addresses outside of the IPv4 address `127.0.0.0/8` (`127.0.0.1` to
 `127.255.255.255`) and the IPv6 address `::1`. Support for `http:` is intended
 to be used for local development.
 
@@ -759,15 +757,15 @@ export function resize(img, size) {
 For now, the `--experimental-network-imports` flag is required to enable loading
 resources over `http:` or `https:`. In the future, a different mechanism will be
 used to enforce this. Opt-in is required to prevent transitive dependencies
-inadvertently using potentially mutable state that could affect reliability
-of Node.js applications.
+inadvertently using potentially mutable state that could affect reliability of
+Node.js applications.
 
 <i id="esm_experimental_loaders"></i>
 
 ## Loaders
 
-The former Loaders documentation is now at
-[Modules: Customization hooks][Module customization hooks].
+The former Loaders documentation is now at [Modules: Customization
+hooks][Module customization hooks].
 
 ## Resolution and loading algorithm
 
@@ -789,39 +787,36 @@ The default loader has the following properties
 * Support for "inline" module loading via `data:` URLs
 * Support for `file:` module loading
 * Fails on any other URL protocol
-* Fails on unknown extensions for `file:` loading
-  (supports only `.cjs`, `.js`, and `.mjs`)
+* Fails on unknown extensions for `file:` loading (supports only `.cjs`, `.js`,
+  and `.mjs`)
 
 ### Resolution algorithm
 
 The algorithm to load an ES module specifier is given through the
-**ESM\_RESOLVE** method below. It returns the resolved URL for a
-module specifier relative to a parentURL.
+**ESM\_RESOLVE** method below. It returns the resolved URL for a module specifier
+relative to a parentURL.
 
-The resolution algorithm determines the full resolved URL for a module
-load, along with its suggested module format. The resolution algorithm
-does not determine whether the resolved URL protocol can be loaded,
-or whether the file extensions are permitted, instead these validations
-are applied by Node.js during the load phase
-(for example, if it was asked to load a URL that has a protocol that is
-not `file:`, `data:`, `node:`, or if `--experimental-network-imports`
-is enabled, `https:`).
+The resolution algorithm determines the full resolved URL for a module load,
+along with its suggested module format. The resolution algorithm does not
+determine whether the resolved URL protocol can be loaded, or whether the file
+extensions are permitted, instead these validations are applied by Node.js
+during the load phase (for example, if it was asked to load a URL that has a
+protocol that is not `file:`, `data:`, `node:`, or if
+`--experimental-network-imports` is enabled, `https:`).
 
-The algorithm also tries to determine the format of the file based
-on the extension (see `ESM_FILE_FORMAT` algorithm below). If it does
-not recognize the file extension (eg if it is not `.mjs`, `.cjs`, or
-`.json`), then a format of `undefined` is returned,
-which will throw during the load phase.
+The algorithm also tries to determine the format of the file based on the
+extension (see `ESM_FILE_FORMAT` algorithm below). If it does not recognize the
+file extension (eg if it is not `.mjs`, `.cjs`, or `.json`), then a format of
+`undefined` is returned, which will throw during the load phase.
 
-The algorithm to determine the module format of a resolved URL is
-provided by **ESM\_FILE\_FORMAT**, which returns the unique module
-format for any file. The _"module"_ format is returned for an ECMAScript
-Module, while the _"commonjs"_ format is used to indicate loading through the
-legacy CommonJS loader. Additional formats such as _"addon"_ can be extended in
-future updates.
+The algorithm to determine the module format of a resolved URL is provided by
+**ESM\_FILE\_FORMAT**, which returns the unique module format for any file. The
+_"module"_ format is returned for an ECMAScript Module, while the _"commonjs"_
+format is used to indicate loading through the legacy CommonJS loader.
+Additional formats such as _"addon"_ can be extended in future updates.
 
-In the following algorithms, all subroutine errors are propagated as errors
-of these top-level routines unless stated otherwise.
+In the following algorithms, all subroutine errors are propagated as errors of
+these top-level routines unless stated otherwise.
 
 _defaultConditions_ is the conditional environment name array,
 `["node", "import"]`.
@@ -847,19 +842,18 @@ The resolver can throw the following errors:
 
 > 1. Let _resolved_ be **undefined**.
 > 2. If _specifier_ is a valid URL, then
->    1. Set _resolved_ to the result of parsing and reserializing
->       _specifier_ as a URL.
+>    1. Set _resolved_ to the result of parsing and reserializing _specifier_ as
+>       a URL.
 > 3. Otherwise, if _specifier_ starts with _"/"_, _"./"_, or _"../"_, then
 >    1. Set _resolved_ to the URL resolution of _specifier_ relative to
 >       _parentURL_.
 > 4. Otherwise, if _specifier_ starts with _"#"_, then
->    1. Set _resolved_ to the result of
->       **PACKAGE\_IMPORTS\_RESOLVE**(_specifier_,
+>    1. Set _resolved_ to the result of **PACKAGE\_IMPORTS\_RESOLVE**(_specifier_,
 >       _parentURL_, _defaultConditions_).
 > 5. Otherwise,
 >    1. Note: _specifier_ is now a bare specifier.
->    2. Set _resolved_ the result of
->       **PACKAGE\_RESOLVE**(_specifier_, _parentURL_).
+>    2. Set _resolved_ the result of **PACKAGE\_RESOLVE**(_specifier_,
+>       _parentURL_).
 > 6. Let _format_ be **undefined**.
 > 7. If _resolved_ is a _"file:"_ URL, then
 >    1. If _resolved_ contains any percent encodings of _"/"_ or _"\\"_ (_"%2F"_
@@ -869,8 +863,8 @@ The resolver can throw the following errors:
 >       1. Throw an _Unsupported Directory Import_ error.
 >    3. If the file at _resolved_ does not exist, then
 >       1. Throw a _Module Not Found_ error.
->    4. Set _resolved_ to the real path of _resolved_, maintaining the
->       same URL querystring and fragment components.
+>    4. Set _resolved_ to the real path of _resolved_, maintaining the same URL
+>       querystring and fragment components.
 >    5. Set _format_ to the result of **ESM\_FILE\_FORMAT**(_resolved_).
 > 8. Otherwise,
 >    1. Set _format_ the module format of the content type associated with the
@@ -890,16 +884,16 @@ The resolver can throw the following errors:
 > 5. Otherwise,
 >    1. If _packageSpecifier_ does not contain a _"/"_ separator, then
 >       1. Throw an _Invalid Module Specifier_ error.
->    2. Set _packageName_ to the substring of _packageSpecifier_
->       until the second _"/"_ separator or the end of the string.
+>    2. Set _packageName_ to the substring of _packageSpecifier_ until the
+>       second _"/"_ separator or the end of the string.
 > 6. If _packageName_ starts with _"."_ or contains _"\\"_ or _"%"_, then
 >    1. Throw an _Invalid Module Specifier_ error.
 > 7. Let _packageSubpath_ be _"."_ concatenated with the substring of
 >    _packageSpecifier_ from the position at the length of _packageName_.
 > 8. If _packageSubpath_ ends in _"/"_, then
 >    1. Throw an _Invalid Module Specifier_ error.
-> 9. Let _selfUrl_ be the result of
->    **PACKAGE\_SELF\_RESOLVE**(_packageName_, _packageSubpath_, _parentURL_).
+> 9. Let _selfUrl_ be the result of **PACKAGE\_SELF\_RESOLVE**(_packageName_,
+>    _packageSubpath_, _parentURL_).
 > 10. If _selfUrl_ is not **undefined**, return _selfUrl_.
 > 11. While _parentURL_ is not the file system root,
 >     1. Let _packageURL_ be the URL resolution of _"node\_modules/"_
@@ -965,8 +959,7 @@ The resolver can throw the following errors:
 > 4. If _packageURL_ is not **null**, then
 >    1. Let _pjson_ be the result of **READ\_PACKAGE\_JSON**(_packageURL_).
 >    2. If _pjson.imports_ is a non-null Object, then
->       1. Let _resolved_ be the result of
->          **PACKAGE\_IMPORTS\_EXPORTS\_RESOLVE**(
+>       1. Let _resolved_ be the result of **PACKAGE\_IMPORTS\_EXPORTS\_RESOLVE**(
 >          _specifier_, _pjson.imports_, _packageURL_, **true**, _conditions_).
 >       2. If _resolved_ is not **null** or **undefined**, return _resolved_.
 > 5. Throw a _Package Import Not Defined_ error.
@@ -976,11 +969,11 @@ _isImports_, _conditions_)
 
 > 1. If _matchKey_ is a key of _matchObj_ and does not contain _"\*"_, then
 >    1. Let _target_ be the value of _matchObj_\[_matchKey_].
->    2. Return the result of **PACKAGE\_TARGET\_RESOLVE**(_packageURL_,
->       _target_, **null**, _isImports_, _conditions_).
+>    2. Return the result of **PACKAGE\_TARGET\_RESOLVE**(_packageURL_, _target_,
+>       **null**, _isImports_, _conditions_).
 > 2. Let _expansionKeys_ be the list of keys of _matchObj_ containing only a
->    single _"\*"_, sorted by the sorting function **PATTERN\_KEY\_COMPARE**
->    which orders in descending order of specificity.
+>    single _"\*"_, sorted by the sorting function **PATTERN\_KEY\_COMPARE** which
+>    orders in descending order of specificity.
 > 3. For each key _expansionKey_ in _expansionKeys_, do
 >    1. Let _patternBase_ be the substring of _expansionKey_ up to but excluding
 >       the first _"\*"_ character.
@@ -1014,8 +1007,8 @@ _isImports_, _conditions_)
 > 10. If the length of _keyB_ is greater than the length of _keyA_, return 1.
 > 11. Return 0.
 
-**PACKAGE\_TARGET\_RESOLVE**(_packageURL_, _target_, _patternMatch_,
-_isImports_, _conditions_)
+**PACKAGE\_TARGET\_RESOLVE**(_packageURL_, _target_, _patternMatch_, _isImports_,
+_conditions_)
 
 > 1. If _target_ is a String, then
 >    1. If _target_ does not start with _"./"_, then
@@ -1075,8 +1068,8 @@ _isImports_, _conditions_)
 >    1. Return _"commonjs"_.
 > 4. If _url_ ends in _".json"_, then
 >    1. Return _"json"_.
-> 5. If `--experimental-wasm-modules` is enabled and _url_ ends in
->    _".wasm"_, then
+> 5. If `--experimental-wasm-modules` is enabled and _url_ ends in _".wasm"_,
+>    then
 >    1. Return _"wasm"_.
 > 6. Let _packageURL_ be the result of **LOOKUP\_PACKAGE\_SCOPE**(_url_).
 > 7. Let _pjson_ be the result of **READ\_PACKAGE\_JSON**(_packageURL_).
@@ -1097,8 +1090,8 @@ _isImports_, _conditions_)
 >        1. Return _"wasm"_.
 >     2. If _packageType_ is not **null**, then
 >        1. Return _packageType_.
->     3. If `--experimental-detect-module` is enabled and the source of
->        module contains static import or export syntax, then
+>     3. If `--experimental-detect-module` is enabled and the source of module
+>        contains static import or export syntax, then
 >        1. Return _"module"_.
 >     4. Return _"commonjs"_.
 > 12. Return **undefined** (will throw during load phase).
@@ -1109,8 +1102,7 @@ _isImports_, _conditions_)
 > 2. While _scopeURL_ is not the file system root,
 >    1. Set _scopeURL_ to the parent URL of _scopeURL_.
 >    2. If _scopeURL_ ends in a _"node\_modules"_ path segment, return **null**.
->    3. Let _pjsonURL_ be the resolution of _"package.json"_ within
->       _scopeURL_.
+>    3. Let _pjsonURL_ be the resolution of _"package.json"_ within _scopeURL_.
 >    4. if the file at _pjsonURL_ exists, then
 >       1. Return _scopeURL_.
 > 3. Return **null**.
@@ -1130,9 +1122,9 @@ _isImports_, _conditions_)
 > 2. If the parse is successful, then
 >    1. If _source_ contains top-level `await`, static `import` or `export`
 >       statements, or `import.meta`, return **true**.
->    2. If _source_ contains a top-level lexical declaration (`const`, `let`,
->       or `class`) of any of the CommonJS wrapper variables (`require`,
->       `exports`, `module`, `__filename`, or `__dirname`) then return **true**.
+>    2. If _source_ contains a top-level lexical declaration (`const`, `let`, or
+>       `class`) of any of the CommonJS wrapper variables (`require`, `exports`,
+>       `module`, `__filename`, or `__dirname`) then return **true**.
 > 3. Else return **false**.
 
 ### Customizing ESM specifier resolution algorithm

@@ -22,8 +22,8 @@ there to show the start of each command.
 Lines that don't start with `$` or `>` character show the output of the previous
 command.
 
-First, make sure to have downloaded and installed Node.js. See
-[Installing Node.js via package manager][] for further install information.
+First, make sure to have downloaded and installed Node.js. See [Installing
+Node.js via package manager][] for further install information.
 
 Now, create an empty project folder called `projects`, then navigate into it.
 
@@ -48,11 +48,11 @@ mkdir $env:USERPROFILE\projects
 cd $env:USERPROFILE\projects
 ```
 
-Next, create a new source file in the `projects`
-folder and call it `hello-world.js`.
+Next, create a new source file in the `projects` folder and call it
+`hello-world.js`.
 
-Open `hello-world.js` in any preferred text editor and
-paste in the following content:
+Open `hello-world.js` in any preferred text editor and paste in the following
+content:
 
 ```js
 const http = require('node:http');
@@ -86,8 +86,8 @@ Server running at http://127.0.0.1:3000/
 
 Now, open any preferred web browser and visit `http://127.0.0.1:3000`.
 
-If the browser displays the string `Hello, World!`, that indicates
-the server is working.
+If the browser displays the string `Hello, World!`, that indicates the server is
+working.
 
 [Command-line options]: cli.md#options
 [Installing Node.js via package manager]: https://nodejs.org/en/download/package-manager/

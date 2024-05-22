@@ -22,44 +22,42 @@ changes:
 <!-- source_link=lib/domain.js -->
 
 **This module is pending deprecation.** Once a replacement API has been
-finalized, this module will be fully deprecated. Most developers should
-**not** have cause to use this module. Users who absolutely must have
-the functionality that domains provide may rely on it for the time being
-but should expect to have to migrate to a different solution
-in the future.
+finalized, this module will be fully deprecated. Most developers should **not**
+have cause to use this module. Users who absolutely must have the functionality
+that domains provide may rely on it for the time being but should expect to have
+to migrate to a different solution in the future.
 
-Domains provide a way to handle multiple different IO operations as a
-single group. If any of the event emitters or callbacks registered to a
-domain emit an `'error'` event, or throw an error, then the domain object
-will be notified, rather than losing the context of the error in the
-`process.on('uncaughtException')` handler, or causing the program to
-exit immediately with an error code.
+Domains provide a way to handle multiple different IO operations as a single
+group. If any of the event emitters or callbacks registered to a domain emit an
+`'error'` event, or throw an error, then the domain object will be notified,
+rather than losing the context of the error in the
+`process.on('uncaughtException')` handler, or causing the program to exit
+immediately with an error code.
 
 ## Warning: Don't ignore errors!
 
 <!-- type=misc -->
 
-Domain error handlers are not a substitute for closing down a
-process when an error occurs.
+Domain error handlers are not a substitute for closing down a process when an
+error occurs.
 
-By the very nature of how [`throw`][] works in JavaScript, there is almost
-never any way to safely "pick up where it left off", without leaking
-references, or creating some other sort of undefined brittle state.
+By the very nature of how [`throw`][] works in JavaScript, there is almost never
+any way to safely "pick up where it left off", without leaking references, or
+creating some other sort of undefined brittle state.
 
-The safest way to respond to a thrown error is to shut down the
-process. Of course, in a normal web server, there may be many
-open connections, and it is not reasonable to abruptly shut those down
-because an error was triggered by someone else.
+The safest way to respond to a thrown error is to shut down the process. Of
+course, in a normal web server, there may be many open connections, and it is
+not reasonable to abruptly shut those down because an error was triggered by
+someone else.
 
-The better approach is to send an error response to the request that
-triggered the error, while letting the others finish in their normal
-time, and stop listening for new requests in that worker.
+The better approach is to send an error response to the request that triggered
+the error, while letting the others finish in their normal time, and stop
+listening for new requests in that worker.
 
-In this way, `domain` usage goes hand-in-hand with the cluster module,
-since the primary process can fork a new worker when a worker
-encounters an error. For Node.js programs that scale to multiple
-machines, the terminating proxy or service registry can take note of
-the failure, and react accordingly.
+In this way, `domain` usage goes hand-in-hand with the cluster module, since the
+primary process can fork a new worker when a worker encounters an error. For
+Node.js programs that scale to multiple machines, the terminating proxy or
+service registry can take note of the failure, and react accordingly.
 
 For example, this is not a good idea:
 
@@ -75,15 +73,17 @@ d.on('error', (er) => {
   console.log(`error, but oh well ${er.message}`);
 });
 d.run(() => {
-  require('node:http').createServer((req, res) => {
-    handleRequest(req, res);
-  }).listen(PORT);
+  require('node:http')
+    .createServer((req, res) => {
+      handleRequest(req, res);
+    })
+    .listen(PORT);
 });
 ```
 
-By using the context of a domain, and the resilience of separating our
-program into multiple worker processes, we can react more
-appropriately, and handle errors with much greater safety.
+By using the context of a domain, and the resilience of separating our program
+into multiple worker processes, we can react more appropriately, and handle
+errors with much greater safety.
 
 ```js
 // Much better!
@@ -111,7 +111,6 @@ if (cluster.isPrimary) {
     console.error('disconnect!');
     cluster.fork();
   });
-
 } else {
   // the worker
   //
@@ -193,54 +192,51 @@ function handleRequest(req, res) {
 
 <!-- type=misc -->
 
-Any time an `Error` object is routed through a domain, a few extra fields
-are added to it.
+Any time an `Error` object is routed through a domain, a few extra fields are
+added to it.
 
 * `error.domain` The domain that first handled the error.
-* `error.domainEmitter` The event emitter that emitted an `'error'` event
-  with the error object.
-* `error.domainBound` The callback function which was bound to the
-  domain, and passed an error as its first argument.
-* `error.domainThrown` A boolean indicating whether the error was
-  thrown, emitted, or passed to a bound callback function.
+* `error.domainEmitter` The event emitter that emitted an `'error'` event with
+  the error object.
+* `error.domainBound` The callback function which was bound to the domain, and
+  passed an error as its first argument.
+* `error.domainThrown` A boolean indicating whether the error was thrown,
+  emitted, or passed to a bound callback function.
 
 ## Implicit binding
 
 <!--type=misc-->
 
-If domains are in use, then all **new** `EventEmitter` objects (including
-Stream objects, requests, responses, etc.) will be implicitly bound to
-the active domain at the time of their creation.
+If domains are in use, then all **new** `EventEmitter` objects (including Stream
+objects, requests, responses, etc.) will be implicitly bound to the active
+domain at the time of their creation.
 
-Additionally, callbacks passed to low-level event loop requests (such as
-to `fs.open()`, or other callback-taking methods) will automatically be
-bound to the active domain. If they throw, then the domain will catch
-the error.
+Additionally, callbacks passed to low-level event loop requests (such as to
+`fs.open()`, or other callback-taking methods) will automatically be bound to
+the active domain. If they throw, then the domain will catch the error.
 
-In order to prevent excessive memory usage, `Domain` objects themselves
-are not implicitly added as children of the active domain. If they
-were, then it would be too easy to prevent request and response objects
-from being properly garbage collected.
+In order to prevent excessive memory usage, `Domain` objects themselves are not
+implicitly added as children of the active domain. If they were, then it would
+be too easy to prevent request and response objects from being properly garbage
+collected.
 
 To nest `Domain` objects as children of a parent `Domain` they must be
 explicitly added.
 
-Implicit binding routes thrown errors and `'error'` events to the
-`Domain`'s `'error'` event, but does not register the `EventEmitter` on the
-`Domain`.
+Implicit binding routes thrown errors and `'error'` events to the `Domain`'s
+`'error'` event, but does not register the `EventEmitter` on the `Domain`.
 Implicit binding only takes care of thrown errors and `'error'` events.
 
 ## Explicit binding
 
 <!--type=misc-->
 
-Sometimes, the domain in use is not the one that ought to be used for a
-specific event emitter. Or, the event emitter could have been created
-in the context of one domain, but ought to instead be bound to some
-other domain.
+Sometimes, the domain in use is not the one that ought to be used for a specific
+event emitter. Or, the event emitter could have been created in the context of
+one domain, but ought to instead be bound to some other domain.
 
-For example, there could be one domain in use for an HTTP server, but
-perhaps we would like to have a separate domain to use for each request.
+For example, there could be one domain in use for an HTTP server, but perhaps we
+would like to have a separate domain to use for each request.
 
 That is possible via explicit binding.
 
@@ -252,23 +248,25 @@ const serverDomain = domain.create();
 
 serverDomain.run(() => {
   // Server is created in the scope of serverDomain
-  http.createServer((req, res) => {
-    // Req and res are also created in the scope of serverDomain
-    // however, we'd prefer to have a separate domain for each request.
-    // create it first thing, and add req and res to it.
-    const reqd = domain.create();
-    reqd.add(req);
-    reqd.add(res);
-    reqd.on('error', (er) => {
-      console.error('Error', er, req.url);
-      try {
-        res.writeHead(500);
-        res.end('Error occurred, sorry.');
-      } catch (er2) {
-        console.error('Error sending 500', er2, req.url);
-      }
-    });
-  }).listen(1337);
+  http
+    .createServer((req, res) => {
+      // Req and res are also created in the scope of serverDomain
+      // however, we'd prefer to have a separate domain for each request.
+      // create it first thing, and add req and res to it.
+      const reqd = domain.create();
+      reqd.add(req);
+      reqd.add(res);
+      reqd.on('error', (er) => {
+        console.error('Error', er, req.url);
+        try {
+          res.writeHead(500);
+          res.end('Error occurred, sorry.');
+        } catch (er2) {
+          console.error('Error sending 500', er2, req.url);
+        }
+      });
+    })
+    .listen(1337);
 });
 ```
 
@@ -280,8 +278,8 @@ serverDomain.run(() => {
 
 * Extends: {EventEmitter}
 
-The `Domain` class encapsulates the functionality of routing errors and
-uncaught exceptions to the active `Domain` object.
+The `Domain` class encapsulates the functionality of routing errors and uncaught
+exceptions to the active `Domain` object.
 
 To handle the errors that it catches, listen to its `'error'` event.
 
@@ -289,42 +287,45 @@ To handle the errors that it catches, listen to its `'error'` event.
 
 * {Array}
 
-An array of timers and event emitters that have been explicitly added
-to the domain.
+An array of timers and event emitters that have been explicitly added to the
+domain.
 
 ### `domain.add(emitter)`
 
 * `emitter` {EventEmitter|Timer} emitter or timer to be added to the domain
 
-Explicitly adds an emitter to the domain. If any event handlers called by
-the emitter throw an error, or if the emitter emits an `'error'` event, it
-will be routed to the domain's `'error'` event, just like with implicit
-binding.
+Explicitly adds an emitter to the domain. If any event handlers called by the
+emitter throw an error, or if the emitter emits an `'error'` event, it will be
+routed to the domain's `'error'` event, just like with implicit binding.
 
 This also works with timers that are returned from [`setInterval()`][] and
-[`setTimeout()`][]. If their callback function throws, it will be caught by
-the domain `'error'` handler.
+[`setTimeout()`][]. If their callback function throws, it will be caught by the
+domain `'error'` handler.
 
-If the Timer or `EventEmitter` was already bound to a domain, it is removed
-from that one, and bound to this one instead.
+If the Timer or `EventEmitter` was already bound to a domain, it is removed from
+that one, and bound to this one instead.
 
 ### `domain.bind(callback)`
 
 * `callback` {Function} The callback function
 * Returns: {Function} The bound function
 
-The returned function will be a wrapper around the supplied callback
-function. When the returned function is called, any errors that are
-thrown will be routed to the domain's `'error'` event.
+The returned function will be a wrapper around the supplied callback function.
+When the returned function is called, any errors that are thrown will be routed
+to the domain's `'error'` event.
 
 ```js
 const d = domain.create();
 
 function readSomeFile(filename, cb) {
-  fs.readFile(filename, 'utf8', d.bind((er, data) => {
-    // If this throws, it will also be passed to the domain.
-    return cb(er, data ? JSON.parse(data) : null);
-  }));
+  fs.readFile(
+    filename,
+    'utf8',
+    d.bind((er, data) => {
+      // If this throws, it will also be passed to the domain.
+      return cb(er, data ? JSON.parse(data) : null);
+    }),
+  );
 }
 
 d.on('error', (er) => {
@@ -367,8 +368,8 @@ single domain.
 * Returns: {Function} The intercepted function
 
 This method is almost identical to [`domain.bind(callback)`][]. However, in
-addition to catching thrown errors, it will also intercept [`Error`][]
-objects sent as the first argument to the function.
+addition to catching thrown errors, it will also intercept [`Error`][] objects
+sent as the first argument to the function.
 
 In this way, the common `if (err) return callback(err);` pattern can be replaced
 with a single error handler in a single place.
@@ -377,17 +378,21 @@ with a single error handler in a single place.
 const d = domain.create();
 
 function readSomeFile(filename, cb) {
-  fs.readFile(filename, 'utf8', d.intercept((data) => {
-    // Note, the first argument is never passed to the
-    // callback since it is assumed to be the 'Error' argument
-    // and thus intercepted by the domain.
+  fs.readFile(
+    filename,
+    'utf8',
+    d.intercept((data) => {
+      // Note, the first argument is never passed to the
+      // callback since it is assumed to be the 'Error' argument
+      // and thus intercepted by the domain.
 
-    // If this throws, it will also be passed to the domain
-    // so the error-handling logic can be moved to the 'error'
-    // event on the domain instead of being repeated throughout
-    // the program.
-    return cb(null, JSON.parse(data));
-  }));
+      // If this throws, it will also be passed to the domain
+      // so the error-handling logic can be moved to the 'error'
+      // event on the domain instead of being repeated throughout
+      // the program.
+      return cb(null, JSON.parse(data));
+    }),
+  );
 }
 
 d.on('error', (er) => {
@@ -408,10 +413,9 @@ specified emitter.
 * `fn` {Function}
 * `...args` {any}
 
-Run the supplied function in the context of the domain, implicitly
-binding all event emitters, timers, and low-level requests that are
-created in that context. Optionally, arguments can be passed to
-the function.
+Run the supplied function in the context of the domain, implicitly binding all
+event emitters, timers, and low-level requests that are created in that context.
+Optionally, arguments can be passed to the function.
 
 This is the most basic way to use a domain.
 
@@ -424,7 +428,8 @@ d.on('error', (er) => {
 });
 d.run(() => {
   process.nextTick(() => {
-    setTimeout(() => { // Simulating some various async stuff
+    setTimeout(() => {
+      // Simulating some various async stuff
       fs.open('non-existent file', 'r', (er, fd) => {
         if (er) throw er;
         // proceed...
@@ -434,13 +439,13 @@ d.run(() => {
 });
 ```
 
-In this example, the `d.on('error')` handler will be triggered, rather
-than crashing the program.
+In this example, the `d.on('error')` handler will be triggered, rather than
+crashing the program.
 
 ## Domains and promises
 
-As of Node.js 8.0.0, the handlers of promises are run inside the domain in
-which the call to `.then()` or `.catch()` itself was made:
+As of Node.js 8.0.0, the handlers of promises are run inside the domain in which
+the call to `.then()` or `.catch()` itself was made:
 
 ```js
 const d1 = domain.create();
@@ -470,15 +475,17 @@ d1.run(() => {
 });
 
 d2.run(() => {
-  p.then(p.domain.bind((v) => {
-    // running in d1
-  }));
+  p.then(
+    p.domain.bind((v) => {
+      // running in d1
+    }),
+  );
 });
 ```
 
-Domains will not interfere with the error handling mechanisms for
-promises. In other words, no `'error'` event will be emitted for unhandled
-`Promise` rejections.
+Domains will not interfere with the error handling mechanisms for promises. In
+other words, no `'error'` event will be emitted for unhandled `Promise`
+rejections.
 
 [`Error`]: errors.md#class-error
 [`domain.add(emitter)`]: #domainaddemitter

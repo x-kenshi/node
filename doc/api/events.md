@@ -12,18 +12,17 @@ Much of the Node.js core API is built around an idiomatic asynchronous
 event-driven architecture in which certain kinds of objects (called "emitters")
 emit named events that cause `Function` objects ("listeners") to be called.
 
-For instance: a [`net.Server`][] object emits an event each time a peer
-connects to it; a [`fs.ReadStream`][] emits an event when the file is opened;
-a [stream][] emits an event whenever data is available to be read.
+For instance: a [`net.Server`][] object emits an event each time a peer connects
+to it; a [`fs.ReadStream`][] emits an event when the file is opened; a
+[stream][] emits an event whenever data is available to be read.
 
 All objects that emit events are instances of the `EventEmitter` class. These
-objects expose an `eventEmitter.on()` function that allows one or more
-functions to be attached to named events emitted by the object. Typically,
-event names are camel-cased strings but any valid JavaScript property key
-can be used.
+objects expose an `eventEmitter.on()` function that allows one or more functions
+to be attached to named events emitted by the object. Typically, event names are
+camel-cased strings but any valid JavaScript property key can be used.
 
-When the `EventEmitter` object emits an event, all of the functions attached
-to that specific event are called _synchronously_. Any values returned by the
+When the `EventEmitter` object emits an event, all of the functions attached to
+that specific event are called _synchronously_. Any values returned by the
 called listeners are _ignored_ and discarded.
 
 The following example shows a simple `EventEmitter` instance with a single
@@ -57,10 +56,9 @@ myEmitter.emit('event');
 ## Passing arguments and `this` to listeners
 
 The `eventEmitter.emit()` method allows an arbitrary set of arguments to be
-passed to the listener functions. Keep in mind that when
-an ordinary listener function is called, the standard `this` keyword
-is intentionally set to reference the `EventEmitter` instance to which the
-listener is attached.
+passed to the listener functions. Keep in mind that when an ordinary listener
+function is called, the standard `this` keyword is intentionally set to
+reference the `EventEmitter` instance to which the listener is attached.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -125,11 +123,11 @@ myEmitter.emit('event', 'a', 'b');
 
 ## Asynchronous vs. synchronous
 
-The `EventEmitter` calls all listeners synchronously in the order in which
-they were registered. This ensures the proper sequencing of
-events and helps avoid race conditions and logic errors. When appropriate,
-listener functions can switch to an asynchronous mode of operation using
-the `setImmediate()` or `process.nextTick()` methods:
+The `EventEmitter` calls all listeners synchronously in the order in which they
+were registered. This ensures the proper sequencing of events and helps avoid
+race conditions and logic errors. When appropriate, listener functions can
+switch to an asynchronous mode of operation using the `setImmediate()` or
+`process.nextTick()` methods:
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -223,12 +221,12 @@ myEmitter.emit('event');
 ## Error events
 
 When an error occurs within an `EventEmitter` instance, the typical action is
-for an `'error'` event to be emitted. These are treated as special cases
-within Node.js.
+for an `'error'` event to be emitted. These are treated as special cases within
+Node.js.
 
 If an `EventEmitter` does _not_ have at least one listener registered for the
-`'error'` event, and an `'error'` event is emitted, the error is thrown, a
-stack trace is printed, and the Node.js process exits.
+`'error'` event, and an `'error'` event is emitted, the error is thrown, a stack
+trace is printed, and the Node.js process exits.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -300,8 +298,8 @@ myEmitter.emit('error', new Error('whoops!'));
 
 ## Capture rejections of promises
 
-Using `async` functions with event handlers is problematic, because it
-can lead to an unhandled rejection in case of a thrown exception:
+Using `async` functions with event handlers is problematic, because it can lead
+to an unhandled rejection in case of a thrown exception:
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -320,10 +318,10 @@ ee.on('something', async (value) => {
 ```
 
 The `captureRejections` option in the `EventEmitter` constructor or the global
-setting change this behavior, installing a `.then(undefined, handler)`
-handler on the `Promise`. This handler routes the exception
-asynchronously to the [`Symbol.for('nodejs.rejection')`][rejection] method
-if there is one, or to [`'error'`][error] event handler if there is none.
+setting change this behavior, installing a `.then(undefined, handler)` handler
+on the `Promise`. This handler routes the exception asynchronously to the
+[`Symbol.for('nodejs.rejection')`][rejection] method if there is one, or to
+[`'error'`][error] event handler if there is none.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -359,8 +357,8 @@ ee2.on('something', async (value) => {
 ee2[Symbol.for('nodejs.rejection')] = console.log;
 ```
 
-Setting `events.captureRejections = true` will change the default for all
-new instances of `EventEmitter`.
+Setting `events.captureRejections = true` will change the default for all new
+instances of `EventEmitter`.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -385,9 +383,9 @@ ee1.on('something', async (value) => {
 ee1.on('error', console.log);
 ```
 
-The `'error'` events that are generated by the `captureRejections` behavior
-do not have a catch handler to avoid infinite error loops: the
-recommendation is to **not use `async` functions as `'error'` event handlers**.
+The `'error'` events that are generated by the `captureRejections` behavior do
+not have a catch handler to avoid infinite error loops: the recommendation is to
+**not use `async` functions as `'error'` event handlers**.
 
 ## Class: `EventEmitter`
 
@@ -411,14 +409,13 @@ import { EventEmitter } from 'node:events';
 const EventEmitter = require('node:events');
 ```
 
-All `EventEmitter`s emit the event `'newListener'` when new listeners are
-added and `'removeListener'` when existing listeners are removed.
+All `EventEmitter`s emit the event `'newListener'` when new listeners are added
+and `'removeListener'` when existing listeners are removed.
 
 It supports the following option:
 
-* `captureRejections` {boolean} It enables
-  [automatic capturing of promise rejection][capturerejections].
-  **Default:** `false`.
+* `captureRejections` {boolean} It enables [automatic capturing of promise
+  rejection][capturerejections]. **Default:** `false`.
 
 ### Event: `'newListener'`
 
@@ -429,16 +426,16 @@ added: v0.1.26
 * `eventName` {string|symbol} The name of the event being listened for
 * `listener` {Function} The event handler function
 
-The `EventEmitter` instance will emit its own `'newListener'` event _before_
-a listener is added to its internal array of listeners.
+The `EventEmitter` instance will emit its own `'newListener'` event _before_ a
+listener is added to its internal array of listeners.
 
-Listeners registered for the `'newListener'` event are passed the event
-name and a reference to the listener being added.
+Listeners registered for the `'newListener'` event are passed the event name and
+a reference to the listener being added.
 
-The fact that the event is triggered before adding the listener has a subtle
-but important side effect: any _additional_ listeners registered to the same
-`name` _within_ the `'newListener'` callback are inserted _before_ the
-listener that is in the process of being added.
+The fact that the event is triggered before adding the listener has a subtle but
+important side effect: any _additional_ listeners registered to the same `name`
+_within_ the `'newListener'` callback are inserted _before_ the listener that is
+in the process of being added.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -664,9 +661,9 @@ changes:
 * `listener` {Function} The event handler function
 * Returns: {integer}
 
-Returns the number of listeners listening for the event named `eventName`.
-If `listener` is provided, it will return how many times the listener is found
-in the list of the listeners of the event.
+Returns the number of listeners listening for the event named `eventName`. If
+`listener` is provided, it will return how many times the listener is found in
+the list of the listeners of the event.
 
 ### `emitter.listeners(eventName)`
 
@@ -714,11 +711,10 @@ added: v0.1.101
 * `listener` {Function} The callback function
 * Returns: {EventEmitter}
 
-Adds the `listener` function to the end of the listeners array for the
-event named `eventName`. No checks are made to see if the `listener` has
-already been added. Multiple calls passing the same combination of `eventName`
-and `listener` will result in the `listener` being added, and called, multiple
-times.
+Adds the `listener` function to the end of the listeners array for the event
+named `eventName`. No checks are made to see if the `listener` has already been
+added. Multiple calls passing the same combination of `eventName` and `listener`
+will result in the `listener` being added, and called, multiple times.
 
 ```js
 server.on('connection', (stream) => {
@@ -812,9 +808,9 @@ added: v6.0.0
 * Returns: {EventEmitter}
 
 Adds the `listener` function to the _beginning_ of the listeners array for the
-event named `eventName`. No checks are made to see if the `listener` has
-already been added. Multiple calls passing the same combination of `eventName`
-and `listener` will result in the `listener` being added, and called, multiple
+event named `eventName`. No checks are made to see if the `listener` has already
+been added. Multiple calls passing the same combination of `eventName` and
+`listener` will result in the `listener` being added, and called, multiple
 times.
 
 ```js
@@ -858,9 +854,9 @@ added: v0.1.26
 
 Removes all listeners, or those of the specified `eventName`.
 
-It is bad practice to remove listeners added elsewhere in the code,
-particularly when the `EventEmitter` instance was created by some other
-component or module (e.g. sockets or file streams).
+It is bad practice to remove listeners added elsewhere in the code, particularly
+when the `EventEmitter` instance was created by some other component or module
+(e.g. sockets or file streams).
 
 Returns a reference to the `EventEmitter`, so that calls can be chained.
 
@@ -891,11 +887,11 @@ listener array. If any single listener has been added multiple times to the
 listener array for the specified `eventName`, then `removeListener()` must be
 called multiple times to remove each instance.
 
-Once an event is emitted, all listeners attached to it at the
-time of emitting are called in order. This implies that any
-`removeListener()` or `removeAllListeners()` calls _after_ emitting and
-_before_ the last listener finishes execution will not remove them from
-`emit()` in progress. Subsequent events behave as expected.
+Once an event is emitted, all listeners attached to it at the time of emitting
+are called in order. This implies that any `removeListener()` or
+`removeAllListeners()` calls _after_ emitting and _before_ the last listener
+finishes execution will not remove them from `emit()` in progress. Subsequent
+events behave as expected.
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -961,16 +957,15 @@ myEmitter.emit('event');
 //   A
 ```
 
-Because listeners are managed using an internal array, calling this will
-change the position indexes of any listener registered _after_ the listener
-being removed. This will not impact the order in which listeners are called,
-but it means that any copies of the listener array as returned by
-the `emitter.listeners()` method will need to be recreated.
+Because listeners are managed using an internal array, calling this will change
+the position indexes of any listener registered _after_ the listener being
+removed. This will not impact the order in which listeners are called, but it
+means that any copies of the listener array as returned by the
+`emitter.listeners()` method will need to be recreated.
 
 When a single function has been added as a handler multiple times for a single
 event (as in the example below), `removeListener()` will remove the most
-recently added instance. In the example the `once('ping')`
-listener is removed:
+recently added instance. In the example the `once('ping')` listener is removed:
 
 ```mjs
 import { EventEmitter } from 'node:events';
@@ -1016,10 +1011,10 @@ added: v0.3.5
 * Returns: {EventEmitter}
 
 By default `EventEmitter`s will print a warning if more than `10` listeners are
-added for a particular event. This is a useful default that helps finding
-memory leaks. The `emitter.setMaxListeners()` method allows the limit to be
-modified for this specific `EventEmitter` instance. The value can be set to
-`Infinity` (or `0`) to indicate an unlimited number of listeners.
+added for a particular event. This is a useful default that helps finding memory
+leaks. The `emitter.setMaxListeners()` method allows the limit to be modified
+for this specific `EventEmitter` instance. The value can be set to `Infinity`
+(or `0`) to indicate an unlimited number of listeners.
 
 Returns a reference to the `EventEmitter`, so that calls can be chained.
 
@@ -1103,11 +1098,11 @@ changes:
 * `eventName` {string|symbol}
 * `...args` {any}
 
-The `Symbol.for('nodejs.rejection')` method is called in case a
-promise rejection happens when emitting an event and
-[`captureRejections`][capturerejections] is enabled on the emitter.
-It is possible to use [`events.captureRejectionSymbol`][rejectionsymbol] in
-place of `Symbol.for('nodejs.rejection')`.
+The `Symbol.for('nodejs.rejection')` method is called in case a promise
+rejection happens when emitting an event and
+[`captureRejections`][capturerejections] is enabled on the emitter. It is
+possible to use [`events.captureRejectionSymbol`][rejectionsymbol] in place of
+`Symbol.for('nodejs.rejection')`.
 
 ```mjs
 import { EventEmitter, captureRejectionSymbol } from 'node:events';
@@ -1153,21 +1148,20 @@ class MyClass extends EventEmitter {
 added: v0.11.2
 -->
 
-By default, a maximum of `10` listeners can be registered for any single
-event. This limit can be changed for individual `EventEmitter` instances
-using the [`emitter.setMaxListeners(n)`][] method. To change the default
-for _all_ `EventEmitter` instances, the `events.defaultMaxListeners`
-property can be used. If this value is not a positive number, a `RangeError`
-is thrown.
+By default, a maximum of `10` listeners can be registered for any single event.
+This limit can be changed for individual `EventEmitter` instances using the
+[`emitter.setMaxListeners(n)`][] method. To change the default for _all_
+`EventEmitter` instances, the `events.defaultMaxListeners` property can be used.
+If this value is not a positive number, a `RangeError` is thrown.
 
-Take caution when setting the `events.defaultMaxListeners` because the
-change affects _all_ `EventEmitter` instances, including those created before
-the change is made. However, calling [`emitter.setMaxListeners(n)`][] still has
+Take caution when setting the `events.defaultMaxListeners` because the change
+affects _all_ `EventEmitter` instances, including those created before the
+change is made. However, calling [`emitter.setMaxListeners(n)`][] still has
 precedence over `events.defaultMaxListeners`.
 
-This is not a hard limit. The `EventEmitter` instance will allow
-more listeners to be added but will output a trace warning to stderr indicating
-that a "possible EventEmitter memory leak" has been detected. For any single
+This is not a hard limit. The `EventEmitter` instance will allow more listeners
+to be added but will output a trace warning to stderr indicating that a
+"possible EventEmitter memory leak" has been detected. For any single
 `EventEmitter`, the `emitter.getMaxListeners()` and `emitter.setMaxListeners()`
 methods can be used to temporarily avoid this warning:
 
@@ -1191,14 +1185,13 @@ emitter.once('event', () => {
 });
 ```
 
-The [`--trace-warnings`][] command-line flag can be used to display the
-stack trace for such warnings.
+The [`--trace-warnings`][] command-line flag can be used to display the stack
+trace for such warnings.
 
 The emitted warning can be inspected with [`process.on('warning')`][] and will
-have the additional `emitter`, `type`, and `count` properties, referring to
-the event emitter instance, the event's name and the number of attached
-listeners, respectively.
-Its `name` property is set to `'MaxListenersExceededWarning'`.
+have the additional `emitter`, `type`, and `count` properties, referring to the
+event emitter instance, the event's name and the number of attached listeners,
+respectively. Its `name` property is set to `'MaxListenersExceededWarning'`.
 
 ## `events.errorMonitor`
 
@@ -1230,11 +1223,11 @@ added:
 
 Returns a copy of the array of listeners for the event named `eventName`.
 
-For `EventEmitter`s this behaves exactly the same as calling `.listeners` on
-the emitter.
+For `EventEmitter`s this behaves exactly the same as calling `.listeners` on the
+emitter.
 
-For `EventTarget`s this is the only way to get the event listeners for the
-event target. This is useful for debugging and diagnostic purposes.
+For `EventTarget`s this is the only way to get the event listeners for the event
+target. This is useful for debugging and diagnostic purposes.
 
 ```mjs
 import { getEventListeners, EventEmitter } from 'node:events';
@@ -1283,8 +1276,8 @@ added:
 
 Returns the currently set max amount of listeners.
 
-For `EventEmitter`s this behaves exactly the same as calling `.getMaxListeners` on
-the emitter.
+For `EventEmitter`s this behaves exactly the same as calling `.getMaxListeners`
+on the emitter.
 
 For `EventTarget`s this is the only way to get the max event listeners for the
 event target. If the number of event handlers on a single EventTarget exceeds
@@ -1308,7 +1301,11 @@ import { getMaxListeners, setMaxListeners, EventEmitter } from 'node:events';
 ```
 
 ```cjs
-const { getMaxListeners, setMaxListeners, EventEmitter } = require('node:events');
+const {
+  getMaxListeners,
+  setMaxListeners,
+  EventEmitter,
+} = require('node:events');
 
 {
   const ee = new EventEmitter();
@@ -1348,8 +1345,8 @@ The `Promise` will resolve with an array of all the arguments emitted to the
 given event.
 
 This method is intentionally generic and works with the web platform
-[EventTarget][WHATWG-EventTarget] interface, which has no special
-`'error'` event semantics and does not listen to the `'error'` event.
+[EventTarget][WHATWG-EventTarget] interface, which has no special `'error'`
+event semantics and does not listen to the `'error'` event.
 
 ```mjs
 import { once, EventEmitter } from 'node:events';
@@ -1404,8 +1401,8 @@ async function run() {
 run();
 ```
 
-The special handling of the `'error'` event is only used when `events.once()`
-is used to wait for another event. If `events.once()` is used to wait for the
+The special handling of the `'error'` event is only used when `events.once()` is
+used to wait for another event. If `events.once()` is used to wait for the
 '`error'` event itself, then it is treated as any other kind of event without
 special handling:
 
@@ -1489,8 +1486,8 @@ ee.emit('foo'); // Prints: Waiting for the event was canceled!
 
 ### Awaiting multiple events emitted on `process.nextTick()`
 
-There is an edge case worth noting when using the `events.once()` function
-to await multiple events emitted on in the same batch of `process.nextTick()`
+There is an edge case worth noting when using the `events.once()` function to
+await multiple events emitted on in the same batch of `process.nextTick()`
 operations, or whenever multiple events are emitted synchronously. Specifically,
 because the `process.nextTick()` queue is drained before the `Promise` microtask
 queue, and because `EventEmitter` emits all events synchronously, it is possible
@@ -1543,9 +1540,9 @@ process.nextTick(() => {
 foo().then(() => console.log('done'));
 ```
 
-To catch both events, create each of the Promises _before_ awaiting either
-of them, then it becomes possible to use `Promise.all()`, `Promise.race()`,
-or `Promise.allSettled()`:
+To catch both events, create each of the Promises _before_ awaiting either of
+them, then it becomes possible to use `Promise.all()`, `Promise.race()`, or
+`Promise.allSettled()`:
 
 ```mjs
 import { EventEmitter, once } from 'node:events';
@@ -1680,15 +1677,15 @@ changes:
 * `options` {Object}
   * `signal` {AbortSignal} Can be used to cancel awaiting events.
   * `close` - {string\[]} Names of events that will end the iteration.
-  * `highWaterMark` - {integer} **Default:** `Number.MAX_SAFE_INTEGER`
-    The high watermark. The emitter is paused every time the size of events
-    being buffered is higher than it. Supported only on emitters implementing
+  * `highWaterMark` - {integer} **Default:** `Number.MAX_SAFE_INTEGER` The high
+    watermark. The emitter is paused every time the size of events being
+    buffered is higher than it. Supported only on emitters implementing
     `pause()` and `resume()` methods.
-  * `lowWaterMark` - {integer} **Default:** `1`
-    The low watermark. The emitter is resumed every time the size of events
-    being buffered is lower than it. Supported only on emitters implementing
-    `pause()` and `resume()` methods.
-* Returns: {AsyncIterator} that iterates `eventName` events emitted by the `emitter`
+  * `lowWaterMark` - {integer} **Default:** `1` The low watermark. The emitter
+    is resumed every time the size of events being buffered is lower than it.
+    Supported only on emitters implementing `pause()` and `resume()` methods.
+* Returns: {AsyncIterator} that iterates `eventName` events emitted by the
+  `emitter`
 
 ```mjs
 import { on, EventEmitter } from 'node:events';
@@ -1733,10 +1730,10 @@ const { on, EventEmitter } = require('node:events');
 })();
 ```
 
-Returns an `AsyncIterator` that iterates `eventName` events. It will throw
-if the `EventEmitter` emits `'error'`. It removes all listeners when
-exiting the loop. The `value` returned by each iteration is an array
-composed of the emitted event arguments.
+Returns an `AsyncIterator` that iterates `eventName` events. It will throw if
+the `EventEmitter` emits `'error'`. It removes all listeners when exiting the
+loop. The `value` returned by each iteration is an array composed of the emitted
+event arguments.
 
 An {AbortSignal} can be used to cancel waiting on events:
 
@@ -1815,10 +1812,7 @@ setMaxListeners(5, target, emitter);
 ```
 
 ```cjs
-const {
-  setMaxListeners,
-  EventEmitter,
-} = require('node:events');
+const { setMaxListeners, EventEmitter } = require('node:events');
 
 const target = new EventTarget();
 const emitter = new EventEmitter();
@@ -1842,15 +1836,15 @@ added:
 
 Listens once to the `abort` event on the provided `signal`.
 
-Listening to the `abort` event on abort signals is unsafe and may
-lead to resource leaks since another third party with the signal can
-call [`e.stopImmediatePropagation()`][]. Unfortunately Node.js cannot change
-this since it would violate the web standard. Additionally, the original
-API makes it easy to forget to remove listeners.
+Listening to the `abort` event on abort signals is unsafe and may lead to
+resource leaks since another third party with the signal can call
+[`e.stopImmediatePropagation()`][]. Unfortunately Node.js cannot change this
+since it would violate the web standard. Additionally, the original API makes it
+easy to forget to remove listeners.
 
-This API allows safely using `AbortSignal`s in Node.js APIs by solving these
-two issues by listening to the event such that `stopImmediatePropagation` does
-not prevent the listener from running.
+This API allows safely using `AbortSignal`s in Node.js APIs by solving these two
+issues by listening to the event such that `stopImmediatePropagation` does not
+prevent the listener from running.
 
 Returns a disposable so that it may be unsubscribed from more easily.
 
@@ -1894,9 +1888,9 @@ added:
   - v16.14.0
 -->
 
-Integrates `EventEmitter` with {AsyncResource} for `EventEmitter`s that
-require manual async tracking. Specifically, all events emitted by instances
-of `events.EventEmitterAsyncResource` will run within its [async context][].
+Integrates `EventEmitter` with {AsyncResource} for `EventEmitter`s that require
+manual async tracking. Specifically, all events emitted by instances of
+`events.EventEmitterAsyncResource` will run within its [async context][].
 
 ```mjs
 import { EventEmitterAsyncResource, EventEmitter } from 'node:events';
@@ -1956,25 +1950,23 @@ Promise.resolve().then(() => {
 });
 ```
 
-The `EventEmitterAsyncResource` class has the same methods and takes the
-same options as `EventEmitter` and `AsyncResource` themselves.
+The `EventEmitterAsyncResource` class has the same methods and takes the same
+options as `EventEmitter` and `AsyncResource` themselves.
 
 ### `new events.EventEmitterAsyncResource([options])`
 
 * `options` {Object}
-  * `captureRejections` {boolean} It enables
-    [automatic capturing of promise rejection][capturerejections].
-    **Default:** `false`.
+  * `captureRejections` {boolean} It enables [automatic capturing of promise
+    rejection][capturerejections]. **Default:** `false`.
   * `name` {string} The type of async event. **Default:** [`new.target.name`][].
   * `triggerAsyncId` {number} The ID of the execution context that created this
     async event. **Default:** `executionAsyncId()`.
   * `requireManualDestroy` {boolean} If set to `true`, disables `emitDestroy`
     when the object is garbage collected. This usually does not need to be set
     (even if `emitDestroy` is called manually), unless the resource's `asyncId`
-    is retrieved and the sensitive API's `emitDestroy` is called with it.
-    When set to `false`, the `emitDestroy` call on garbage collection
-    will only take place if there is at least one active `destroy` hook.
-    **Default:** `false`.
+    is retrieved and the sensitive API's `emitDestroy` is called with it. When
+    set to `false`, the `emitDestroy` call on garbage collection will only take
+    place if there is at least one active `destroy` hook. **Default:** `false`.
 
 ### `eventemitterasyncresource.asyncId`
 
@@ -1989,15 +1981,15 @@ that provides a reference to this `EventEmitterAsyncResource`.
 
 ### `eventemitterasyncresource.emitDestroy()`
 
-Call all `destroy` hooks. This should only ever be called once. An error will
-be thrown if it is called more than once. This **must** be manually called. If
-the resource is left to be collected by the GC then the `destroy` hooks will
-never be called.
+Call all `destroy` hooks. This should only ever be called once. An error will be
+thrown if it is called more than once. This **must** be manually called. If the
+resource is left to be collected by the GC then the `destroy` hooks will never
+be called.
 
 ### `eventemitterasyncresource.triggerAsyncId`
 
-* Type: {number} The same `triggerAsyncId` that is passed to the
-  `AsyncResource` constructor.
+* Type: {number} The same `triggerAsyncId` that is passed to the `AsyncResource`
+  constructor.
 
 <a id="event-target-and-event-api"></a>
 
@@ -2018,8 +2010,8 @@ changes:
       The `EventTarget` and `Event` classes are now available as globals.
 -->
 
-The `EventTarget` and `Event` objects are a Node.js-specific implementation
-of the [`EventTarget` Web API][] that are exposed by some Node.js core APIs.
+The `EventTarget` and `Event` objects are a Node.js-specific implementation of
+the [`EventTarget` Web API][] that are exposed by some Node.js core APIs.
 
 ```js
 const target = new EventTarget();
@@ -2039,44 +2031,44 @@ There are two key differences between the Node.js `EventTarget` and the
    dispatched to an `EventTarget` does not propagate through a hierarchy of
    nested target objects that may each have their own set of handlers for the
    event.
-2. In the Node.js `EventTarget`, if an event listener is an async function
-   or returns a `Promise`, and the returned `Promise` rejects, the rejection
-   is automatically captured and handled the same way as a listener that
-   throws synchronously (see [`EventTarget` error handling][] for details).
+2. In the Node.js `EventTarget`, if an event listener is an async function or
+   returns a `Promise`, and the returned `Promise` rejects, the rejection is
+   automatically captured and handled the same way as a listener that throws
+   synchronously (see [`EventTarget` error handling][] for details).
 
 ### `NodeEventTarget` vs. `EventEmitter`
 
-The `NodeEventTarget` object implements a modified subset of the
-`EventEmitter` API that allows it to closely _emulate_ an `EventEmitter` in
-certain situations. A `NodeEventTarget` is _not_ an instance of `EventEmitter`
-and cannot be used in place of an `EventEmitter` in most cases.
+The `NodeEventTarget` object implements a modified subset of the `EventEmitter`
+API that allows it to closely _emulate_ an `EventEmitter` in certain situations.
+A `NodeEventTarget` is _not_ an instance of `EventEmitter` and cannot be used in
+place of an `EventEmitter` in most cases.
 
 1. Unlike `EventEmitter`, any given `listener` can be registered at most once
    per event `type`. Attempts to register a `listener` multiple times are
    ignored.
 2. The `NodeEventTarget` does not emulate the full `EventEmitter` API.
    Specifically the `prependListener()`, `prependOnceListener()`,
-   `rawListeners()`, and `errorMonitor` APIs are not emulated.
-   The `'newListener'` and `'removeListener'` events will also not be emitted.
-3. The `NodeEventTarget` does not implement any special default behavior
-   for events with type `'error'`.
-4. The `NodeEventTarget` supports `EventListener` objects as well as
-   functions as handlers for all event types.
+   `rawListeners()`, and `errorMonitor` APIs are not emulated. The
+   `'newListener'` and `'removeListener'` events will also not be emitted.
+3. The `NodeEventTarget` does not implement any special default behavior for
+   events with type `'error'`.
+4. The `NodeEventTarget` supports `EventListener` objects as well as functions
+   as handlers for all event types.
 
 ### Event listener
 
 Event listeners registered for an event `type` may either be JavaScript
 functions or objects with a `handleEvent` property whose value is a function.
 
-In either case, the handler function is invoked with the `event` argument
-passed to the `eventTarget.dispatchEvent()` function.
+In either case, the handler function is invoked with the `event` argument passed
+to the `eventTarget.dispatchEvent()` function.
 
 Async functions may be used as event listeners. If an async handler function
-rejects, the rejection is captured and handled as described in
-[`EventTarget` error handling][].
+rejects, the rejection is captured and handled as described in [`EventTarget`
+error handling][].
 
-An error thrown by one handler function does not prevent the other handlers
-from being invoked.
+An error thrown by one handler function does not prevent the other handlers from
+being invoked.
 
 The return value of a handler function is ignored.
 
@@ -2086,24 +2078,24 @@ Handler functions may mutate the `event` object.
 
 ```js
 function handler1(event) {
-  console.log(event.type);  // Prints 'foo'
+  console.log(event.type); // Prints 'foo'
   event.a = 1;
 }
 
 async function handler2(event) {
-  console.log(event.type);  // Prints 'foo'
-  console.log(event.a);  // Prints 1
+  console.log(event.type); // Prints 'foo'
+  console.log(event.a); // Prints 1
 }
 
 const handler3 = {
   handleEvent(event) {
-    console.log(event.type);  // Prints 'foo'
+    console.log(event.type); // Prints 'foo'
   },
 };
 
 const handler4 = {
   async handleEvent(event) {
-    console.log(event.type);  // Prints 'foo'
+    console.log(event.type); // Prints 'foo'
   },
 };
 
@@ -2117,10 +2109,10 @@ target.addEventListener('foo', handler4, { once: true });
 
 ### `EventTarget` error handling
 
-When a registered event listener throws (or returns a Promise that rejects),
-by default the error is treated as an uncaught exception on
-`process.nextTick()`. This means uncaught exceptions in `EventTarget`s will
-terminate the Node.js process by default.
+When a registered event listener throws (or returns a Promise that rejects), by
+default the error is treated as an uncaught exception on `process.nextTick()`.
+This means uncaught exceptions in `EventTarget`s will terminate the Node.js
+process by default.
 
 Throwing within an event listener will _not_ stop the other registered handlers
 from being invoked.
@@ -2128,11 +2120,11 @@ from being invoked.
 The `EventTarget` does not implement any special default handling for `'error'`
 type events like `EventEmitter`.
 
-Currently errors are first forwarded to the `process.on('error')` event
-before reaching `process.on('uncaughtException')`. This behavior is
-deprecated and will change in a future release to align `EventTarget` with
-other Node.js APIs. Any code relying on the `process.on('error')` event should
-be aligned with the new behavior.
+Currently errors are first forwarded to the `process.on('error')` event before
+reaching `process.on('uncaughtException')`. This behavior is deprecated and will
+change in a future release to align `EventTarget` with other Node.js APIs. Any
+code relying on the `process.on('error')` event should be aligned with the new
+behavior.
 
 ### Class: `Event`
 
@@ -2144,8 +2136,8 @@ changes:
     description: The `Event` class is now available through the global object.
 -->
 
-The `Event` object is an adaptation of the [`Event` Web API][]. Instances
-are created internally by Node.js.
+The `Event` object is an adaptation of the [`Event` Web API][]. Instances are
+created internally by Node.js.
 
 #### `event.bubbles`
 
@@ -2167,8 +2159,8 @@ added: v14.5.0
 
 * Type: {boolean}
 
-Alias for `event.stopPropagation()` if set to `true`. This is not used
-in Node.js and is provided purely for completeness.
+Alias for `event.stopPropagation()` if set to `true`. This is not used in
+Node.js and is provided purely for completeness.
 
 #### `event.cancelable`
 
@@ -2194,9 +2186,9 @@ This is not used in Node.js and is provided purely for completeness.
 added: v14.5.0
 -->
 
-Returns an array containing the current `EventTarget` as the only entry or
-empty if the event is not being dispatched. This is not used in
-Node.js and is provided purely for completeness.
+Returns an array containing the current `EventTarget` as the only entry or empty
+if the event is not being dispatched. This is not used in Node.js and is
+provided purely for completeness.
 
 #### `event.currentTarget`
 
@@ -2243,8 +2235,8 @@ added: v19.5.0
 * `bubbles` {boolean}
 * `cancelable` {boolean}
 
-Redundant with event constructors and incapable of setting `composed`.
-This is not used in Node.js and is provided purely for completeness.
+Redundant with event constructors and incapable of setting `composed`. This is
+not used in Node.js and is provided purely for completeness.
 
 #### `event.isTrusted`
 
@@ -2275,8 +2267,9 @@ added: v14.5.0
 
 * Type: {boolean} True if the event has not been canceled.
 
-The value of `event.returnValue` is always the opposite of `event.defaultPrevented`.
-This is not used in Node.js and is provided purely for completeness.
+The value of `event.returnValue` is always the opposite of
+`event.defaultPrevented`. This is not used in Node.js and is provided purely for
+completeness.
 
 #### `event.srcElement`
 
@@ -2358,33 +2351,32 @@ changes:
 * `type` {string}
 * `listener` {Function|EventListener}
 * `options` {Object}
-  * `once` {boolean} When `true`, the listener is automatically removed
-    when it is first invoked. **Default:** `false`.
-  * `passive` {boolean} When `true`, serves as a hint that the listener will
-    not call the `Event` object's `preventDefault()` method.
-    **Default:** `false`.
+  * `once` {boolean} When `true`, the listener is automatically removed when it
+    is first invoked. **Default:** `false`.
+  * `passive` {boolean} When `true`, serves as a hint that the listener will not
+    call the `Event` object's `preventDefault()` method. **Default:** `false`.
   * `capture` {boolean} Not directly used by Node.js. Added for API
     completeness. **Default:** `false`.
   * `signal` {AbortSignal} The listener will be removed when the given
     AbortSignal object's `abort()` method is called.
 
-Adds a new handler for the `type` event. Any given `listener` is added
-only once per `type` and per `capture` option value.
+Adds a new handler for the `type` event. Any given `listener` is added only once
+per `type` and per `capture` option value.
 
-If the `once` option is `true`, the `listener` is removed after the
-next time a `type` event is dispatched.
+If the `once` option is `true`, the `listener` is removed after the next time a
+`type` event is dispatched.
 
 The `capture` option is not used by Node.js in any functional way other than
 tracking registered event listeners per the `EventTarget` specification.
-Specifically, the `capture` option is used as part of the key when registering
-a `listener`. Any individual `listener` may be added once with
-`capture = false`, and once with `capture = true`.
+Specifically, the `capture` option is used as part of the key when registering a
+`listener`. Any individual `listener` may be added once with `capture = false`,
+and once with `capture = true`.
 
 ```js
 function handler(event) {}
 
 const target = new EventTarget();
-target.addEventListener('foo', handler, { capture: true });  // first
+target.addEventListener('foo', handler, { capture: true }); // first
 target.addEventListener('foo', handler, { capture: false }); // second
 
 // Removes the second instance of handler
@@ -2406,8 +2398,8 @@ added: v14.5.0
 
 Dispatches the `event` to the list of handlers for `event.type`.
 
-The registered event listeners is synchronously invoked in the order they
-were registered.
+The registered event listeners is synchronously invoked in the order they were
+registered.
 
 #### `eventTarget.removeEventListener(type, listener[, options])`
 
@@ -2471,8 +2463,8 @@ added: v14.5.0
 
 * Extends: {EventTarget}
 
-The `NodeEventTarget` is a Node.js-specific extension to `EventTarget`
-that emulates a subset of the `EventEmitter` API.
+The `NodeEventTarget` is a Node.js-specific extension to `EventTarget` that
+emulates a subset of the `EventEmitter` API.
 
 #### `nodeEventTarget.addListener(type, listener)`
 
@@ -2502,8 +2494,8 @@ added: v15.2.0
 * Returns: {boolean} `true` if event listeners registered for the `type` exist,
   otherwise `false`.
 
-Node.js-specific extension to the `EventTarget` class that dispatches the
-`arg` to the list of handlers for `type`.
+Node.js-specific extension to the `EventTarget` class that dispatches the `arg`
+to the list of handlers for `type`.
 
 #### `nodeEventTarget.eventNames()`
 
@@ -2513,8 +2505,8 @@ added: v14.5.0
 
 * Returns: {string\[]}
 
-Node.js-specific extension to the `EventTarget` class that returns an array
-of event `type` names for which event listeners are registered.
+Node.js-specific extension to the `EventTarget` class that returns an array of
+event `type` names for which event listeners are registered.
 
 #### `nodeEventTarget.listenerCount(type)`
 
@@ -2526,8 +2518,8 @@ added: v14.5.0
 
 * Returns: {number}
 
-Node.js-specific extension to the `EventTarget` class that returns the number
-of event listeners registered for the `type`.
+Node.js-specific extension to the `EventTarget` class that returns the number of
+event listeners registered for the `type`.
 
 #### `nodeEventTarget.setMaxListeners(n)`
 
@@ -2537,8 +2529,8 @@ added: v14.5.0
 
 * `n` {number}
 
-Node.js-specific extension to the `EventTarget` class that sets the number
-of max event listeners as `n`.
+Node.js-specific extension to the `EventTarget` class that sets the number of
+max event listeners as `n`.
 
 #### `nodeEventTarget.getMaxListeners()`
 
@@ -2548,8 +2540,8 @@ added: v14.5.0
 
 * Returns: {number}
 
-Node.js-specific extension to the `EventTarget` class that returns the number
-of max event listeners.
+Node.js-specific extension to the `EventTarget` class that returns the number of
+max event listeners.
 
 #### `nodeEventTarget.off(type, listener[, options])`
 
@@ -2562,6 +2554,7 @@ added: v14.5.0
 * `listener` {Function|EventListener}
 
 * `options` {Object}
+
   * `capture` {boolean}
 
 * Returns: {EventTarget} this
@@ -2595,8 +2588,8 @@ added: v14.5.0
 * Returns: {EventTarget} this
 
 Node.js-specific extension to the `EventTarget` class that adds a `once`
-listener for the given event `type`. This is equivalent to calling `on`
-with the `once` option set to `true`.
+listener for the given event `type`. This is equivalent to calling `on` with the
+`once` option set to `true`.
 
 #### `nodeEventTarget.removeAllListeners([type])`
 
@@ -2623,6 +2616,7 @@ added: v14.5.0
 * `listener` {Function|EventListener}
 
 * `options` {Object}
+
   * `capture` {boolean}
 
 * Returns: {EventTarget} this

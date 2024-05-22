@@ -77,8 +77,9 @@ changes:
 <!--type=class-->
 
 The `Console` class can be used to create a simple logger with configurable
-output streams and can be accessed using either `require('node:console').Console`
-or `console.Console` (or their destructured counterparts):
+output streams and can be accessed using either
+`require('node:console').Console` or `console.Console` (or their destructured
+counterparts):
 
 ```js
 const { Console } = require('node:console');
@@ -118,15 +119,13 @@ changes:
     streams. **Default:** `true`.
   * `colorMode` {boolean|string} Set color support for this `Console` instance.
     Setting to `true` enables coloring while inspecting values. Setting to
-    `false` disables coloring while inspecting values. Setting to
-    `'auto'` makes color support depend on the value of the `isTTY` property
-    and the value returned by `getColorDepth()` on the respective stream. This
-    option can not be used, if `inspectOptions.colors` is set as well.
-    **Default:** `'auto'`.
+    `false` disables coloring while inspecting values. Setting to `'auto'` makes
+    color support depend on the value of the `isTTY` property and the value
+    returned by `getColorDepth()` on the respective stream. This option can not
+    be used, if `inspectOptions.colors` is set as well. **Default:** `'auto'`.
   * `inspectOptions` {Object} Specifies options that are passed along to
     [`util.inspect()`][].
-  * `groupIndentation` {number} Set group indentation.
-    **Default:** `2`.
+  * `groupIndentation` {number} Set group indentation. **Default:** `2`.
 
 Creates a new `Console` with one or two writable stream instances. `stdout` is a
 writable stream to print log or info output. `stderr` is used for warning or
@@ -174,7 +173,7 @@ If `value` is [truthy][], nothing happens.
 ```js
 console.assert(true, 'does nothing');
 
-console.assert(false, 'Whoops %s work', 'didn\'t');
+console.assert(false, 'Whoops %s work', "didn't");
 // Assertion failed: Whoops didn't work
 
 console.assert();
@@ -187,14 +186,13 @@ console.assert();
 added: v8.3.0
 -->
 
-When `stdout` is a TTY, calling `console.clear()` will attempt to clear the
-TTY. When `stdout` is not a TTY, this method does nothing.
+When `stdout` is a TTY, calling `console.clear()` will attempt to clear the TTY.
+When `stdout` is not a TTY, this method does nothing.
 
 The specific operation of `console.clear()` can vary across operating systems
-and terminal types. For most Linux operating systems, `console.clear()`
-operates similarly to the `clear` shell command. On Windows, `console.clear()`
-will clear only the output in the current terminal viewport for the Node.js
-binary.
+and terminal types. For most Linux operating systems, `console.clear()` operates
+similarly to the `clear` shell command. On Windows, `console.clear()` will clear
+only the output in the current terminal viewport for the Node.js binary.
 
 ### `console.count([label])`
 
@@ -284,8 +282,8 @@ added: v0.1.101
     formatting the object. This is useful for inspecting large complicated
     objects. To make it recurse indefinitely, pass `null`. **Default:** `2`.
   * `colors` {boolean} If `true`, then the output will be styled with ANSI color
-    codes. Colors are customizable;
-    see [customizing `util.inspect()` colors][]. **Default:** `false`.
+    codes. Colors are customizable; see [customizing `util.inspect()` colors][].
+    **Default:** `false`.
 
 Uses [`util.inspect()`][] on `obj` and prints the resulting string to `stdout`.
 This function bypasses any custom `inspect()` function defined on `obj`.
@@ -302,8 +300,8 @@ changes:
 
 * `...data` {any}
 
-This method calls `console.log()` passing it the arguments received.
-This method does not produce any XML formatting.
+This method calls `console.log()` passing it the arguments received. This method
+does not produce any XML formatting.
 
 ### `console.error([data][, ...args])`
 
@@ -315,9 +313,8 @@ added: v0.1.100
 * `...args` {any}
 
 Prints to `stderr` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to printf(3) (the arguments are all passed to
-[`util.format()`][]).
+first used as the primary message and all additional used as substitution values
+similar to printf(3) (the arguments are all passed to [`util.format()`][]).
 
 ```js
 const code = 5;
@@ -328,8 +325,8 @@ console.error('error', code);
 ```
 
 If formatting elements (e.g. `%d`) are not found in the first string then
-[`util.inspect()`][] is called on each argument and the resulting string
-values are concatenated. See [`util.format()`][] for more information.
+[`util.inspect()`][] is called on each argument and the resulting string values
+are concatenated. See [`util.format()`][] for more information.
 
 ### `console.group([...label])`
 
@@ -383,9 +380,8 @@ added: v0.1.100
 * `...args` {any}
 
 Prints to `stdout` with newline. Multiple arguments can be passed, with the
-first used as the primary message and all additional used as substitution
-values similar to printf(3) (the arguments are all passed to
-[`util.format()`][]).
+first used as the primary message and all additional used as substitution values
+similar to printf(3) (the arguments are all passed to [`util.format()`][]).
 
 ```js
 const count = 5;
@@ -406,8 +402,8 @@ added: v10.0.0
 * `tabularData` {any}
 * `properties` {string\[]} Alternate properties for constructing the table.
 
-Try to construct a table with the columns of the properties of `tabularData`
-(or use `properties`) and rows of `tabularData` and log it. Falls back to just
+Try to construct a table with the columns of the properties of `tabularData` (or
+use `properties`) and rows of `tabularData` and log it. Falls back to just
 logging the argument if it can't be parsed as tabular.
 
 ```js
@@ -418,7 +414,10 @@ console.table(Symbol());
 console.table(undefined);
 // undefined
 
-console.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }]);
+console.table([
+  { a: 1, b: 'Y' },
+  { a: 'Z', b: 2 },
+]);
 // ┌─────────┬─────┬─────┐
 // │ (index) │ a   │ b   │
 // ├─────────┼─────┼─────┤
@@ -426,7 +425,13 @@ console.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }]);
 // │ 1       │ 'Z' │ 2   │
 // └─────────┴─────┴─────┘
 
-console.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }], ['a']);
+console.table(
+  [
+    { a: 1, b: 'Y' },
+    { a: 'Z', b: 2 },
+  ],
+  ['a'],
+);
 // ┌─────────┬─────┐
 // │ (index) │ a   │
 // ├─────────┼─────┤
@@ -446,8 +451,8 @@ added: v0.1.104
 Starts a timer that can be used to compute the duration of an operation. Timers
 are identified by a unique `label`. Use the same `label` when calling
 [`console.timeEnd()`][] to stop the timer and output the elapsed time in
-suitable time units to `stdout`. For example, if the elapsed
-time is 3869ms, `console.timeEnd()` displays "3.869s".
+suitable time units to `stdout`. For example, if the elapsed time is 3869ms,
+`console.timeEnd()` displays "3.869s".
 
 ### `console.timeEnd([label])`
 
@@ -537,9 +542,9 @@ The `console.warn()` function is an alias for [`console.error()`][].
 
 ## Inspector only methods
 
-The following methods are exposed by the V8 engine in the general API but do
-not display anything unless used in conjunction with the [inspector][]
-(`--inspect` flag).
+The following methods are exposed by the V8 engine in the general API but do not
+display anything unless used in conjunction with the [inspector][] (`--inspect`
+flag).
 
 ### `console.profile([label])`
 
@@ -570,9 +575,9 @@ added: v8.0.0
 * `label` {string}
 
 This method does not display anything unless used in the inspector. Stops the
-current JavaScript CPU profiling session if one has been started and prints
-the report to the **Profiles** panel of the inspector. See
-[`console.profile()`][] for an example.
+current JavaScript CPU profiling session if one has been started and prints the
+report to the **Profiles** panel of the inspector. See [`console.profile()`][]
+for an example.
 
 If this method is called without a label, the most recently started profile is
 stopped.

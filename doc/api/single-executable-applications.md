@@ -31,26 +31,29 @@ Node.js operates as it normally does.
 The single executable application feature currently only supports running a
 single embedded script using the [CommonJS][] module system.
 
-Users can create a single executable application from their bundled script
-with the `node` binary itself and any tool which can inject resources into the
+Users can create a single executable application from their bundled script with
+the `node` binary itself and any tool which can inject resources into the
 binary.
 
 Here are the steps for creating a single executable application using one such
 tool, [postject][]:
 
 1. Create a JavaScript file:
+
    ```bash
    echo 'console.log(`Hello, ${process.argv[2]}!`);' > hello.js
    ```
 
 2. Create a configuration file building a blob that can be injected into the
-   single executable application (see
-   [Generating single executable preparation blobs][] for details):
+   single executable application (see [Generating single executable preparation
+   blobs][] for details):
+
    ```bash
    echo '{ "main": "hello.js", "output": "sea-prep.blob" }' > sea-config.json
    ```
 
 3. Generate the blob to be injected:
+
    ```bash
    node --experimental-sea-config sea-config.json
    ```
@@ -88,8 +91,8 @@ tool, [postject][]:
    signtool remove /s hello.exe
    ```
 
-6. Inject the blob into the copied binary by running `postject` with
-   the following options:
+6. Inject the blob into the copied binary by running `postject` with the
+   following options:
 
    * `hello` / `hello.exe` - The name of the copy of the `node` executable
      created in step 4.
@@ -99,24 +102,26 @@ tool, [postject][]:
    * `--sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2` - The
      [fuse][] used by the Node.js project to detect if a file has been injected.
    * `--macho-segment-name NODE_SEA` (only needed on macOS) - The name of the
-     segment in the binary where the contents of the blob will be
-     stored.
+     segment in the binary where the contents of the blob will be stored.
 
    To summarize, here is the required command for each platform:
 
    * On Linux:
+
      ```bash
      npx postject hello NODE_SEA_BLOB sea-prep.blob \
          --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
      ```
 
    * On Windows - PowerShell:
+
      ```powershell
      npx postject hello.exe NODE_SEA_BLOB sea-prep.blob `
          --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
      ```
 
    * On Windows - Command Prompt:
+
      ```text
      npx postject hello.exe NODE_SEA_BLOB sea-prep.blob ^
          --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
@@ -177,23 +182,24 @@ The configuration currently reads the following top-level fields:
   "main": "/path/to/bundled/script.js",
   "output": "/path/to/write/the/generated/blob.blob",
   "disableExperimentalSEAWarning": true, // Default: false
-  "useSnapshot": false,  // Default: false
+  "useSnapshot": false, // Default: false
   "useCodeCache": true, // Default: false
-  "assets": {  // Optional
+  "assets": {
+    // Optional
     "a.dat": "/path/to/a.dat",
     "b.txt": "/path/to/b.txt"
   }
 }
 ```
 
-If the paths are not absolute, Node.js will use the path relative to the
-current working directory. The version of the Node.js binary used to produce
-the blob must be the same as the one to which the blob will be injected.
+If the paths are not absolute, Node.js will use the path relative to the current
+working directory. The version of the Node.js binary used to produce the blob
+must be the same as the one to which the blob will be injected.
 
 ### Assets
 
-Users can include assets by adding a key-path dictionary to the configuration
-as the `assets` field. At build time, Node.js would read the assets from the
+Users can include assets by adding a key-path dictionary to the configuration as
+the `assets` field. At build time, Node.js would read the assets from the
 specified paths and bundle them into the preparation blob. In the generated
 executable, users can retrieve the assets using the [`sea.getAsset()`][] and
 [`sea.getAssetAsBlob()`][] APIs.
@@ -230,32 +236,31 @@ APIs for more information.
 
 The `useSnapshot` field can be used to enable startup snapshot support. In this
 case the `main` script would not be when the final executable is launched.
-Instead, it would be run when the single executable application preparation
-blob is generated on the building machine. The generated preparation blob would
-then include a snapshot capturing the states initialized by the `main` script.
-The final executable with the preparation blob injected would deserialize
-the snapshot at run time.
+Instead, it would be run when the single executable application preparation blob
+is generated on the building machine. The generated preparation blob would then
+include a snapshot capturing the states initialized by the `main` script. The
+final executable with the preparation blob injected would deserialize the
+snapshot at run time.
 
 When `useSnapshot` is true, the main script must invoke the
-[`v8.startupSnapshot.setDeserializeMainFunction()`][] API to configure code
-that needs to be run when the final executable is launched by the users.
+[`v8.startupSnapshot.setDeserializeMainFunction()`][] API to configure code that
+needs to be run when the final executable is launched by the users.
 
 The typical pattern for an application to use snapshot in a single executable
 application is:
 
-1. At build time, on the building machine, the main script is run to
-   initialize the heap to a state that's ready to take user input. The script
-   should also configure a main function with
+1. At build time, on the building machine, the main script is run to initialize
+   the heap to a state that's ready to take user input. The script should also
+   configure a main function with
    [`v8.startupSnapshot.setDeserializeMainFunction()`][]. This function will be
    compiled and serialized into the snapshot, but not invoked at build time.
-2. At run time, the main function will be run on top of the deserialized heap
-   on the user machine to process user input and generate output.
+2. At run time, the main function will be run on top of the deserialized heap on
+   the user machine to process user input and generate output.
 
 The general constraints of the startup snapshot scripts also apply to the main
 script when it's used to build snapshot for the single executable application,
-and the main script can use the [`v8.startupSnapshot` API][] to adapt to
-these constraints. See
-[documentation about startup snapshot support in Node.js][].
+and the main script can use the [`v8.startupSnapshot` API][] to adapt to these
+constraints. See [documentation about startup snapshot support in Node.js][].
 
 ### V8 code cache support
 
@@ -296,15 +301,14 @@ added:
 -->
 
 This method can be used to retrieve the assets configured to be bundled into the
-single-executable application at build time.
-An error is thrown when no matching asset can be found.
+single-executable application at build time. An error is thrown when no matching
+asset can be found.
 
-* `key`  {string} the key for the asset in the dictionary specified by the
+* `key` {string} the key for the asset in the dictionary specified by the
   `assets` field in the single-executable application configuration.
-* `encoding` {string} If specified, the asset will be decoded as
-  a string. Any encoding supported by the `TextDecoder` is accepted.
-  If unspecified, an `ArrayBuffer` containing a copy of the asset would be
-  returned instead.
+* `encoding` {string} If specified, the asset will be decoded as a string. Any
+  encoding supported by the `TextDecoder` is accepted. If unspecified, an
+  `ArrayBuffer` containing a copy of the asset would be returned instead.
 * Returns: {string|ArrayBuffer}
 
 ### `sea.getAssetAsBlob(key[, options])`
@@ -315,10 +319,10 @@ added:
   - v20.12.0
 -->
 
-Similar to [`sea.getAsset()`][], but returns the result in a [`Blob`][].
-An error is thrown when no matching asset can be found.
+Similar to [`sea.getAsset()`][], but returns the result in a [`Blob`][]. An
+error is thrown when no matching asset can be found.
 
-* `key`  {string} the key for the asset in the dictionary specified by the
+* `key` {string} the key for the asset in the dictionary specified by the
   `assets` field in the single-executable application configuration.
 * `options` {Object}
   * `type` {string} An optional mime type for the blob.
@@ -333,17 +337,17 @@ added:
 -->
 
 This method can be used to retrieve the assets configured to be bundled into the
-single-executable application at build time.
-An error is thrown when no matching asset can be found.
+single-executable application at build time. An error is thrown when no matching
+asset can be found.
 
 Unlike `sea.getRawAsset()` or `sea.getAssetAsBlob()`, this method does not
 return a copy. Instead, it returns the raw asset bundled inside the executable.
 
 For now, users should avoid writing to the returned array buffer. If the
-injected section is not marked as writable or not aligned properly,
-writes to the returned array buffer is likely to result in a crash.
+injected section is not marked as writable or not aligned properly, writes to
+the returned array buffer is likely to result in a crash.
 
-* `key`  {string} the key for the asset in the dictionary specified by the
+* `key` {string} the key for the asset in the dictionary specified by the
   `assets` field in the single-executable application configuration.
 * Returns: {string|ArrayBuffer}
 
@@ -368,8 +372,8 @@ require = createRequire(__filename);
 
 ### `__filename` and `module.filename` in the injected main script
 
-The values of `__filename` and `module.filename` in the injected main script
-are equal to [`process.execPath`][].
+The values of `__filename` and `module.filename` in the injected main script are
+equal to [`process.execPath`][].
 
 ### `__dirname` in the injected main script
 
@@ -380,18 +384,17 @@ name of [`process.execPath`][].
 
 ### Single executable application creation process
 
-A tool aiming to create a single executable Node.js application must
-inject the contents of the blob prepared with `--experimental-sea-config"`
-into:
+A tool aiming to create a single executable Node.js application must inject the
+contents of the blob prepared with `--experimental-sea-config"` into:
 
 * a resource named `NODE_SEA_BLOB` if the `node` binary is a [PE][] file
 * a section named `NODE_SEA_BLOB` in the `NODE_SEA` segment if the `node` binary
   is a [Mach-O][] file
 * a note named `NODE_SEA_BLOB` if the `node` binary is an [ELF][] file
 
-Search the binary for the
-`NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2:0` [fuse][] string and flip the
-last character to `1` to indicate that a resource has been injected.
+Search the binary for the `NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2:0`
+[fuse][] string and flip the last character to `1` to indicate that a resource
+has been injected.
 
 ### Platform support
 

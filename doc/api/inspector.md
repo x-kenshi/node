@@ -51,12 +51,11 @@ added: v8.0.0
 -->
 
 Create a new instance of the `inspector.Session` class. The inspector session
-needs to be connected through [`session.connect()`][] before the messages
-can be dispatched to the inspector backend.
+needs to be connected through [`session.connect()`][] before the messages can be
+dispatched to the inspector backend.
 
 When using `Session`, the object outputted by the console API will not be
-released, unless we performed manually `Runtime.DiscardConsoleEntries`
-command.
+released, unless we performed manually `Runtime.DiscardConsoleEntries` command.
 
 #### Event: `'inspectorNotification'`
 
@@ -90,9 +89,9 @@ added: v8.0.0
 Emitted when an inspector notification is received that has its method field set
 to the `<inspector-protocol-method>` value.
 
-The following snippet installs a listener on the [`'Debugger.paused'`][]
-event, and prints the reason for program suspension whenever program
-execution is suspended (through breakpoints, for example):
+The following snippet installs a listener on the [`'Debugger.paused'`][] event,
+and prints the reason for program suspension whenever program execution is
+suspended (through breakpoints, for example):
 
 ```js
 session.on('Debugger.paused', ({ params }) => {
@@ -118,8 +117,8 @@ Connects a session to the inspector back-end.
 added: v12.11.0
 -->
 
-Connects a session to the main thread inspector back-end. An exception will
-be thrown if this API was not called on a Worker thread.
+Connects a session to the main thread inspector back-end. An exception will be
+thrown if this API was not called on a Worker thread.
 
 #### `session.disconnect()`
 
@@ -127,8 +126,8 @@ be thrown if this API was not called on a Worker thread.
 added: v8.0.0
 -->
 
-Immediately close the session. All pending message callbacks will be called
-with an error. [`session.connect()`][] will need to be called to be able to send
+Immediately close the session. All pending message callbacks will be called with
+an error. [`session.connect()`][] will need to be called to be able to send
 messages again. Reconnected session will lose all inspector state, such as
 enabled agents or configured breakpoints.
 
@@ -149,7 +148,9 @@ import { Session } from 'node:inspector/promises';
 try {
   const session = new Session();
   session.connect();
-  const result = await session.post('Runtime.evaluate', { expression: '2 + 2' });
+  const result = await session.post('Runtime.evaluate', {
+    expression: '2 + 2',
+  });
   console.log(result);
 } catch (error) {
   console.error(error);
@@ -157,13 +158,13 @@ try {
 // Output: { result: { type: 'number', value: 4, description: '4' } }
 ```
 
-The latest version of the V8 inspector protocol is published on the
-[Chrome DevTools Protocol Viewer][].
+The latest version of the V8 inspector protocol is published on the [Chrome
+DevTools Protocol Viewer][].
 
-Node.js inspector supports all the Chrome DevTools Protocol domains declared
-by V8. Chrome DevTools Protocol domain provides an interface for interacting
-with one of the runtime agents used to inspect the application state and listen
-to the run-time events.
+Node.js inspector supports all the Chrome DevTools Protocol domains declared by
+V8. Chrome DevTools Protocol domain provides an interface for interacting with
+one of the runtime agents used to inspect the application state and listen to
+the run-time events.
 
 #### Example usage
 
@@ -230,12 +231,11 @@ added: v8.0.0
 -->
 
 Create a new instance of the `inspector.Session` class. The inspector session
-needs to be connected through [`session.connect()`][] before the messages
-can be dispatched to the inspector backend.
+needs to be connected through [`session.connect()`][] before the messages can be
+dispatched to the inspector backend.
 
 When using `Session`, the object outputted by the console API will not be
-released, unless we performed manually `Runtime.DiscardConsoleEntries`
-command.
+released, unless we performed manually `Runtime.DiscardConsoleEntries` command.
 
 #### Event: `'inspectorNotification'`
 
@@ -269,9 +269,9 @@ added: v8.0.0
 Emitted when an inspector notification is received that has its method field set
 to the `<inspector-protocol-method>` value.
 
-The following snippet installs a listener on the [`'Debugger.paused'`][]
-event, and prints the reason for program suspension whenever program
-execution is suspended (through breakpoints, for example):
+The following snippet installs a listener on the [`'Debugger.paused'`][] event,
+and prints the reason for program suspension whenever program execution is
+suspended (through breakpoints, for example):
 
 ```js
 session.on('Debugger.paused', ({ params }) => {
@@ -297,8 +297,8 @@ Connects a session to the inspector back-end.
 added: v12.11.0
 -->
 
-Connects a session to the main thread inspector back-end. An exception will
-be thrown if this API was not called on a Worker thread.
+Connects a session to the main thread inspector back-end. An exception will be
+thrown if this API was not called on a Worker thread.
 
 #### `session.disconnect()`
 
@@ -306,8 +306,8 @@ be thrown if this API was not called on a Worker thread.
 added: v8.0.0
 -->
 
-Immediately close the session. All pending message callbacks will be called
-with an error. [`session.connect()`][] will need to be called to be able to send
+Immediately close the session. All pending message callbacks will be called with
+an error. [`session.connect()`][] will need to be called to be able to send
 messages again. Reconnected session will lose all inspector state, such as
 enabled agents or configured breakpoints.
 
@@ -327,23 +327,24 @@ changes:
 * `params` {Object}
 * `callback` {Function}
 
-Posts a message to the inspector back-end. `callback` will be notified when
-a response is received. `callback` is a function that accepts two optional
+Posts a message to the inspector back-end. `callback` will be notified when a
+response is received. `callback` is a function that accepts two optional
 arguments: error and message-specific result.
 
 ```js
-session.post('Runtime.evaluate', { expression: '2 + 2' },
-             (error, { result }) => console.log(result));
+session.post('Runtime.evaluate', { expression: '2 + 2' }, (error, { result }) =>
+  console.log(result),
+);
 // Output: { type: 'number', value: 4, description: '4' }
 ```
 
-The latest version of the V8 inspector protocol is published on the
-[Chrome DevTools Protocol Viewer][].
+The latest version of the V8 inspector protocol is published on the [Chrome
+DevTools Protocol Viewer][].
 
-Node.js inspector supports all the Chrome DevTools Protocol domains declared
-by V8. Chrome DevTools Protocol domain provides an interface for interacting
-with one of the runtime agents used to inspect the application state and listen
-to the run-time events.
+Node.js inspector supports all the Chrome DevTools Protocol domains declared by
+V8. Chrome DevTools Protocol domain provides an interface for interacting with
+one of the runtime agents used to inspect the application state and listen to
+the run-time events.
 
 You can not set `reportProgress` to `true` when sending a
 `HeapProfiler.takeHeapSnapshot` or `HeapProfiler.stopTrackingHeapObjects`
@@ -426,8 +427,7 @@ are closed. Once all connections are closed, deactivates the inspector.
 require('node:inspector').console.log('a message');
 ```
 
-The inspector console does not have API parity with Node.js
-console.
+The inspector console does not have API parity with Node.js console.
 
 ### `inspector.open([port[, host[, wait]]])`
 
@@ -442,8 +442,8 @@ changes:
   **Default:** what was specified on the CLI.
 * `host` {string} Host to listen on for inspector connections. Optional.
   **Default:** what was specified on the CLI.
-* `wait` {boolean} Block until a client has connected. Optional.
-  **Default:** `false`.
+* `wait` {boolean} Block until a client has connected. Optional. **Default:**
+  `false`.
 * Returns: {Disposable} A Disposable that calls [`inspector.close()`][].
 
 Activate inspector on host and port. Equivalent to
@@ -453,8 +453,7 @@ started.
 If wait is `true`, will block until a client has connected to the inspect port
 and flow control has been passed to the debugger client.
 
-See the [security warning][] regarding the `host`
-parameter usage.
+See the [security warning][] regarding the `host` parameter usage.
 
 ### `inspector.url()`
 
@@ -490,16 +489,14 @@ An exception will be thrown if there is no active inspector.
 
 ## Support of breakpoints
 
-The Chrome DevTools Protocol [`Debugger` domain][] allows an
-`inspector.Session` to attach to a program and set breakpoints to step through
-the codes.
+The Chrome DevTools Protocol [`Debugger` domain][] allows an `inspector.Session`
+to attach to a program and set breakpoints to step through the codes.
 
 However, setting breakpoints with a same-thread `inspector.Session`, which is
 connected by [`session.connect()`][], should be avoided as the program being
 attached and paused is exactly the debugger itself. Instead, try connect to the
 main thread by [`session.connectToMainThread()`][] and set breakpoints in a
-worker thread, or connect with a [Debugger][] program over WebSocket
-connection.
+worker thread, or connect with a [Debugger][] program over WebSocket connection.
 
 [CPU Profiler]: https://chromedevtools.github.io/devtools-protocol/v8/Profiler
 [Chrome DevTools Protocol Viewer]: https://chromedevtools.github.io/devtools-protocol/v8/

@@ -18,25 +18,24 @@ Node.js uses four kinds of deprecations:
 * End-of-Life
 
 A Documentation-only deprecation is one that is expressed only within the
-Node.js API docs. These generate no side-effects while running Node.js.
-Some Documentation-only deprecations trigger a runtime warning when launched
-with [`--pending-deprecation`][] flag (or its alternative,
+Node.js API docs. These generate no side-effects while running Node.js. Some
+Documentation-only deprecations trigger a runtime warning when launched with
+[`--pending-deprecation`][] flag (or its alternative,
 `NODE_PENDING_DEPRECATION=1` environment variable), similarly to Runtime
-deprecations below. Documentation-only deprecations that support that flag
-are explicitly labeled as such in the
+deprecations below. Documentation-only deprecations that support that flag are
+explicitly labeled as such in the
 [list of Deprecated APIs](#list-of-deprecated-apis).
 
 An Application deprecation for only non-`node_modules` code will, by default,
-generate a process warning that will be printed to `stderr` the first time
-the deprecated API is used in code that's not loaded from `node_modules`.
-When the [`--throw-deprecation`][] command-line flag is used, a Runtime
-deprecation will cause an error to be thrown. When
-[`--pending-deprecation`][] is used, warnings will also be emitted for
-code loaded from `node_modules`.
+generate a process warning that will be printed to `stderr` the first time the
+deprecated API is used in code that's not loaded from `node_modules`. When the
+[`--throw-deprecation`][] command-line flag is used, a Runtime deprecation will
+cause an error to be thrown. When [`--pending-deprecation`][] is used, warnings
+will also be emitted for code loaded from `node_modules`.
 
-A runtime deprecation for all code is similar to the runtime deprecation
-for non-`node_modules` code, except that it also emits a warning for
-code loaded from `node_modules`.
+A runtime deprecation for all code is similar to the runtime deprecation for
+non-`node_modules` code, except that it also emits a warning for code loaded
+from `node_modules`.
 
 An End-of-Life deprecation is used when functionality is or will soon be removed
 from Node.js.
@@ -150,8 +149,8 @@ changes:
 
 Type: Application (non-`node_modules` code only)
 
-The `Buffer()` function and `new Buffer()` constructor are deprecated due to
-API usability issues that can lead to accidental security issues.
+The `Buffer()` function and `new Buffer()` constructor are deprecated due to API
+usability issues that can lead to accidental security issues.
 
 As an alternative, use one of the following methods of constructing `Buffer`
 objects:
@@ -170,9 +169,9 @@ objects:
   that copies `string`.
 
 Without `--pending-deprecation`, runtime warnings occur only for code not in
-`node_modules`. This means there will not be deprecation warnings for
-`Buffer()` usage in dependencies. With `--pending-deprecation`, a runtime
-warning results no matter where the `Buffer()` usage occurs.
+`node_modules`. This means there will not be deprecation warnings for `Buffer()`
+usage in dependencies. With `--pending-deprecation`, a runtime warning results
+no matter where the `Buffer()` usage occurs.
 
 ### DEP0006: `child_process` `options.customFds`
 
@@ -240,8 +239,8 @@ changes:
 Type: Documentation-only
 
 The `node:constants` module is deprecated. When requiring access to constants
-relevant to specific Node.js builtin modules, developers should instead refer
-to the `constants` property exposed by the relevant module. For instance,
+relevant to specific Node.js builtin modules, developers should instead refer to
+the `constants` property exposed by the relevant module. For instance,
 `require('node:fs').constants` and `require('node:os').constants`.
 
 ### DEP0009: `crypto.pbkdf2` without digest
@@ -270,12 +269,12 @@ Type: End-of-Life
 Use of the [`crypto.pbkdf2()`][] API without specifying a digest was deprecated
 in Node.js 6.0 because the method defaulted to using the non-recommended
 `'SHA1'` digest. Previously, a deprecation warning was printed. Starting in
-Node.js 8.0.0, calling `crypto.pbkdf2()` or `crypto.pbkdf2Sync()` with
-`digest` set to `undefined` will throw a `TypeError`.
+Node.js 8.0.0, calling `crypto.pbkdf2()` or `crypto.pbkdf2Sync()` with `digest`
+set to `undefined` will throw a `TypeError`.
 
 Beginning in Node.js v11.0.0, calling these functions with `digest` set to
-`null` would print a deprecation warning to align with the behavior when `digest`
-is `undefined`.
+`null` would print a deprecation warning to align with the behavior when
+`digest` is `undefined`.
 
 Now, however, passing either `undefined` or `null` will throw a `TypeError`.
 
@@ -342,8 +341,8 @@ changes:
 
 Type: End-of-Life
 
-`Domain.dispose()` has been removed. Recover from failed I/O actions
-explicitly via error event handlers set on the domain instead.
+`Domain.dispose()` has been removed. Recover from failed I/O actions explicitly
+via error event handlers set on the domain instead.
 
 ### DEP0013: `fs` asynchronous function without callback
 
@@ -359,8 +358,8 @@ changes:
 
 Type: End-of-Life
 
-Calling an asynchronous function without a callback throws a `TypeError`
-in Node.js 10.0.0 onwards. See <https://github.com/nodejs/node/pull/12562>.
+Calling an asynchronous function without a callback throws a `TypeError` in
+Node.js 10.0.0 onwards. See <https://github.com/nodejs/node/pull/12562>.
 
 ### DEP0014: `fs.read` legacy String interface
 
@@ -429,8 +428,8 @@ changes:
 
 Type: End-of-Life
 
-The `GLOBAL` and `root` aliases for the `global` property were deprecated
-in Node.js 6.0.0 and have since been removed.
+The `GLOBAL` and `root` aliases for the `global` property were deprecated in
+Node.js 6.0.0 and have since been removed.
 
 ### DEP0017: `Intl.v8BreakIterator`
 
@@ -446,8 +445,8 @@ changes:
 
 Type: End-of-Life
 
-`Intl.v8BreakIterator` was a non-standard extension and has been removed.
-See [`Intl.Segmenter`](https://github.com/tc39/proposal-intl-segmenter).
+`Intl.v8BreakIterator` was a non-standard extension and has been removed. See
+[`Intl.Segmenter`](https://github.com/tc39/proposal-intl-segmenter).
 
 ### DEP0018: Unhandled promise rejections
 
@@ -463,9 +462,9 @@ changes:
 
 Type: End-of-Life
 
-Unhandled promise rejections are deprecated. By default, promise rejections
-that are not handled terminate the Node.js process with a non-zero exit
-code. To change the way Node.js treats unhandled rejections, use the
+Unhandled promise rejections are deprecated. By default, promise rejections that
+are not handled terminate the Node.js process with a non-zero exit code. To
+change the way Node.js treats unhandled rejections, use the
 [`--unhandled-rejections`][] command-line option.
 
 ### DEP0019: `require('.')` resolved outside directory
@@ -509,8 +508,8 @@ changes:
 
 Type: End-of-Life
 
-The `Server.connections` property was deprecated in Node.js v0.9.7 and has
-been removed. Please use the [`Server.getConnections()`][] method instead.
+The `Server.connections` property was deprecated in Node.js v0.9.7 and has been
+removed. Please use the [`Server.getConnections()`][] method instead.
 
 ### DEP0021: `Server.listenFD`
 
@@ -759,8 +758,8 @@ changes:
 
 Type: Documentation-only
 
-The [`events.listenerCount(emitter, eventName)`][] API is
-deprecated. Please use [`emitter.listenerCount(eventName)`][] instead.
+The [`events.listenerCount(emitter, eventName)`][] API is deprecated. Please use
+[`emitter.listenerCount(eventName)`][] instead.
 
 ### DEP0034: `fs.exists(path, callback)`
 
@@ -937,8 +936,8 @@ changes:
 
 Type: End-of-Life
 
-The [`tls.CryptoStream`][] class was removed. Please use
-[`tls.TLSSocket`][] instead.
+The [`tls.CryptoStream`][] class was removed. Please use [`tls.TLSSocket`][]
+instead.
 
 ### DEP0043: `tls.SecurePair`
 
@@ -965,8 +964,8 @@ changes:
 
 Type: Documentation-only
 
-The [`tls.SecurePair`][] class is deprecated. Please use
-[`tls.TLSSocket`][] instead.
+The [`tls.SecurePair`][] class is deprecated. Please use [`tls.TLSSocket`][]
+instead.
 
 ### DEP0044: `util.isArray()`
 
@@ -1043,8 +1042,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isBuffer()` API has been removed. Please use
-[`Buffer.isBuffer()`][] instead.
+The `util.isBuffer()` API has been removed. Please use [`Buffer.isBuffer()`][]
+instead.
 
 ### DEP0047: `util.isDate()`
 
@@ -1070,8 +1069,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isDate()` API has been removed. Please use
-`arg instanceof Date` instead.
+The `util.isDate()` API has been removed. Please use `arg instanceof Date`
+instead.
 
 ### DEP0048: `util.isError()`
 
@@ -1152,8 +1151,7 @@ changes:
 
 Type: End-of-Life
 
-The `util.isNull()` API has been removed. Please use
-`arg === null` instead.
+The `util.isNull()` API has been removed. Please use `arg === null` instead.
 
 ### DEP0051: `util.isNullOrUndefined()`
 
@@ -1206,8 +1204,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isNumber()` API has been removed. Please use
-`typeof arg === 'number'` instead.
+The `util.isNumber()` API has been removed. Please use `typeof arg === 'number'`
+instead.
 
 ### DEP0053: `util.isObject()`
 
@@ -1261,8 +1259,7 @@ changes:
 Type: End-of-Life
 
 The `util.isPrimitive()` API has been removed. Please use
-`arg === null || (typeof arg !=='object' && typeof arg !== 'function')`
-instead.
+`arg === null || (typeof arg !=='object' && typeof arg !== 'function')` instead.
 
 ### DEP0055: `util.isRegExp()`
 
@@ -1288,8 +1285,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isRegExp()` API has been removed. Please use
-`arg instanceof RegExp` instead.
+The `util.isRegExp()` API has been removed. Please use `arg instanceof RegExp`
+instead.
 
 ### DEP0056: `util.isString()`
 
@@ -1315,8 +1312,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isString()` API has been removed. Please use
-`typeof arg === 'string'` instead.
+The `util.isString()` API has been removed. Please use `typeof arg === 'string'`
+instead.
 
 ### DEP0057: `util.isSymbol()`
 
@@ -1342,8 +1339,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isSymbol()` API has been removed. Please use
-`typeof arg === 'symbol'` instead.
+The `util.isSymbol()` API has been removed. Please use `typeof arg === 'symbol'`
+instead.
 
 ### DEP0058: `util.isUndefined()`
 
@@ -1369,8 +1366,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.isUndefined()` API has been removed. Please use
-`arg === undefined` instead.
+The `util.isUndefined()` API has been removed. Please use `arg === undefined`
+instead.
 
 ### DEP0059: `util.log()`
 
@@ -1392,17 +1389,17 @@ changes:
 
 Type: End-of-Life
 
-The `util.log()` API has been removed because it's an unmaintained
-legacy API that was exposed to user land by accident. Instead,
-consider the following alternatives based on your specific needs:
+The `util.log()` API has been removed because it's an unmaintained legacy API
+that was exposed to user land by accident. Instead, consider the following
+alternatives based on your specific needs:
 
 * **Third-Party Logging Libraries**
 
 * **Use `console.log(new Date().toLocaleString(), message)`**
 
 By adopting one of these alternatives, you can transition away from `util.log()`
-and choose a logging strategy that aligns with the specific
-requirements and complexity of your application.
+and choose a logging strategy that aligns with the specific requirements and
+complexity of your application.
 
 ### DEP0060: `util._extend()`
 
@@ -1424,9 +1421,9 @@ changes:
 
 Type: End-of-Life
 
-The `util._extend()` API has been removed because it's an unmaintained
-legacy API that was exposed to user land by accident.
-Please use `target = Object.assign(target, source)` instead.
+The `util._extend()` API has been removed because it's an unmaintained legacy
+API that was exposed to user land by accident. Please use
+`target = Object.assign(target, source)` instead.
 
 ### DEP0061: `fs.SyncWriteStream`
 
@@ -1463,9 +1460,8 @@ changes:
 
 Type: End-of-Life
 
-`--debug` activates the legacy V8 debugger interface, which was removed as
-of V8 5.8. It is replaced by Inspector which is activated with `--inspect`
-instead.
+`--debug` activates the legacy V8 debugger interface, which was removed as of V8
+5.8. It is replaced by Inspector which is activated with `--inspect` instead.
 
 ### DEP0063: `ServerResponse.prototype.writeHeader()`
 
@@ -1766,8 +1762,8 @@ Type: Runtime
 
 `Module._debug()` is deprecated.
 
-The `Module._debug()` function was never documented as an officially
-supported API.
+The `Module._debug()` function was never documented as an officially supported
+API.
 
 ### DEP0078: `REPLServer.turnOffEditorMode()`
 
@@ -1819,8 +1815,8 @@ changes:
 Type: Documentation-only
 
 The internal `path._makeLong()` was not intended for public use. However,
-userland modules have found it useful. The internal API is deprecated
-and replaced with an identical, public `path.toNamespacedPath()` method.
+userland modules have found it useful. The internal API is deprecated and
+replaced with an identical, public `path.toNamespacedPath()` method.
 
 ### DEP0081: `fs.truncate()` using a file descriptor
 
@@ -1833,9 +1829,9 @@ changes:
 
 Type: Runtime
 
-`fs.truncate()` `fs.truncateSync()` usage with a file descriptor is
-deprecated. Please use `fs.ftruncate()` or `fs.ftruncateSync()` to work with
-file descriptors.
+`fs.truncate()` `fs.truncateSync()` usage with a file descriptor is deprecated.
+Please use `fs.ftruncate()` or `fs.ftruncateSync()` to work with file
+descriptors.
 
 ### DEP0082: `REPLServer.prototype.memory()`
 
@@ -1972,10 +1968,9 @@ changes:
 
 Type: Deprecation revoked
 
-Importing assert directly was not recommended as the exposed functions use
-loose equality checks. The deprecation was revoked because use of the
-`node:assert` module is not discouraged, and the deprecation caused developer
-confusion.
+Importing assert directly was not recommended as the exposed functions use loose
+equality checks. The deprecation was revoked because use of the `node:assert`
+module is not discouraged, and the deprecation caused developer confusion.
 
 ### DEP0090: Invalid GCM authentication tag lengths
 
@@ -1994,8 +1989,8 @@ Type: End-of-Life
 Node.js used to support all GCM authentication tag lengths which are accepted by
 OpenSSL when calling [`decipher.setAuthTag()`][]. Beginning with Node.js
 v11.0.0, only authentication tag lengths of 128, 120, 112, 104, 96, 64, and 32
-bits are allowed. Authentication tags of other lengths are invalid per
-[NIST SP 800-38D][].
+bits are allowed. Authentication tags of other lengths are invalid per [NIST SP
+800-38D][].
 
 ### DEP0091: `crypto.DEFAULT_ENCODING`
 
@@ -2025,9 +2020,9 @@ changes:
 
 Type: Documentation-only
 
-Assigning properties to the top-level `this` as an alternative
-to `module.exports` is deprecated. Developers should use `exports`
-or `module.exports` instead.
+Assigning properties to the top-level `this` as an alternative to
+`module.exports` is deprecated. Developers should use `exports` or
+`module.exports` instead.
 
 ### DEP0093: `crypto.fips` is deprecated and replaced
 
@@ -2040,8 +2035,8 @@ changes:
 
 Type: Documentation-only
 
-The [`crypto.fips`][] property is deprecated. Please use `crypto.setFips()`
-and `crypto.getFips()` instead.
+The [`crypto.fips`][] property is deprecated. Please use `crypto.setFips()` and
+`crypto.getFips()` instead.
 
 ### DEP0094: Using `assert.fail()` with more than one argument
 
@@ -2097,9 +2092,9 @@ changes:
 
 Type: Runtime
 
-Users of `MakeCallback` that add the `domain` property to carry context,
-should start using the `async_context` variant of `MakeCallback` or
-`CallbackScope`, or the high-level `AsyncResource` class.
+Users of `MakeCallback` that add the `domain` property to carry context, should
+start using the `async_context` variant of `MakeCallback` or `CallbackScope`, or
+the high-level `AsyncResource` class.
 
 ### DEP0098: AsyncHooks embedder `AsyncResource.emitBefore` and `AsyncResource.emitAfter` APIs
 
@@ -2119,8 +2114,8 @@ changes:
 Type: End-of-Life
 
 The embedded API provided by AsyncHooks exposes `.emitBefore()` and
-`.emitAfter()` methods which are very easy to use incorrectly which can lead
-to unrecoverable errors.
+`.emitAfter()` methods which are very easy to use incorrectly which can lead to
+unrecoverable errors.
 
 Use [`asyncResource.runInAsyncScope()`][] API instead which provides a much
 safer, and more convenient, alternative. See
@@ -2183,8 +2178,8 @@ changes:
 Type: End-of-Life
 
 Using the `noAssert` argument has no functionality anymore. All input is
-verified regardless of the value of `noAssert`. Skipping the verification
-could lead to hard-to-find errors and crashes.
+verified regardless of the value of `noAssert`. Skipping the verification could
+lead to hard-to-find errors and crashes.
 
 ### DEP0103: `process.binding('util').is[...]` typechecks
 
@@ -2258,13 +2253,12 @@ changes:
 
 Type: End-of-Life
 
-`crypto.createCipher()` and `crypto.createDecipher()` have been removed
-as they use a weak key derivation function (MD5 with no salt) and static
-initialization vectors.
-It is recommended to derive a key using
-[`crypto.pbkdf2()`][] or [`crypto.scrypt()`][] with random salts and to use
-[`crypto.createCipheriv()`][] and [`crypto.createDecipheriv()`][] to obtain the
-[`Cipher`][] and [`Decipher`][] objects respectively.
+`crypto.createCipher()` and `crypto.createDecipher()` have been removed as they
+use a weak key derivation function (MD5 with no salt) and static initialization
+vectors. It is recommended to derive a key using [`crypto.pbkdf2()`][] or
+[`crypto.scrypt()`][] with random salts and to use [`crypto.createCipheriv()`][]
+and [`crypto.createDecipheriv()`][] to obtain the [`Cipher`][] and
+[`Decipher`][] objects respectively.
 
 ### DEP0107: `tls.convertNPNProtocols()`
 
@@ -2298,9 +2292,9 @@ changes:
 Type: Runtime
 
 Deprecated alias for [`zlib.bytesWritten`][]. This original name was chosen
-because it also made sense to interpret the value as the number of bytes
-read by the engine, but is inconsistent with other streams in Node.js that
-expose values under these names.
+because it also made sense to interpret the value as the number of bytes read by
+the engine, but is inconsistent with other streams in Node.js that expose values
+under these names.
 
 ### DEP0109: `http`, `https`, and `tls` support for invalid URLs
 
@@ -2405,8 +2399,8 @@ changes:
 
 Type: End-of-Life
 
-The `crypto._toBuf()` function was not designed to be used by modules outside
-of Node.js core and was removed.
+The `crypto._toBuf()` function was not designed to be used by modules outside of
+Node.js core and was removed.
 
 <!--lint disable nodejs-yaml-comments -->
 
@@ -2473,9 +2467,9 @@ Type: End-of-Life
 
 Previous versions of Node.js exposed handles to internal native objects through
 the `_handle` property of the `Cipher`, `Decipher`, `DiffieHellman`,
-`DiffieHellmanGroup`, `ECDH`, `Hash`, `Hmac`, `Sign`, and `Verify` classes.
-The `_handle` property has been removed because improper use of the native
-object can lead to crashing the application.
+`DiffieHellmanGroup`, `ECDH`, `Hash`, `Hmac`, `Sign`, and `Verify` classes. The
+`_handle` property has been removed because improper use of the native object
+can lead to crashing the application.
 
 ### DEP0118: `dns.lookup()` support for a falsy host name
 
@@ -2489,9 +2483,9 @@ changes:
 Type: Runtime
 
 Previous versions of Node.js supported `dns.lookup()` with a falsy host name
-like `dns.lookup(false)` due to backward compatibility.
-This behavior is undocumented and is thought to be unused in real world apps.
-It will become an error in future versions of Node.js.
+like `dns.lookup(false)` due to backward compatibility. This behavior is
+undocumented and is thought to be unused in real world apps. It will become an
+error in future versions of Node.js.
 
 ### DEP0119: `process.binding('uv').errname()` private API
 
@@ -2568,8 +2562,8 @@ changes:
 
 Type: Runtime
 
-Setting the TLS ServerName to an IP address is not permitted by
-[RFC 6066][]. This will be ignored in a future version.
+Setting the TLS ServerName to an IP address is not permitted by [RFC 6066][].
+This will be ignored in a future version.
 
 ### DEP0124: using `REPLServer.rli`
 
@@ -2611,10 +2605,10 @@ changes:
 
 Type: Runtime
 
-The previously undocumented `timers.active()` is deprecated.
-Please use the publicly documented [`timeout.refresh()`][] instead.
-If re-referencing the timeout is necessary, [`timeout.ref()`][] can be used
-with no performance impact since Node.js 10.
+The previously undocumented `timers.active()` is deprecated. Please use the
+publicly documented [`timeout.refresh()`][] instead. If re-referencing the
+timeout is necessary, [`timeout.ref()`][] can be used with no performance impact
+since Node.js 10.
 
 ### DEP0127: `timers._unrefActive()`
 
@@ -2628,9 +2622,9 @@ changes:
 Type: Runtime
 
 The previously undocumented and "private" `timers._unrefActive()` is deprecated.
-Please use the publicly documented [`timeout.refresh()`][] instead.
-If unreferencing the timeout is necessary, [`timeout.unref()`][] can be used
-with no performance impact since Node.js 10.
+Please use the publicly documented [`timeout.refresh()`][] instead. If
+unreferencing the timeout is necessary, [`timeout.unref()`][] can be used with
+no performance impact since Node.js 10.
 
 ### DEP0128: modules with an invalid `main` entry and an `index.js` file
 
@@ -2646,10 +2640,10 @@ changes:
 
 Type: Runtime
 
-Modules that have an invalid `main` entry (e.g., `./does-not-exist.js`) and
-also have an `index.js` file in the top level directory will resolve the
-`index.js` file. That is deprecated and is going to throw an error in future
-Node.js versions.
+Modules that have an invalid `main` entry (e.g., `./does-not-exist.js`) and also
+have an `index.js` file in the top level directory will resolve the `index.js`
+file. That is deprecated and is going to throw an error in future Node.js
+versions.
 
 ### DEP0129: `ChildProcess._channel`
 
@@ -2749,8 +2743,8 @@ changes:
 
 Type: Documentation-only (supports [`--pending-deprecation`][])
 
-The `process._tickCallback` property was never documented as
-an officially supported API.
+The `process._tickCallback` property was never documented as an officially
+supported API.
 
 ### DEP0135: `WriteStream.open()` and `ReadStream.open()` are internal
 
@@ -2781,12 +2775,11 @@ changes:
 
 Type: Documentation-only
 
-[`response.finished`][] indicates whether [`response.end()`][] has been
-called, not whether `'finish'` has been emitted and the underlying data
-is flushed.
+[`response.finished`][] indicates whether [`response.end()`][] has been called,
+not whether `'finish'` has been emitted and the underlying data is flushed.
 
-Use [`response.writableFinished`][] or [`response.writableEnded`][]
-accordingly instead to avoid the ambiguity.
+Use [`response.writableFinished`][] or [`response.writableEnded`][] accordingly
+instead to avoid the ambiguity.
 
 To maintain existing behavior `response.finished` should be replaced with
 `response.writableEnded`.
@@ -2816,8 +2809,7 @@ async function openAndClose() {
   try {
     filehandle = await fsPromises.open('thefile.txt', 'r');
   } finally {
-    if (filehandle !== undefined)
-      await filehandle.close();
+    if (filehandle !== undefined) await filehandle.close();
   }
 }
 ```
@@ -2911,9 +2903,8 @@ changes:
     description: Runtime deprecation.
 -->
 
-Type: Runtime
-`Transform._transformState` will be removed in future versions where it is
-no longer required due to simplification of the implementation.
+Type: Runtime `Transform._transformState` will be removed in future versions
+where it is no longer required due to simplification of the implementation.
 
 ### DEP0144: `module.parent`
 
@@ -2946,8 +2937,9 @@ When looking for the CommonJS modules that have required the current one,
 `require.cache` and `module.children` can be used:
 
 ```js
-const moduleParents = Object.values(require.cache)
-  .filter((m) => m.children.includes(module));
+const moduleParents = Object.values(require.cache).filter((m) =>
+  m.children.includes(module),
+);
 ```
 
 ### DEP0145: `socket.bufferSize`
@@ -2974,8 +2966,7 @@ changes:
 
 Type: Documentation-only
 
-The [`crypto.Certificate()` constructor][] is deprecated. Use
-[static methods of `crypto.Certificate()`][] instead.
+The [`crypto.Certificate()` constructor][] is deprecated. Use [static methods of `crypto.Certificate()`][] instead.
 
 ### DEP0147: `fs.rmdir(path, { recursive: true })`
 
@@ -3021,9 +3012,9 @@ changes:
 
 Type: Runtime
 
-Using a trailing `"/"` to define subpath folder mappings in the
-[subpath exports][] or [subpath imports][] fields is deprecated. Use
-[subpath patterns][] instead.
+Using a trailing `"/"` to define subpath folder mappings in the [subpath
+exports][] or [subpath imports][] fields is deprecated. Use [subpath patterns][]
+instead.
 
 ### DEP0149: `http.IncomingMessage#connection`
 
@@ -3076,8 +3067,8 @@ Type: Runtime
 Previously, `index.js` and extension searching lookups would apply to
 `import 'pkg'` main entry point resolution, even when resolving ES modules.
 
-With this deprecation, all ES module main entry point resolutions require
-an explicit [`"exports"` or `"main"` entry][] with the exact file extension.
+With this deprecation, all ES module main entry point resolutions require an
+explicit [`"exports"` or `"main"` entry][] with the exact file extension.
 
 ### DEP0152: Extension PerformanceEntry properties
 
@@ -3092,9 +3083,9 @@ Type: Runtime
 
 The `'gc'`, `'http2'`, and `'http'` {PerformanceEntry} object types have
 additional properties assigned to them that provide additional information.
-These properties are now available within the standard `detail` property
-of the `PerformanceEntry` object. The existing accessors have been
-deprecated and should no longer be used.
+These properties are now available within the standard `detail` property of the
+`PerformanceEntry` object. The existing accessors have been deprecated and
+should no longer be used.
 
 ### DEP0153: `dns.lookup` and `dnsPromises.lookup` options type coercion
 
@@ -3133,8 +3124,8 @@ changes:
 
 Type: Runtime
 
-The `'hash'` and `'mgf1Hash'` options are replaced with `'hashAlgorithm'`
-and `'mgf1HashAlgorithm'`.
+The `'hash'` and `'mgf1Hash'` options are replaced with `'hashAlgorithm'` and
+`'mgf1HashAlgorithm'`.
 
 ### DEP0155: Trailing slashes in pattern specifier resolutions
 
@@ -3241,8 +3232,8 @@ changes:
 
 Type: End-of-Life
 
-This error code was removed due to adding more confusion to
-the errors used for value type validation.
+This error code was removed due to adding more confusion to the errors used for
+value type validation.
 
 ### DEP0160: `process.on('multipleResolves', handler)`
 
@@ -3276,9 +3267,8 @@ changes:
 
 Type: Documentation-only
 
-The `process._getActiveHandles()` and `process._getActiveRequests()`
-functions are not intended for public use and can be removed in future
-releases.
+The `process._getActiveHandles()` and `process._getActiveRequests()` functions
+are not intended for public use and can be removed in future releases.
 
 Use [`process.getActiveResourcesInfo()`][] to get a list of types of active
 resources and not the actual references.
@@ -3304,8 +3294,8 @@ Type: End-of-Life
 
 Implicit coercion of objects with own `toString` property, passed as second
 parameter in [`fs.write()`][], [`fs.writeFile()`][], [`fs.appendFile()`][],
-[`fs.writeFileSync()`][], and [`fs.appendFileSync()`][] is deprecated.
-Convert them to primitive strings.
+[`fs.writeFileSync()`][], and [`fs.appendFileSync()`][] is deprecated. Convert
+them to primitive strings.
 
 ### DEP0163: `channel.subscribe(onMessage)`, `channel.unsubscribe(onMessage)`
 
@@ -3324,8 +3314,8 @@ These methods were deprecated because they can be used in a way which does not
 hold the channel reference alive long enough to receive the events.
 
 Use [`diagnostics_channel.subscribe(name, onMessage)`][] or
-[`diagnostics_channel.unsubscribe(name, onMessage)`][] which does the same
-thing instead.
+[`diagnostics_channel.unsubscribe(name, onMessage)`][] which does the same thing
+instead.
 
 ### DEP0164: `process.exit(code)`, `process.exitCode` coercion to integer
 
@@ -3376,9 +3366,8 @@ changes:
 
 Type: End-of-Life
 
-The `--trace-atomics-wait` flag has been removed because
-it uses the V8 hook `SetAtomicsWaitCallback`,
-that will be removed in a future V8 release.
+The `--trace-atomics-wait` flag has been removed because it uses the V8 hook
+`SetAtomicsWaitCallback`, that will be removed in a future V8 release.
 
 ### DEP0166: Double slashes in imports and exports targets
 
@@ -3458,9 +3447,9 @@ changes:
 
 Type: Documentation-only (supports [`--pending-deprecation`][])
 
-[`url.parse()`][] behavior is not standardized and prone to errors that
-have security implications. Use the [WHATWG URL API][] instead. CVEs are not
-issued for `url.parse()` vulnerabilities.
+[`url.parse()`][] behavior is not standardized and prone to errors that have
+security implications. Use the [WHATWG URL API][] instead. CVEs are not issued
+for `url.parse()` vulnerabilities.
 
 ### DEP0170: Invalid port when using `url.parse()`
 
@@ -3511,8 +3500,8 @@ changes:
 
 Type: Runtime
 
-In a future version of Node.js, the `asyncResource` property will no longer
-be added when a function is bound to an `AsyncResource`.
+In a future version of Node.js, the `asyncResource` property will no longer be
+added when a function is bound to an `AsyncResource`.
 
 ### DEP0173: the `assert.CallTracker` class
 
@@ -3525,8 +3514,7 @@ changes:
 
 Type: Documentation-only
 
-In a future version of Node.js, [`assert.CallTracker`][],
-will be removed.
+In a future version of Node.js, [`assert.CallTracker`][], will be removed.
 Consider using alternatives such as the [`mock`][] helper function.
 
 ### DEP0174: calling `promisify` on a function that returns a `Promise`
@@ -3595,8 +3583,8 @@ changes:
 
 Type: End-of-Life
 
-The `util.types.isWebAssemblyCompiledModule` API has been removed.
-Please use `value instanceof WebAssembly.Module` instead.
+The `util.types.isWebAssemblyCompiledModule` API has been removed. Please use
+`value instanceof WebAssembly.Module` instead.
 
 ### DEP0178: `dirent.path`
 
@@ -3634,9 +3622,9 @@ changes:
 
 Type: Runtime
 
-Calling `Hash` class directly with `Hash()` or `new Hash()` is
-deprecated due to being internals, not intended for public use.
-Please use the [`crypto.createHash()`][] method to create Hash instances.
+Calling `Hash` class directly with `Hash()` or `new Hash()` is deprecated due to
+being internals, not intended for public use. Please use the
+[`crypto.createHash()`][] method to create Hash instances.
 
 ### DEP0180: `fs.Stats` constructor
 
@@ -3652,8 +3640,8 @@ changes:
 
 Type: Runtime
 
-Calling `fs.Stats` class directly with `Stats()` or `new Stats()` is
-deprecated due to being internals, not intended for public use.
+Calling `fs.Stats` class directly with `Stats()` or `new Stats()` is deprecated
+due to being internals, not intended for public use.
 
 ### DEP0181: `Hmac` constructor
 
@@ -3669,9 +3657,9 @@ changes:
 
 Type: Runtime
 
-Calling `Hmac` class directly with `Hmac()` or `new Hmac()` is
-deprecated due to being internals, not intended for public use.
-Please use the [`crypto.createHmac()`][] method to create Hmac instances.
+Calling `Hmac` class directly with `Hmac()` or `new Hmac()` is deprecated due to
+being internals, not intended for public use. Please use the
+[`crypto.createHmac()`][] method to create Hmac instances.
 
 ### DEP0182: Short GCM authentication tags without explicit `authTagLength`
 

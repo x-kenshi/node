@@ -29,25 +29,25 @@ directory. That path is then resolved by [CommonJS][] module loader, or by the
 [ES module loader][Modules loaders] if [`--experimental-default-type=module`][]
 is passed. If no corresponding file is found, an error is thrown.
 
-If a file is found, its path will be passed to the
-[ES module loader][Modules loaders] under any of the following conditions:
+If a file is found, its path will be passed to the [ES module
+loader][Modules loaders] under any of the following conditions:
 
-* The program was started with a command-line flag that forces the entry
-  point to be loaded with ECMAScript module loader, such as `--import` or
+* The program was started with a command-line flag that forces the entry point
+  to be loaded with ECMAScript module loader, such as `--import` or
   [`--experimental-default-type=module`][].
 * The file has an `.mjs` extension.
 * The file does not have a `.cjs` extension, and the nearest parent
   `package.json` file contains a top-level [`"type"`][] field with a value of
   `"module"`.
 
-Otherwise, the file is loaded using the CommonJS module loader. See
-[Modules loaders][] for more details.
+Otherwise, the file is loaded using the CommonJS module loader. See [Modules
+loaders][] for more details.
 
 ### ECMAScript modules loader entry point caveat
 
-When loading, the [ES module loader][Modules loaders] loads the program
-entry point, the `node` command will accept as input only files with `.js`,
-`.mjs`, or `.cjs` extensions; with `.wasm` extensions when
+When loading, the [ES module loader][Modules loaders] loads the program entry
+point, the `node` command will accept as input only files with `.js`, `.mjs`, or
+`.cjs` extensions; with `.wasm` extensions when
 [`--experimental-wasm-modules`][] is enabled; and with no extension when
 [`--experimental-default-type=module`][] is passed.
 
@@ -61,9 +61,9 @@ changes:
                  Node.js options as well, in addition to V8 options.
 -->
 
-All options, including V8 options, allow words to be separated by both
-dashes (`-`) or underscores (`_`). For example, `--pending-deprecation` is
-equivalent to `--pending_deprecation`.
+All options, including V8 options, allow words to be separated by both dashes
+(`-`) or underscores (`_`). For example, `--pending-deprecation` is equivalent
+to `--pending_deprecation`.
 
 If an option that takes a single value (such as `--max-http-header-size`) is
 passed more than once, then the last passed value is used. Options from the
@@ -77,8 +77,8 @@ added: v8.0.0
 -->
 
 Alias for stdin. Analogous to the use of `-` in other command-line utilities,
-meaning that the script is read from stdin, and the rest of the options
-are passed to that script.
+meaning that the script is read from stdin, and the rest of the options are
+passed to that script.
 
 ### `--`
 
@@ -87,8 +87,8 @@ added: v6.11.0
 -->
 
 Indicate the end of node options. Pass the rest of the arguments to the script.
-If no script filename or eval/print script is supplied prior to this, then
-the next argument is used as a script filename.
+If no script filename or eval/print script is supplied prior to this, then the
+next argument is used as a script filename.
 
 ### `--abort-on-uncaught-exception`
 
@@ -113,10 +113,9 @@ added:
 
 > Stability: 1.1 - Active development
 
-When using the [Permission Model][], the process will not be able to use
-native addons by default.
-Attempts to do so will throw an `ERR_DLOPEN_DISABLED` unless the
-user explicitly passes the `--allow-addons` flag when starting Node.js.
+When using the [Permission Model][], the process will not be able to use native
+addons by default. Attempts to do so will throw an `ERR_DLOPEN_DISABLED` unless
+the user explicitly passes the `--allow-addons` flag when starting Node.js.
 
 Example:
 
@@ -155,16 +154,19 @@ added: v20.0.0
 > Stability: 1.1 - Active development
 
 When using the [Permission Model][], the process will not be able to spawn any
-child process by default.
-Attempts to do so will throw an `ERR_ACCESS_DENIED` unless the
-user explicitly passes the `--allow-child-process` flag when starting Node.js.
+child process by default. Attempts to do so will throw an `ERR_ACCESS_DENIED`
+unless the user explicitly passes the `--allow-child-process` flag when starting
+Node.js.
 
 Example:
 
 ```js
 const childProcess = require('node:child_process');
 // Attempt to bypass the permission
-childProcess.spawn('node', ['-e', 'require("fs").writeFileSync("/new-file", "example")']);
+childProcess.spawn('node', [
+  '-e',
+  'require("fs").writeFileSync("/new-file", "example")',
+]);
 ```
 
 ```console
@@ -199,17 +201,17 @@ changes:
 
 > Stability: 1.1 - Active development
 
-This flag configures file system read permissions using
-the [Permission Model][].
+This flag configures file system read permissions using the [Permission
+Model][].
 
 The valid arguments for the `--allow-fs-read` flag are:
 
 * `*` - To allow all `FileSystemRead` operations.
-* Multiple paths can be allowed using multiple `--allow-fs-read` flags.
-  Example `--allow-fs-read=/folder1/ --allow-fs-read=/folder1/`
+* Multiple paths can be allowed using multiple `--allow-fs-read` flags. Example
+  `--allow-fs-read=/folder1/ --allow-fs-read=/folder1/`
 
-Paths delimited by comma (`,`) are no longer allowed.
-When passing a single flag with a comma a warning will be displayed.
+Paths delimited by comma (`,`) are no longer allowed. When passing a single flag
+with a comma a warning will be displayed.
 
 Examples can be found in the [File System Permissions][] documentation.
 
@@ -253,17 +255,17 @@ changes:
 
 > Stability: 1.1 - Active development
 
-This flag configures file system write permissions using
-the [Permission Model][].
+This flag configures file system write permissions using the [Permission
+Model][].
 
 The valid arguments for the `--allow-fs-write` flag are:
 
 * `*` - To allow all `FileSystemWrite` operations.
-* Multiple paths can be allowed using multiple `--allow-fs-read` flags.
-  Example `--allow-fs-read=/folder1/ --allow-fs-read=/folder1/`
+* Multiple paths can be allowed using multiple `--allow-fs-read` flags. Example
+  `--allow-fs-read=/folder1/ --allow-fs-read=/folder1/`
 
-Paths delimited by comma (`,`) are no longer allowed.
-When passing a single flag with a comma a warning will be displayed.
+Paths delimited by comma (`,`) are no longer allowed. When passing a single flag
+with a comma a warning will be displayed.
 
 Examples can be found in the [File System Permissions][] documentation.
 
@@ -278,9 +280,9 @@ added: v20.0.0
 > Stability: 1.1 - Active development
 
 When using the [Permission Model][], the process will not be able to create any
-worker threads by default.
-For security reasons, the call will throw an `ERR_ACCESS_DENIED` unless the
-user explicitly pass the flag `--allow-worker` in the main Node.js process.
+worker threads by default. For security reasons, the call will throw an
+`ERR_ACCESS_DENIED` unless the user explicitly pass the flag `--allow-worker` in
+the main Node.js process.
 
 Example:
 
@@ -318,13 +320,13 @@ added: v18.8.0
 
 > Stability: 1 - Experimental
 
-Generates a snapshot blob when the process exits and writes it to
-disk, which can be loaded later with `--snapshot-blob`.
+Generates a snapshot blob when the process exits and writes it to disk, which
+can be loaded later with `--snapshot-blob`.
 
-When building the snapshot, if `--snapshot-blob` is not specified,
-the generated blob will be written, by default, to `snapshot.blob`
-in the current working directory. Otherwise it will be written to
-the path specified by `--snapshot-blob`.
+When building the snapshot, if `--snapshot-blob` is not specified, the generated
+blob will be written, by default, to `snapshot.blob` in the current working
+directory. Otherwise it will be written to the path specified by
+`--snapshot-blob`.
 
 ```console
 $ echo "globalThis.foo = 'I am from the snapshot'" > snapshot.js
@@ -341,8 +343,8 @@ I am from the snapshot
 ```
 
 The [`v8.startupSnapshot` API][] can be used to specify an entry point at
-snapshot building time, thus avoiding the need of an additional entry
-script at deserialization time:
+snapshot building time, thus avoiding the need of an additional entry script at
+deserialization time:
 
 ```console
 $ echo "require('v8').startupSnapshot.setDeserializeMainFunction(() => console.log('I am from the snapshot'))" > snapshot.js
@@ -355,16 +357,15 @@ For more information, check out the [`v8.startupSnapshot` API][] documentation.
 
 Currently the support for run-time snapshot is experimental in that:
 
-1. User-land modules are not yet supported in the snapshot, so only
-   one single file can be snapshotted. Users can bundle their applications
-   into a single script with their bundler of choice before building
-   a snapshot, however.
+1. User-land modules are not yet supported in the snapshot, so only one single
+   file can be snapshotted. Users can bundle their applications into a single
+   script with their bundler of choice before building a snapshot, however.
 2. Only a subset of the built-in modules work in the snapshot, though the
-   Node.js core test suite checks that a few fairly complex applications
-   can be snapshotted. Support for more modules are being added. If any
-   crashes or buggy behaviors occur when building a snapshot, please file
-   a report in the [Node.js issue tracker][] and link to it in the
-   [tracking issue for user-land snapshots][].
+   Node.js core test suite checks that a few fairly complex applications can be
+   snapshotted. Support for more modules are being added. If any crashes or
+   buggy behaviors occur when building a snapshot, please file a report in the
+   [Node.js issue tracker][] and link to it in the [tracking issue for user-land
+   snapshots][].
 
 ### `--build-snapshot-config`
 
@@ -385,9 +386,8 @@ The following options are currently supported:
   before building the snapshot, as if [`--build-snapshot`][] had been passed
   with `builder` as the main script name.
 * `withoutCodeCache` {boolean} Optional. Including the code cache reduces the
-  time spent on compiling functions included in the snapshot at the expense
-  of a bigger snapshot size and potentially breaking portability of the
-  snapshot.
+  time spent on compiling functions included in the snapshot at the expense of a
+  bigger snapshot size and potentially breaking portability of the snapshot.
 
 When using this flag, additional script files provided on the command line will
 not be executed and instead be interpreted as regular command line arguments.
@@ -454,11 +454,11 @@ added: v12.0.0
 Starts the V8 CPU profiler on start up, and writes the CPU profile to disk
 before exit.
 
-If `--cpu-prof-dir` is not specified, the generated profile is placed
-in the current working directory.
+If `--cpu-prof-dir` is not specified, the generated profile is placed in the
+current working directory.
 
-If `--cpu-prof-name` is not specified, the generated profile is
-named `CPU.${yyyymmdd}.${hhmmss}.${pid}.${tid}.${seq}.cpuprofile`.
+If `--cpu-prof-name` is not specified, the generated profile is named
+`CPU.${yyyymmdd}.${hhmmss}.${pid}.${tid}.${seq}.cpuprofile`.
 
 ```console
 $ node --cpu-prof index.js
@@ -474,11 +474,11 @@ added: v12.0.0
 
 > Stability: 1 - Experimental
 
-Specify the directory where the CPU profiles generated by `--cpu-prof` will
-be placed.
+Specify the directory where the CPU profiles generated by `--cpu-prof` will be
+placed.
 
-The default value is controlled by the
-[`--diagnostic-dir`][] command-line option.
+The default value is controlled by the [`--diagnostic-dir`][] command-line
+option.
 
 ### `--cpu-prof-interval`
 
@@ -488,8 +488,8 @@ added: v12.2.0
 
 > Stability: 1 - Experimental
 
-Specify the sampling interval in microseconds for the CPU profiles generated
-by `--cpu-prof`. The default is 1000 microseconds.
+Specify the sampling interval in microseconds for the CPU profiles generated by
+`--cpu-prof`. The default is 1000 microseconds.
 
 ### `--cpu-prof-name`
 
@@ -503,8 +503,8 @@ Specify the file name of the CPU profile generated by `--cpu-prof`.
 
 ### `--diagnostic-dir=directory`
 
-Set the directory to which all diagnostic output files are written.
-Defaults to current working directory.
+Set the directory to which all diagnostic output files are written. Defaults to
+current working directory.
 
 Affects the default output directory of:
 
@@ -533,8 +533,8 @@ List of [deprecation warnings][].
 The Node.js core warning types are: `DeprecationWarning` and
 `ExperimentalWarning`
 
-For example, the following script will not emit
-[DEP0025 `require('node:sys')`][DEP0025 warning] when executed with
+For example, the following script will not emit [DEP0025
+`require('node:sys')`][DEP0025 warning] when executed with
 `node --disable-warning=DEP0025`:
 
 ```mjs
@@ -545,11 +545,10 @@ import sys from 'node:sys';
 const sys = require('node:sys');
 ```
 
-For example, the following script will emit the
-[DEP0025 `require('node:sys')`][DEP0025 warning], but not any Experimental
-Warnings (such as
-[ExperimentalWarning: `vm.measureMemory` is an experimental feature][]
-in <=v21) when executed with `node --disable-warning=ExperimentalWarning`:
+For example, the following script will emit the [DEP0025
+`require('node:sys')`][DEP0025 warning], but not any Experimental Warnings (such
+as [ExperimentalWarning: `vm.measureMemory` is an experimental feature][] in
+<=v21) when executed with `node --disable-warning=ExperimentalWarning`:
 
 ```mjs
 import sys from 'node:sys';
@@ -571,15 +570,14 @@ vm.measureMemory();
 added: v22.2.0
 -->
 
-By default, Node.js enables trap-handler-based WebAssembly bound
-checks. As a result, V8 does not need to insert inline bound checks
-int the code compiled from WebAssembly which may speedup WebAssembly
-execution significantly, but this optimization requires allocating
-a big virtual memory cage (currently 10GB). If the Node.js process
-does not have access to a large enough virtual memory address space
-due to system configurations or hardware limitations, users won't
-be able to run any WebAssembly that involves allocation in this
-virtual memory cage and will see an out-of-memory error.
+By default, Node.js enables trap-handler-based WebAssembly bound checks. As a
+result, V8 does not need to insert inline bound checks int the code compiled
+from WebAssembly which may speedup WebAssembly execution significantly, but this
+optimization requires allocating a big virtual memory cage (currently 10GB). If
+the Node.js process does not have access to a large enough virtual memory
+address space due to system configurations or hardware limitations, users won't
+be able to run any WebAssembly that involves allocation in this virtual memory
+cage and will see an out-of-memory error.
 
 ```console
 $ ulimit -v 5000000
@@ -599,10 +597,10 @@ RangeError: WebAssembly.Memory(): could not allocate memory
 
 ```
 
-`--disable-wasm-trap-handler` disables this optimization so that
-users can at least run WebAssembly (with less optimal performance)
-when the virtual memory address space available to their Node.js
-process is lower than what the V8 WebAssembly memory cage needs.
+`--disable-wasm-trap-handler` disables this optimization so that users can at
+least run WebAssembly (with less optimal performance) when the virtual memory
+address space available to their Node.js process is lower than what the V8
+WebAssembly memory cage needs.
 
 ### `--disable-proto=mode`
 
@@ -613,8 +611,8 @@ added:
 -->
 
 Disable the `Object.prototype.__proto__` property. If `mode` is `delete`, the
-property is removed entirely. If `mode` is `throw`, accesses to the
-property throw an exception with the code `ERR_PROTO_ACCESS`.
+property is removed entirely. If `mode` is `throw`, accesses to the property
+throw an exception with the code `ERR_PROTO_ACCESS`.
 
 ### `--disallow-code-generation-from-strings`
 
@@ -659,8 +657,8 @@ priority than `--dns-result-order`.
 added: v6.0.0
 -->
 
-Enable FIPS-compliant crypto at startup. (Requires Node.js to be built
-against FIPS-compatible OpenSSL.)
+Enable FIPS-compliant crypto at startup. (Requires Node.js to be built against
+FIPS-compatible OpenSSL.)
 
 ### `--enable-network-family-autoselection`
 
@@ -687,8 +685,8 @@ Enable [Source Map v3][Source Map] support for stack traces.
 
 When using a transpiler, such as TypeScript, stack traces thrown by an
 application reference the transpiled code, not the original source position.
-`--enable-source-maps` enables caching of Source Maps and makes a best
-effort to report stack traces relative to the original source file.
+`--enable-source-maps` enables caching of Source Maps and makes a best effort to
+report stack traces relative to the original source file.
 
 Overriding `Error.prepareStackTrace` may prevent `--enable-source-maps` from
 modifying the stack trace. Call and return the results of the original
@@ -704,10 +702,10 @@ Error.prepareStackTrace = (error, trace) => {
 };
 ```
 
-Note, enabling source maps can introduce latency to your application
-when `Error.stack` is accessed. If you access `Error.stack` frequently
-in your application, take into account the performance implications
-of `--enable-source-maps`.
+Note, enabling source maps can introduce latency to your application when
+`Error.stack` is accessed. If you access `Error.stack` frequently in your
+application, take into account the performance implications of
+`--enable-source-maps`.
 
 ### `--env-file=config`
 
@@ -725,9 +723,9 @@ changes:
 
 Loads environment variables from a file relative to the current directory,
 making them available to applications on `process.env`. The [environment
-variables which configure Node.js][environment_variables], such as `NODE_OPTIONS`,
-are parsed and applied. If the same variable is defined in the environment and
-in the file, the value from the environment takes precedence.
+variables which configure Node.js][environment_variables], such as
+`NODE_OPTIONS`, are parsed and applied. If the same variable is defined in the
+environment and in the file, the value from the environment takes precedence.
 
 You can pass multiple `--env-file` arguments. Subsequent files override
 pre-existing variables defined in previous files.
@@ -750,8 +748,8 @@ Any text after a `#` is treated as a comment:
 PORT=3000 # This is also a comment
 ```
 
-Values can start and end with the following quotes: `` ` ``, `"` or `'`.
-They are omitted from the values.
+Values can start and end with the following quotes: `` ` ``, `"` or `'`. They
+are omitted from the values.
 
 ```text
 USERNAME="nodejs" # will result in `nodejs` as the value.
@@ -781,12 +779,12 @@ changes:
     description: Built-in libraries are now available as predefined variables.
 -->
 
-Evaluate the following argument as JavaScript. The modules which are
-predefined in the REPL can also be used in `script`.
+Evaluate the following argument as JavaScript. The modules which are predefined
+in the REPL can also be used in `script`.
 
 On Windows, using `cmd.exe` a single quote will not work correctly because it
-only recognizes double `"` for quoting. In Powershell or Git bash, both `'`
-and `"` are usable.
+only recognizes double `"` for quoting. In Powershell or Git bash, both `'` and
+`"` are usable.
 
 ### `--experimental-default-type=type`
 
@@ -894,8 +892,8 @@ changes:
 -->
 
 > This flag is discouraged and may be removed in a future version of Node.js.
-> Please use
-> [`--import` with `register()`][module customization hooks: enabling] instead.
+> Please use [`--import` with
+> `register()`][module customization hooks: enabling] instead.
 
 Specify the `module` containing exported [module customization hooks][].
 `module` may be any string accepted as an [`import` specifier][].
@@ -920,11 +918,11 @@ added: v20.0.0
 
 > Stability: 1.1 - Active development
 
-Enable the Permission Model for current process. When enabled, the
-following permissions are restricted:
+Enable the Permission Model for current process. When enabled, the following
+permissions are restricted:
 
-* File System - manageable through
-  [`--allow-fs-read`][], [`--allow-fs-write`][] flags
+* File System - manageable through [`--allow-fs-read`][], [`--allow-fs-write`][]
+  flags
 * Child Process - manageable through [`--allow-child-process`][] flag
 * Worker Threads - manageable through [`--allow-worker`][] flag
 
@@ -948,9 +946,9 @@ added: v20.0.0
 
 > Stability: 1 - Experimental
 
-Use this flag to generate a blob that can be injected into the Node.js
-binary to produce a [single executable application][]. See the documentation
-about [this configuration][`--experimental-sea-config`] for details.
+Use this flag to generate a blob that can be injected into the Node.js binary to
+produce a [single executable application][]. See the documentation about [this
+configuration][`--experimental-sea-config`] for details.
 
 ### `--experimental-shadow-realm`
 
@@ -978,8 +976,8 @@ changes:
 
 When used in conjunction with the `node:test` module, a code coverage report is
 generated as part of the test runner output. If no tests are run, a coverage
-report is not generated. See the documentation on
-[collecting code coverage from tests][] for more details.
+report is not generated. See the documentation on [collecting code coverage from
+tests][] for more details.
 
 ### `--experimental-test-module-mocks`
 
@@ -1073,8 +1071,8 @@ Only the root context is supported. There is no guarantee that
 `globalThis.Array` is indeed the default intrinsic reference. Code may break
 under this flag.
 
-To allow polyfills to be added,
-[`--require`][] and [`--import`][] both run before freezing intrinsics.
+To allow polyfills to be added, [`--require`][] and [`--import`][] both run
+before freezing intrinsics.
 
 ### `--heap-prof`
 
@@ -1087,11 +1085,11 @@ added: v12.4.0
 Starts the V8 heap profiler on start up, and writes the heap profile to disk
 before exit.
 
-If `--heap-prof-dir` is not specified, the generated profile is placed
-in the current working directory.
+If `--heap-prof-dir` is not specified, the generated profile is placed in the
+current working directory.
 
-If `--heap-prof-name` is not specified, the generated profile is
-named `Heap.${yyyymmdd}.${hhmmss}.${pid}.${tid}.${seq}.heapprofile`.
+If `--heap-prof-name` is not specified, the generated profile is named
+`Heap.${yyyymmdd}.${hhmmss}.${pid}.${tid}.${seq}.heapprofile`.
 
 ```console
 $ node --heap-prof index.js
@@ -1107,11 +1105,11 @@ added: v12.4.0
 
 > Stability: 1 - Experimental
 
-Specify the directory where the heap profiles generated by `--heap-prof` will
-be placed.
+Specify the directory where the heap profiles generated by `--heap-prof` will be
+placed.
 
-The default value is controlled by the
-[`--diagnostic-dir`][] command-line option.
+The default value is controlled by the [`--diagnostic-dir`][] command-line
+option.
 
 ### `--heap-prof-interval`
 
@@ -1144,26 +1142,26 @@ added:
 
 > Stability: 1 - Experimental
 
-Writes a V8 heap snapshot to disk when the V8 heap usage is approaching the
-heap limit. `count` should be a non-negative integer (in which case
-Node.js will write no more than `max_count` snapshots to disk).
+Writes a V8 heap snapshot to disk when the V8 heap usage is approaching the heap
+limit. `count` should be a non-negative integer (in which case Node.js will
+write no more than `max_count` snapshots to disk).
 
-When generating snapshots, garbage collection may be triggered and bring
-the heap usage down. Therefore multiple snapshots may be written to disk
-before the Node.js instance finally runs out of memory. These heap snapshots
-can be compared to determine what objects are being allocated during the
-time consecutive snapshots are taken. It's not guaranteed that Node.js will
-write exactly `max_count` snapshots to disk, but it will try
-its best to generate at least one and up to `max_count` snapshots before the
-Node.js instance runs out of memory when `max_count` is greater than `0`.
+When generating snapshots, garbage collection may be triggered and bring the
+heap usage down. Therefore multiple snapshots may be written to disk before the
+Node.js instance finally runs out of memory. These heap snapshots can be
+compared to determine what objects are being allocated during the time
+consecutive snapshots are taken. It's not guaranteed that Node.js will write
+exactly `max_count` snapshots to disk, but it will try its best to generate at
+least one and up to `max_count` snapshots before the Node.js instance runs out
+of memory when `max_count` is greater than `0`.
 
-Generating V8 snapshots takes time and memory (both memory managed by the
-V8 heap and native memory outside the V8 heap). The bigger the heap is,
-the more resources it needs. Node.js will adjust the V8 heap to accommodate
-the additional V8 heap memory overhead, and try its best to avoid using up
-all the memory available to the process. When the process uses
-more memory than the system deems appropriate, the process may be terminated
-abruptly by the system, depending on the system configuration.
+Generating V8 snapshots takes time and memory (both memory managed by the V8
+heap and native memory outside the V8 heap). The bigger the heap is, the more
+resources it needs. Node.js will adjust the V8 heap to accommodate the
+additional V8 heap memory overhead, and try its best to avoid using up all the
+memory available to the process. When the process uses more memory than the
+system deems appropriate, the process may be terminated abruptly by the system,
+depending on the system configuration.
 
 ```console
 $ node --max-old-space-size=100 --heapsnapshot-near-heap-limit=3 index.js
@@ -1209,8 +1207,8 @@ Heap.20190718.133405.15554.0.001.heapsnapshot
 added: v0.1.3
 -->
 
-Print node command-line options.
-The output of this option is less detailed than this document.
+Print node command-line options. The output of this option is less detailed than
+this document.
 
 ### `--icu-data-dir=file`
 
@@ -1234,9 +1232,9 @@ Preload the specified module at startup. If the flag is provided several times,
 each module will be executed sequentially in the order they appear, starting
 with the ones provided in [`NODE_OPTIONS`][].
 
-Follows [ECMAScript module][] resolution rules.
-Use [`--require`][] to load a [CommonJS module][].
-Modules preloaded with `--require` will run before modules preloaded with `--import`.
+Follows [ECMAScript module][] resolution rules. Use [`--require`][] to load a
+[CommonJS module][]. Modules preloaded with `--require` will run before modules
+preloaded with `--import`.
 
 ### `--input-type=type`
 
@@ -1244,8 +1242,8 @@ Modules preloaded with `--require` will run before modules preloaded with `--imp
 added: v12.0.0
 -->
 
-This configures Node.js to interpret `--eval` or `STDIN` input as CommonJS or
-as an ES module. Valid values are `"commonjs"` or `"module"`. The default is
+This configures Node.js to interpret `--eval` or `STDIN` input as CommonJS or as
+an ES module. Valid values are `"commonjs"` or `"module"`. The default is
 `"commonjs"` unless [`--experimental-default-type=module`][] is used.
 
 The REPL does not support this option. Usage of `--input-type=module` with
@@ -1261,23 +1259,23 @@ added:
  - v10.19.0
 -->
 
-Enable leniency flags on the HTTP parser. This may allow
-interoperability with non-conformant HTTP implementations.
+Enable leniency flags on the HTTP parser. This may allow interoperability with
+non-conformant HTTP implementations.
 
 When enabled, the parser will accept the following:
 
 * Invalid HTTP headers values.
 * Invalid HTTP versions.
-* Allow message containing both `Transfer-Encoding`
-  and `Content-Length` headers.
+* Allow message containing both `Transfer-Encoding` and `Content-Length`
+  headers.
 * Allow extra data after message when `Connection: close` is present.
 * Allow extra transfer encodings after `chunked` has been provided.
 * Allow `\n` to be used as token separator instead of `\r\n`.
 * Allow `\r\n` not to be provided after a chunk.
 * Allow spaces to be present after a chunk size and before `\r\n`.
 
-All the above will expose your application to request smuggling
-or poisoning attack. Avoid using this option.
+All the above will expose your application to request smuggling or poisoning
+attack. Avoid using this option.
 
 ### `--inspect[=[host:]port]`
 
@@ -1288,9 +1286,9 @@ added: v6.3.0
 Activate inspector on `host:port`. Default is `127.0.0.1:9229`.
 
 V8 inspector integration allows tools such as Chrome DevTools and IDEs to debug
-and profile Node.js instances. The tools attach to Node.js instances via a
-tcp port and communicate using the [Chrome DevTools Protocol][].
-See [V8 Inspector integration for Node.js][] for further explanation on Node.js debugger.
+and profile Node.js instances. The tools attach to Node.js instances via a tcp
+port and communicate using the [Chrome DevTools Protocol][]. See [V8 Inspector
+integration for Node.js][] for further explanation on Node.js debugger.
 
 <!-- Anchor to make sure old links find a target -->
 
@@ -1299,8 +1297,8 @@ See [V8 Inspector integration for Node.js][] for further explanation on Node.js 
 #### Warning: binding inspector to a public IP:port combination is insecure
 
 Binding the inspector to a public IP (including `0.0.0.0`) with an open port is
-insecure, as it allows external hosts to connect to the inspector and perform
-a [remote code execution][] attack.
+insecure, as it allows external hosts to connect to the inspector and perform a
+[remote code execution][] attack.
 
 If specifying a host, make sure that either:
 
@@ -1318,10 +1316,11 @@ See the [debugging security implications][] section for more information.
 added: v7.6.0
 -->
 
-Activate inspector on `host:port` and break at start of user script.
-Default `host:port` is `127.0.0.1:9229`.
+Activate inspector on `host:port` and break at start of user script. Default
+`host:port` is `127.0.0.1:9229`.
 
-See [V8 Inspector integration for Node.js][] for further explanation on Node.js debugger.
+See [V8 Inspector integration for Node.js][] for further explanation on Node.js
+debugger.
 
 ### `--inspect-port=[host:]port`
 
@@ -1329,13 +1328,12 @@ See [V8 Inspector integration for Node.js][] for further explanation on Node.js 
 added: v7.6.0
 -->
 
-Set the `host:port` to be used when the inspector is activated.
-Useful when activating the inspector by sending the `SIGUSR1` signal.
+Set the `host:port` to be used when the inspector is activated. Useful when
+activating the inspector by sending the `SIGUSR1` signal.
 
 Default host is `127.0.0.1`.
 
-See the [security warning][] below regarding the `host`
-parameter usage.
+See the [security warning][] below regarding the `host` parameter usage.
 
 ### `--inspect-publish-uid=stderr,http`
 
@@ -1350,10 +1348,11 @@ endpoint on `http://host:port/json/list`.
 added: v22.2.0
 -->
 
-Activate inspector on `host:port` and wait for debugger to be attached.
-Default `host:port` is `127.0.0.1:9229`.
+Activate inspector on `host:port` and wait for debugger to be attached. Default
+`host:port` is `127.0.0.1:9229`.
 
-See [V8 Inspector integration for Node.js][] for further explanation on Node.js debugger.
+See [V8 Inspector integration for Node.js][] for further explanation on Node.js
+debugger.
 
 ### `-i`, `--interactive`
 
@@ -1372,9 +1371,9 @@ added: v12.0.0
 > Stability: 1 - Experimental. This flag is inherited from V8 and is subject to
 > change upstream.
 
-Disable [runtime allocation of executable memory][jitless]. This may be
-required on some platforms for security reasons. It can also reduce attack
-surface on other platforms, but the performance impact may be severe.
+Disable [runtime allocation of executable memory][jitless]. This may be required
+on some platforms for security reasons. It can also reduce attack surface on
+other platforms, but the performance impact may be severe.
 
 ### `--max-http-header-size=size`
 
@@ -1406,8 +1405,8 @@ added:
   - v20.13.0
 -->
 
-Sets the default value for the network family autoselection attempt timeout.
-For more information, see [`net.getDefaultAutoSelectFamilyAttemptTimeout()`][].
+Sets the default value for the network family autoselection attempt timeout. For
+more information, see [`net.getDefaultAutoSelectFamilyAttemptTimeout()`][].
 
 ### `--no-addons`
 
@@ -1417,9 +1416,9 @@ added:
   - v14.19.0
 -->
 
-Disable the `node-addons` exports condition as well as disable loading
-native addons. When `--no-addons` is specified, calling `process.dlopen` or
-requiring a native C++ addon will fail and throw an exception.
+Disable the `node-addons` exports condition as well as disable loading native
+addons. When `--no-addons` is specified, calling `process.dlopen` or requiring a
+native C++ addon will fail and throw an exception.
 
 ### `--no-deprecation`
 
@@ -1512,8 +1511,8 @@ added:
   - v14.18.0
 -->
 
-Enable extra debug checks for memory leaks in Node.js internals. This is
-usually only useful for developers debugging Node.js itself.
+Enable extra debug checks for memory leaks in Node.js internals. This is usually
+only useful for developers debugging Node.js itself.
 
 ### `--openssl-config=file`
 
@@ -1522,8 +1521,8 @@ added: v6.9.0
 -->
 
 Load an OpenSSL configuration file on startup. Among other uses, this can be
-used to enable FIPS-compliant crypto if Node.js is built
-against FIPS-enabled OpenSSL.
+used to enable FIPS-compliant crypto if Node.js is built against FIPS-enabled
+OpenSSL.
 
 ### `--openssl-legacy-provider`
 
@@ -1545,12 +1544,12 @@ added:
   - v14.21.0
 -->
 
-Enable OpenSSL default configuration section, `openssl_conf` to be read from
-the OpenSSL configuration file. The default configuration file is named
+Enable OpenSSL default configuration section, `openssl_conf` to be read from the
+OpenSSL configuration file. The default configuration file is named
 `openssl.cnf` but this can be changed using the environment variable
-`OPENSSL_CONF`, or by using the command line option `--openssl-config`.
-The location of the default OpenSSL configuration file depends on how OpenSSL
-is being linked to Node.js. Sharing the OpenSSL configuration may have unwanted
+`OPENSSL_CONF`, or by using the command line option `--openssl-config`. The
+location of the default OpenSSL configuration file depends on how OpenSSL is
+being linked to Node.js. Sharing the OpenSSL configuration may have unwanted
 implications and it is recommended to use a configuration section specific to
 Node.js which is `nodejs_conf` and is default when this option is not used.
 
@@ -1581,10 +1580,10 @@ caching modules.
 By default, when Node.js loads a module from a path that is symbolically linked
 to a different on-disk location, Node.js will dereference the link and use the
 actual on-disk "real path" of the module as both an identifier and as a root
-path to locate other dependency modules. In most cases, this default behavior
-is acceptable. However, when using symbolically linked peer dependencies, as
-illustrated in the example below, the default behavior causes an exception to
-be thrown if `moduleA` attempts to require `moduleB` as a peer dependency:
+path to locate other dependency modules. In most cases, this default behavior is
+acceptable. However, when using symbolically linked peer dependencies, as
+illustrated in the example below, the default behavior causes an exception to be
+thrown if `moduleA` attempts to require `moduleB` as a peer dependency:
 
 ```text
 {appDir}
@@ -1600,14 +1599,14 @@ be thrown if `moduleA` attempts to require `moduleB` as a peer dependency:
      └── package.json
 ```
 
-The `--preserve-symlinks` command-line flag instructs Node.js to use the
-symlink path for modules as opposed to the real path, allowing symbolically
-linked peer dependencies to be found.
+The `--preserve-symlinks` command-line flag instructs Node.js to use the symlink
+path for modules as opposed to the real path, allowing symbolically linked peer
+dependencies to be found.
 
 Note, however, that using `--preserve-symlinks` can have other side effects.
-Specifically, symbolically linked _native_ modules can fail to load if those
-are linked from more than one location in the dependency tree (Node.js would
-see those as two separate modules and would attempt to load the module multiple
+Specifically, symbolically linked _native_ modules can fail to load if those are
+linked from more than one location in the dependency tree (Node.js would see
+those as two separate modules and would attempt to load the module multiple
 times, causing an exception to be thrown).
 
 The `--preserve-symlinks` flag does not apply to the main module, which allows
@@ -1628,9 +1627,8 @@ that `--preserve-symlinks` gives to all other imports; they are separate flags,
 however, for backward compatibility with older Node.js versions.
 
 `--preserve-symlinks-main` does not imply `--preserve-symlinks`; use
-`--preserve-symlinks-main` in addition to
-`--preserve-symlinks` when it is not desirable to follow symlinks before
-resolving relative paths.
+`--preserve-symlinks-main` in addition to `--preserve-symlinks` when it is not
+desirable to follow symlinks before resolving relative paths.
 
 See [`--preserve-symlinks`][] for more information.
 
@@ -1654,9 +1652,9 @@ added: v22.0.0
 
 This flag is only useful when `--experimental-require-module` is enabled.
 
-If the ES module being `require()`'d contains top-level await, this flag
-allows Node.js to evaluate the module, try to locate the
-top-level awaits, and print their location to help users find them.
+If the ES module being `require()`'d contains top-level await, this flag allows
+Node.js to evaluate the module, try to locate the top-level awaits, and print
+their location to help users find them.
 
 ### `--prof`
 
@@ -1680,14 +1678,14 @@ Process V8 profiler output generated using the V8 option `--prof`.
 added: v8.0.0
 -->
 
-Write process warnings to the given file instead of printing to stderr. The
-file will be created if it does not exist, and will be appended to if it does.
-If an error occurs while attempting to write the warning to the file, the
-warning will be written to stderr instead.
+Write process warnings to the given file instead of printing to stderr. The file
+will be created if it does not exist, and will be appended to if it does. If an
+error occurs while attempting to write the warning to the file, the warning will
+be written to stderr instead.
 
 The `file` name may be an absolute path. If it is not, the default directory it
-will be written to is controlled by the
-[`--diagnostic-dir`][] command-line option.
+will be written to is controlled by the [`--diagnostic-dir`][] command-line
+option.
 
 ### `--report-compact`
 
@@ -1697,9 +1695,9 @@ added:
  - v12.17.0
 -->
 
-Write reports in a compact format, single-line JSON, more easily consumable
-by log processing systems than the default multi-line format designed for
-human consumption.
+Write reports in a compact format, single-line JSON, more easily consumable by
+log processing systems than the default multi-line format designed for human
+consumption.
 
 ### `--report-dir=directory`, `report-directory=directory`
 
@@ -1737,8 +1735,8 @@ changes:
 
 Name of the file to which the report will be written.
 
-If the filename is set to `'stdout'` or `'stderr'`, the report is written to
-the stdout or stderr of the process respectively.
+If the filename is set to `'stdout'` or `'stderr'`, the report is written to the
+stdout or stderr of the process respectively.
 
 ### `--report-on-fatalerror`
 
@@ -1757,8 +1755,8 @@ changes:
                  `--report-on-fatalerror`.
 -->
 
-Enables the report to be triggered on fatal errors (internal errors within
-the Node.js runtime such as out of memory) that lead to termination of the
+Enables the report to be triggered on fatal errors (internal errors within the
+Node.js runtime such as out of memory) that lead to termination of the
 application. Useful to inspect various diagnostic data elements such as heap,
 stack, event loop state, resource consumption etc. to reason about the fatal
 error.
@@ -1835,8 +1833,8 @@ added:
   - v20.13.0
 -->
 
-Exclude `header.networkInterfaces` from the diagnostic report. By default
-this is not set and the network interfaces are included.
+Exclude `header.networkInterfaces` from the diagnostic report. By default this
+is not set and the network interfaces are included.
 
 ### `-r`, `--require module`
 
@@ -1846,12 +1844,12 @@ added: v1.6.0
 
 Preload the specified module at startup.
 
-Follows `require()`'s module resolution
-rules. `module` may be either a path to a file, or a node module name.
+Follows `require()`'s module resolution rules. `module` may be either a path to
+a file, or a node module name.
 
-Only CommonJS modules are supported.
-Use [`--import`][] to preload an [ECMAScript module][].
-Modules preloaded with `--require` will run before modules preloaded with `--import`.
+Only CommonJS modules are supported. Use [`--import`][] to preload an
+[ECMAScript module][]. Modules preloaded with `--require` will run before
+modules preloaded with `--import`.
 
 ### `--run`
 
@@ -1868,22 +1866,21 @@ changes:
 
 > Stability: 1.1 - Active development
 
-This runs a specified command from a package.json's `"scripts"` object.
-If no `"command"` is provided, it will list the available scripts.
+This runs a specified command from a package.json's `"scripts"` object. If no
+`"command"` is provided, it will list the available scripts.
 
-`--run` prepends `./node_modules/.bin`, relative to the current
-working directory, to the `PATH` in order to execute the binaries from
-dependencies.
+`--run` prepends `./node_modules/.bin`, relative to the current working
+directory, to the `PATH` in order to execute the binaries from dependencies.
 
-For example, the following command will run the `test` script of
-the `package.json` in the current folder:
+For example, the following command will run the `test` script of the
+`package.json` in the current folder:
 
 ```console
 $ node --run test
 ```
 
-You can also pass arguments to the command. Any argument after `--` will
-be appended to the script:
+You can also pass arguments to the command. Any argument after `--` will be
+appended to the script:
 
 ```console
 $ node --run test -- --verbose
@@ -1894,9 +1891,8 @@ $ node --run test -- --verbose
 `node --run` is not meant to match the behaviors of `npm run` or of the `run`
 commands of other package managers. The Node.js implementation is intentionally
 more limited, in order to focus on top performance for the most common use
-cases.
-Some features of other `run` implementations that are intentionally excluded
-are:
+cases. Some features of other `run` implementations that are intentionally
+excluded are:
 
 * Searching for `package.json` files outside the current folder.
 * Prepending the `.bin` or `node_modules/.bin` paths of folders outside the
@@ -1919,18 +1915,16 @@ The following environment variables are set when running a script with `--run`:
 added: v15.6.0
 -->
 
-Initializes an OpenSSL secure heap of `n` bytes. When initialized, the
-secure heap is used for selected types of allocations within OpenSSL
-during key generation and other operations. This is useful, for instance,
-to prevent sensitive information from leaking due to pointer overruns
-or underruns.
+Initializes an OpenSSL secure heap of `n` bytes. When initialized, the secure
+heap is used for selected types of allocations within OpenSSL during key
+generation and other operations. This is useful, for instance, to prevent
+sensitive information from leaking due to pointer overruns or underruns.
 
-The secure heap is a fixed size and cannot be resized at runtime so,
-if used, it is important to select a large enough heap to cover all
-application uses.
+The secure heap is a fixed size and cannot be resized at runtime so, if used, it
+is important to select a large enough heap to cover all application uses.
 
-The heap size given must be a power of two. Any value less than 2
-will disable the secure heap.
+The heap size given must be a power of two. Any value less than 2 will disable
+the secure heap.
 
 The secure heap is disabled by default.
 
@@ -1944,10 +1938,10 @@ See [`CRYPTO_secure_malloc_init`][] for more details.
 added: v15.6.0
 -->
 
-When using `--secure-heap`, the `--secure-heap-min` flag specifies the
-minimum allocation from the secure heap. The minimum value is `2`.
-The maximum value is the lesser of `--secure-heap` or `2147483647`.
-The value given must be a power of two.
+When using `--secure-heap`, the `--secure-heap-min` flag specifies the minimum
+allocation from the secure heap. The minimum value is `2`. The maximum value is
+the lesser of `--secure-heap` or `2147483647`. The value given must be a power
+of two.
 
 ### `--snapshot-blob=path`
 
@@ -1957,22 +1951,22 @@ added: v18.8.0
 
 > Stability: 1 - Experimental
 
-When used with `--build-snapshot`, `--snapshot-blob` specifies the path
-where the generated snapshot blob is written to. If not specified, the
-generated blob is written to `snapshot.blob` in the current working directory.
+When used with `--build-snapshot`, `--snapshot-blob` specifies the path where
+the generated snapshot blob is written to. If not specified, the generated blob
+is written to `snapshot.blob` in the current working directory.
 
-When used without `--build-snapshot`, `--snapshot-blob` specifies the
-path to the blob that is used to restore the application state.
+When used without `--build-snapshot`, `--snapshot-blob` specifies the path to
+the blob that is used to restore the application state.
 
 When loading a snapshot, Node.js checks that:
 
-1. The version, architecture, and platform of the running Node.js binary
-   are exactly the same as that of the binary that generates the snapshot.
-2. The V8 flags and CPU features are compatible with that of the binary
-   that generates the snapshot.
+1. The version, architecture, and platform of the running Node.js binary are
+   exactly the same as that of the binary that generates the snapshot.
+2. The V8 flags and CPU features are compatible with that of the binary that
+   generates the snapshot.
 
-If they don't match, Node.js refuses to load the snapshot and exits with
-status code 1.
+If they don't match, Node.js refuses to load the snapshot and exits with status
+code 1.
 
 ### `--test`
 
@@ -1992,9 +1986,8 @@ changes:
 -->
 
 Starts the Node.js command line test runner. This flag cannot be combined with
-`--watch-path`, `--check`, `--eval`, `--interactive`, or the inspector.
-See the documentation on [running tests from the command line][]
-for more details.
+`--watch-path`, `--check`, `--eval`, `--interactive`, or the inspector. See the
+documentation on [running tests from the command line][] for more details.
 
 ### `--test-concurrency`
 
@@ -2027,12 +2020,12 @@ changes:
     description: The test runner is now stable.
 -->
 
-A regular expression that configures the test runner to only execute tests
-whose name matches the provided pattern. See the documentation on
-[filtering tests by name][] for more details.
+A regular expression that configures the test runner to only execute tests whose
+name matches the provided pattern. See the documentation on [filtering tests by
+name][] for more details.
 
-If both `--test-name-pattern` and `--test-skip-pattern` are supplied,
-tests must satisfy **both** requirements in order to be executed.
+If both `--test-name-pattern` and `--test-skip-pattern` are supplied, tests must
+satisfy **both** requirements in order to be executed.
 
 ### `--test-only`
 
@@ -2061,8 +2054,8 @@ changes:
     description: The test runner is now stable.
 -->
 
-A test reporter to use when running tests. See the documentation on
-[test reporters][] for more details.
+A test reporter to use when running tests. See the documentation on [test
+reporters][] for more details.
 
 ### `--test-reporter-destination`
 
@@ -2089,10 +2082,10 @@ added:
 
 Test suite shard to execute in a format of `<index>/<total>`, where
 
-`index` is a positive integer, index of divided parts
-`total` is a positive integer, total of divided part
-This command will divide all tests files into `total` equal parts,
-and will run only those that happen to be in an `index` part.
+`index` is a positive integer, index of divided parts `total` is a positive
+integer, total of divided part This command will divide all tests files into
+`total` equal parts, and will run only those that happen to be in an `index`
+part.
 
 For example, to split your tests suite into three parts, use this:
 
@@ -2109,12 +2102,12 @@ added:
   - v22.1.0
 -->
 
-A regular expression that configures the test runner to skip tests
-whose name matches the provided pattern. See the documentation on
-[filtering tests by name][] for more details.
+A regular expression that configures the test runner to skip tests whose name
+matches the provided pattern. See the documentation on [filtering tests by
+name][] for more details.
 
-If both `--test-name-pattern` and `--test-skip-pattern` are supplied,
-tests must satisfy **both** requirements in order to be executed.
+If both `--test-name-pattern` and `--test-skip-pattern` are supplied, tests must
+satisfy **both** requirements in order to be executed.
 
 ### `--test-timeout`
 
@@ -2250,8 +2243,8 @@ tracing is enabled using `--trace-events-enabled`.
 added: v9.8.0
 -->
 
-Template string specifying the filepath for the trace event data, it
-supports `${rotation}` and `${pid}`.
+Template string specifying the filepath for the trace event data, it supports
+`${rotation}` and `${pid}`.
 
 ### `--trace-events-enabled`
 
@@ -2269,8 +2262,8 @@ added:
  - v12.16.0
 -->
 
-Prints a stack trace whenever an environment is exited proactively,
-i.e. invoking `process.exit()`.
+Prints a stack trace whenever an environment is exited proactively, i.e.
+invoking `process.exit()`.
 
 ### `--trace-sigint`
 
@@ -2308,8 +2301,8 @@ added: v13.1.0
 
 Print stack traces for uncaught exceptions; usually, the stack trace associated
 with the creation of an `Error` is printed, whereas this makes Node.js also
-print the stack trace associated with throwing the value (which does not need
-to be an `Error` instance).
+print the stack trace associated with throwing the value (which does not need to
+be an `Error` instance).
 
 Enabling this option may affect garbage collection behavior negatively.
 
@@ -2364,9 +2357,8 @@ loading phase, it will always raise it as an uncaught exception.
 added: v6.11.0
 -->
 
-Use bundled Mozilla CA store as supplied by current Node.js version
-or use OpenSSL's default CA store. The default store is selectable
-at build-time.
+Use bundled Mozilla CA store as supplied by current Node.js version or use
+OpenSSL's default CA store. The default store is selectable at build-time.
 
 The bundled CA store, as supplied by Node.js, is a snapshot of Mozilla CA store
 that is fixed at release time. It is identical on all supported platforms.
@@ -2451,15 +2443,13 @@ changes:
 
 > Stability: 2 - Stable
 
-Starts Node.js in watch mode.
-When in watch mode, changes in the watched files cause the Node.js process to
-restart.
-By default, watch mode will watch the entry point
-and any required or imported module.
-Use `--watch-path` to specify what paths to watch.
+Starts Node.js in watch mode. When in watch mode, changes in the watched files
+cause the Node.js process to restart. By default, watch mode will watch the
+entry point and any required or imported module. Use `--watch-path` to specify
+what paths to watch.
 
-This flag cannot be combined with
-`--check`, `--eval`, `--interactive`, or the REPL.
+This flag cannot be combined with `--check`, `--eval`, `--interactive`, or the
+REPL.
 
 ```bash
 node --watch index.js
@@ -2481,22 +2471,21 @@ changes:
 
 > Stability: 2 - Stable
 
-Starts Node.js in watch mode and specifies what paths to watch.
-When in watch mode, changes in the watched paths cause the Node.js process to
-restart.
-This will turn off watching of required or imported modules, even when used in
+Starts Node.js in watch mode and specifies what paths to watch. When in watch
+mode, changes in the watched paths cause the Node.js process to restart. This
+will turn off watching of required or imported modules, even when used in
 combination with `--watch`.
 
-This flag cannot be combined with
-`--check`, `--eval`, `--interactive`, `--test`, or the REPL.
+This flag cannot be combined with `--check`, `--eval`, `--interactive`,
+`--test`, or the REPL.
 
 ```bash
 node --watch-path=./src --watch-path=./tests index.js
 ```
 
-This option is only supported on macOS and Windows.
-An `ERR_FEATURE_UNAVAILABLE_ON_PLATFORM` exception will be thrown
-when the option is used on a platform that does not support it.
+This option is only supported on macOS and Windows. An
+`ERR_FEATURE_UNAVAILABLE_ON_PLATFORM` exception will be thrown when the option
+is used on a platform that does not support it.
 
 ### `--watch-preserve-output`
 
@@ -2519,8 +2508,8 @@ instances.
 
 ### `FORCE_COLOR=[1, 2, 3]`
 
-The `FORCE_COLOR` environment variable is used to
-enable ANSI colorized output. The value may be:
+The `FORCE_COLOR` environment variable is used to enable ANSI colorized output.
+The value may be:
 
 * `1`, `true`, or the empty string `''` indicate 16-color support,
 * `2` to indicate 256-color support, or
@@ -2533,7 +2522,7 @@ Any other value will result in colorized output being disabled.
 
 ### `NO_COLOR=<any>`
 
-[`NO_COLOR`][]  is an alias for `NODE_DISABLE_COLORS`. The value of the
+[`NO_COLOR`][] is an alias for `NODE_DISABLE_COLORS`. The value of the
 environment variable is arbitrary.
 
 ### `NODE_COMPILE_CACHE=dir`
@@ -2544,25 +2533,24 @@ added: v22.1.0
 
 > Stability: 1.1 - Active Development
 
-When set, whenever Node.js compiles a CommonJS or a ECMAScript Module,
-it will use on-disk [V8 code cache][] persisted in the specified directory
-to speed up the compilation. This may slow down the first load of a
-module graph, but subsequent loads of the same module graph may get
-a significant speedup if the contents of the modules do not change.
+When set, whenever Node.js compiles a CommonJS or a ECMAScript Module, it will
+use on-disk [V8 code cache][] persisted in the specified directory to speed up
+the compilation. This may slow down the first load of a module graph, but
+subsequent loads of the same module graph may get a significant speedup if the
+contents of the modules do not change.
 
-To clean up the generated code cache, simply remove the directory.
-It will be recreated the next time the same directory is used for
-`NODE_COMPILE_CACHE`.
+To clean up the generated code cache, simply remove the directory. It will be
+recreated the next time the same directory is used for `NODE_COMPILE_CACHE`.
 
-Compilation cache generated by one version of Node.js may not be used
-by a different version of Node.js. Cache generated by different versions
-of Node.js will be stored separately if the same directory is used
-to persist the cache, so they can co-exist.
+Compilation cache generated by one version of Node.js may not be used by a
+different version of Node.js. Cache generated by different versions of Node.js
+will be stored separately if the same directory is used to persist the cache, so
+they can co-exist.
 
 Caveat: currently when using this with [V8 JavaScript code coverage][], the
 coverage being collected by V8 may be less precise in functions that are
-deserialized from the code cache. It's recommended to turn this off when
-running tests to generate precise coverage.
+deserialized from the code cache. It's recommended to turn this off when running
+tests to generate precise coverage.
 
 ### `NODE_DEBUG=module[,…]`
 
@@ -2593,14 +2581,14 @@ added: v7.3.0
 When set, the well known "root" CAs (like VeriSign) will be extended with the
 extra certificates in `file`. The file should consist of one or more trusted
 certificates in PEM format. A message will be emitted (once) with
-[`process.emitWarning()`][emit_warning] if the file is missing or
-malformed, but any errors are otherwise ignored.
+[`process.emitWarning()`][emit_warning] if the file is missing or malformed, but
+any errors are otherwise ignored.
 
-Neither the well known nor extra certificates are used when the `ca`
-options property is explicitly specified for a TLS or HTTPS client or server.
+Neither the well known nor extra certificates are used when the `ca` options
+property is explicitly specified for a TLS or HTTPS client or server.
 
-This environment variable is ignored when `node` runs as setuid root or
-has Linux file capabilities set.
+This environment variable is ignored when `node` runs as setuid root or has
+Linux file capabilities set.
 
 The `NODE_EXTRA_CA_CERTS` environment variable is only read when the Node.js
 process is first launched. Changing the value at runtime using
@@ -2630,10 +2618,9 @@ added: v8.0.0
 -->
 
 A space-separated list of command-line options. `options...` are interpreted
-before command-line options, so command-line options will override or
-compound after anything in `options...`. Node.js will exit with an error if
-an option that is not allowed in the environment is used, such as `-p` or a
-script file.
+before command-line options, so command-line options will override or compound
+after anything in `options...`. Node.js will exit with an error if an option
+that is not allowed in the environment is used, such as `-p` or a script file.
 
 If an option value contains a space, it can be escaped using double quotes:
 
@@ -2650,8 +2637,8 @@ NODE_OPTIONS='--inspect=localhost:4444' node --inspect=localhost:5555
 ```
 
 A flag that can be passed multiple times will be treated as if its
-`NODE_OPTIONS` instances were passed first, and then its command-line
-instances afterwards:
+`NODE_OPTIONS` instances were passed first, and then its command-line instances
+afterwards:
 
 ```bash
 NODE_OPTIONS='--require "./a.js"' node --require "./b.js"
@@ -2660,8 +2647,8 @@ node --require "./a.js" --require "./b.js"
 ```
 
 Node.js options that are allowed are in the following list. If an option
-supports both --XX and --no-XX variants, they are both supported but only
-one is included in the list below.
+supports both --XX and --no-XX variants, they are both supported but only one is
+included in the list below.
 
 <!-- node-options-node start -->
 
@@ -2858,11 +2845,11 @@ resolving and caching modules.
 added: v8.0.0
 -->
 
-When set, process warnings will be emitted to the given file instead of
-printing to stderr. The file will be created if it does not exist, and will be
-appended to if it does. If an error occurs while attempting to write the
-warning to the file, the warning will be written to stderr instead. This is
-equivalent to using the `--redirect-warnings=file` command-line flag.
+When set, process warnings will be emitted to the given file instead of printing
+to stderr. The file will be created if it does not exist, and will be appended
+to if it does. If an error occurs while attempting to write the warning to the
+file, the warning will be written to stderr instead. This is equivalent to using
+the `--redirect-warnings=file` command-line flag.
 
 ### `NODE_REPL_EXTERNAL_MODULE=file`
 
@@ -2892,8 +2879,8 @@ added: v14.5.0
 -->
 
 If `value` equals `'1'`, the check for a supported platform is skipped during
-Node.js startup. Node.js might not execute correctly. Any issues encountered
-on unsupported platforms will not be fixed.
+Node.js startup. Node.js might not execute correctly. Any issues encountered on
+unsupported platforms will not be fixed.
 
 ### `NODE_TEST_CONTEXT=value`
 
@@ -2939,13 +2926,13 @@ key `result`:
 
 > Stability: 1 - Experimental
 
-If found, source map data is appended to the top-level key `source-map-cache`
-on the JSON coverage object.
+If found, source map data is appended to the top-level key `source-map-cache` on
+the JSON coverage object.
 
 `source-map-cache` is an object with keys representing the files source maps
-were extracted from, and values which include the raw source-map URL
-(in the key `url`), the parsed Source Map v3 information (in the key `data`),
-and the line lengths of the source file (in the key `lineLengths`).
+were extracted from, and values which include the raw source-map URL (in the key
+`url`), the parsed Source Map v3 information (in the key `data`), and the line
+lengths of the source file (in the key `lineLengths`).
 
 ```json
 {
@@ -2961,23 +2948,12 @@ and the line lengths of the source file (in the key `lineLengths`).
       "url": "./path-to-map.json",
       "data": {
         "version": 3,
-        "sources": [
-          "file:///absolute/path/to/original.js"
-        ],
-        "names": [
-          "Foo",
-          "console",
-          "info"
-        ],
+        "sources": ["file:///absolute/path/to/original.js"],
+        "names": ["Foo", "console", "info"],
         "mappings": "MAAMA,IACJC,YAAaC",
         "sourceRoot": "./"
       },
-      "lineLengths": [
-        13,
-        62,
-        38,
-        27
-      ]
+      "lineLengths": [13, 62, 38, 27]
     }
   }
 }
@@ -3045,9 +3021,9 @@ The `TZ` environment variable is used to specify the timezone configuration.
 
 While Node.js does not support all of the various [ways that `TZ` is handled in
 other environments][], it does support basic [timezone IDs][] (such as
-`'Etc/UTC'`, `'Europe/Paris'`, or `'America/New_York'`).
-It may support a few other abbreviations or aliases, but these are strongly
-discouraged and not guaranteed.
+`'Etc/UTC'`, `'Europe/Paris'`, or `'America/New_York'`). It may support a few
+other abbreviations or aliases, but these are strongly discouraged and not
+guaranteed.
 
 ```console
 $ TZ=Europe/Dublin node -pe "new Date().toString()"
@@ -3084,8 +3060,8 @@ Enable or disable libuv's use of `io_uring` on supported platforms.
 On supported platforms, `io_uring` can significantly improve the performance of
 various asynchronous I/O operations.
 
-`io_uring` is disabled by default due to security concerns. When `io_uring`
-is enabled, applications must not change the user identity of the process at
+`io_uring` is disabled by default due to security concerns. When `io_uring` is
+enabled, applications must not change the user identity of the process at
 runtime. In this case, JavaScript functions such as [`process.setuid()`][] are
 unavailable, and native addons must not invoke system functions such as
 [`setuid(2)`][].
@@ -3098,12 +3074,11 @@ the behavior of this environment variable.
 
 V8 has its own set of CLI options. Any V8 CLI option that is provided to `node`
 will be passed on to V8 to handle. V8's options have _no stability guarantee_.
-The V8 team themselves don't consider them to be part of their formal API,
-and reserve the right to change them at any time. Likewise, they are not
-covered by the Node.js stability guarantees. Many of the V8
-options are of interest only to V8 developers. Despite this, there is a small
-set of V8 options that are widely applicable to Node.js, and they are
-documented here:
+The V8 team themselves don't consider them to be part of their formal API, and
+reserve the right to change them at any time. Likewise, they are not covered by
+the Node.js stability guarantees. Many of the V8 options are of interest only to
+V8 developers. Despite this, there is a small set of V8 options that are widely
+applicable to Node.js, and they are documented here:
 
 <!-- v8-options start -->
 
@@ -3133,12 +3108,12 @@ documented here:
 
 ### `--max-old-space-size=SIZE` (in megabytes)
 
-Sets the max memory size of V8's old memory section. As memory
-consumption approaches the limit, V8 will spend more time on
-garbage collection in an effort to free unused memory.
+Sets the max memory size of V8's old memory section. As memory consumption
+approaches the limit, V8 will spend more time on garbage collection in an effort
+to free unused memory.
 
-On a machine with 2 GiB of memory, consider setting this to
-1536 (1.5 GiB) to leave some memory for other uses and avoid swapping.
+On a machine with 2 GiB of memory, consider setting this to 1536 (1.5 GiB) to
+leave some memory for other uses and avoid swapping.
 
 ```bash
 node --max-old-space-size=1536 index.js
@@ -3147,13 +3122,12 @@ node --max-old-space-size=1536 index.js
 ### `--max-semi-space-size=SIZE` (in megabytes)
 
 Sets the maximum [semi-space][] size for V8's [scavenge garbage collector][] in
-MiB (megabytes).
-Increasing the max size of a semi-space may improve throughput for Node.js at
-the cost of more memory consumption.
+MiB (megabytes). Increasing the max size of a semi-space may improve throughput
+for Node.js at the cost of more memory consumption.
 
 Since the young generation size of the V8 heap is three times (see
-[`YoungGenerationSizeFromSemiSpaceSize`][] in V8) the size of the semi-space,
-an increase of 1 MiB to semi-space applies to each of the three individual
+[`YoungGenerationSizeFromSemiSpaceSize`][] in V8) the size of the semi-space, an
+increase of 1 MiB to semi-space applies to each of the three individual
 semi-spaces and causes the heap size to increase by 3 MiB. The throughput
 improvement depends on your workload (see [#42511][]).
 
@@ -3173,8 +3147,8 @@ done
 
 ### `--stack-trace-limit=limit`
 
-The maximum number of stack frames to collect in an error's stack trace.
-Setting it to 0 disables stack trace collection. The default value is 10.
+The maximum number of stack frames to collect in an error's stack trace. Setting
+it to 0 disables stack trace collection. The default value is 10.
 
 ```bash
 node --stack-trace-limit=12 -p -e "Error.stackTraceLimit" # prints 12

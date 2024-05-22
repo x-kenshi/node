@@ -56,20 +56,26 @@ module.
 const { subtle } = globalThis.crypto;
 
 (async function() {
-
-  const key = await subtle.generateKey({
-    name: 'HMAC',
-    hash: 'SHA-256',
-    length: 256,
-  }, true, ['sign', 'verify']);
+  const key = await subtle.generateKey(
+    {
+      name: 'HMAC',
+      hash: 'SHA-256',
+      length: 256,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   const enc = new TextEncoder();
   const message = enc.encode('I love cupcakes');
 
-  const digest = await subtle.sign({
-    name: 'HMAC',
-  }, key, message);
-
+  const digest = await subtle.sign(
+    {
+      name: 'HMAC',
+    },
+    key,
+    message,
+  );
 })();
 ```
 
@@ -77,8 +83,8 @@ const { subtle } = globalThis.crypto;
 
 ### Generating keys
 
-The {SubtleCrypto} class can be used to generate symmetric (secret) keys
-or asymmetric key pairs (public key and private key).
+The {SubtleCrypto} class can be used to generate symmetric (secret) keys or
+asymmetric key pairs (public key and private key).
 
 #### AES keys
 
@@ -86,10 +92,14 @@ or asymmetric key pairs (public key and private key).
 const { subtle } = globalThis.crypto;
 
 async function generateAesKey(length = 256) {
-  const key = await subtle.generateKey({
-    name: 'AES-CBC',
-    length,
-  }, true, ['encrypt', 'decrypt']);
+  const key = await subtle.generateKey(
+    {
+      name: 'AES-CBC',
+      length,
+    },
+    true,
+    ['encrypt', 'decrypt'],
+  );
 
   return key;
 }
@@ -101,13 +111,14 @@ async function generateAesKey(length = 256) {
 const { subtle } = globalThis.crypto;
 
 async function generateEcKey(namedCurve = 'P-521') {
-  const {
-    publicKey,
-    privateKey,
-  } = await subtle.generateKey({
-    name: 'ECDSA',
-    namedCurve,
-  }, true, ['sign', 'verify']);
+  const { publicKey, privateKey } = await subtle.generateKey(
+    {
+      name: 'ECDSA',
+      namedCurve,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   return { publicKey, privateKey };
 }
@@ -121,15 +132,23 @@ async function generateEcKey(namedCurve = 'P-521') {
 const { subtle } = globalThis.crypto;
 
 async function generateEd25519Key() {
-  return subtle.generateKey({
-    name: 'Ed25519',
-  }, true, ['sign', 'verify']);
+  return subtle.generateKey(
+    {
+      name: 'Ed25519',
+    },
+    true,
+    ['sign', 'verify'],
+  );
 }
 
 async function generateX25519Key() {
-  return subtle.generateKey({
-    name: 'X25519',
-  }, true, ['deriveKey']);
+  return subtle.generateKey(
+    {
+      name: 'X25519',
+    },
+    true,
+    ['deriveKey'],
+  );
 }
 ```
 
@@ -139,10 +158,14 @@ async function generateX25519Key() {
 const { subtle } = globalThis.crypto;
 
 async function generateHmacKey(hash = 'SHA-256') {
-  const key = await subtle.generateKey({
-    name: 'HMAC',
-    hash,
-  }, true, ['sign', 'verify']);
+  const key = await subtle.generateKey(
+    {
+      name: 'HMAC',
+      hash,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   return key;
 }
@@ -155,15 +178,16 @@ const { subtle } = globalThis.crypto;
 const publicExponent = new Uint8Array([1, 0, 1]);
 
 async function generateRsaKey(modulusLength = 2048, hash = 'SHA-256') {
-  const {
-    publicKey,
-    privateKey,
-  } = await subtle.generateKey({
-    name: 'RSASSA-PKCS1-v1_5',
-    modulusLength,
-    publicExponent,
-    hash,
-  }, true, ['sign', 'verify']);
+  const { publicKey, privateKey } = await subtle.generateKey(
+    {
+      name: 'RSASSA-PKCS1-v1_5',
+      modulusLength,
+      publicExponent,
+      hash,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   return { publicKey, privateKey };
 }
@@ -179,10 +203,14 @@ async function aesEncrypt(plaintext) {
   const key = await generateAesKey();
   const iv = crypto.getRandomValues(new Uint8Array(16));
 
-  const ciphertext = await crypto.subtle.encrypt({
-    name: 'AES-CBC',
-    iv,
-  }, key, ec.encode(plaintext));
+  const ciphertext = await crypto.subtle.encrypt(
+    {
+      name: 'AES-CBC',
+      iv,
+    },
+    key,
+    ec.encode(plaintext),
+  );
 
   return {
     key,
@@ -193,10 +221,14 @@ async function aesEncrypt(plaintext) {
 
 async function aesDecrypt(ciphertext, key, iv) {
   const dec = new TextDecoder();
-  const plaintext = await crypto.subtle.decrypt({
-    name: 'AES-CBC',
-    iv,
-  }, key, ciphertext);
+  const plaintext = await crypto.subtle.decrypt(
+    {
+      name: 'AES-CBC',
+      iv,
+    },
+    key,
+    ciphertext,
+  );
 
   return dec.decode(plaintext);
 }
@@ -208,19 +240,29 @@ async function aesDecrypt(ciphertext, key, iv) {
 const { subtle } = globalThis.crypto;
 
 async function generateAndExportHmacKey(format = 'jwk', hash = 'SHA-512') {
-  const key = await subtle.generateKey({
-    name: 'HMAC',
-    hash,
-  }, true, ['sign', 'verify']);
+  const key = await subtle.generateKey(
+    {
+      name: 'HMAC',
+      hash,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   return subtle.exportKey(format, key);
 }
 
 async function importHmacKey(keyData, format = 'jwk', hash = 'SHA-512') {
-  const key = await subtle.importKey(format, keyData, {
-    name: 'HMAC',
-    hash,
-  }, true, ['sign', 'verify']);
+  const key = await subtle.importKey(
+    format,
+    keyData,
+    {
+      name: 'HMAC',
+      hash,
+    },
+    true,
+    ['sign', 'verify'],
+  );
 
   return key;
 }
@@ -232,17 +274,23 @@ async function importHmacKey(keyData, format = 'jwk', hash = 'SHA-512') {
 const { subtle } = globalThis.crypto;
 
 async function generateAndWrapHmacKey(format = 'jwk', hash = 'SHA-512') {
-  const [
-    key,
-    wrappingKey,
-  ] = await Promise.all([
-    subtle.generateKey({
-      name: 'HMAC', hash,
-    }, true, ['sign', 'verify']),
-    subtle.generateKey({
-      name: 'AES-KW',
-      length: 256,
-    }, true, ['wrapKey', 'unwrapKey']),
+  const [key, wrappingKey] = await Promise.all([
+    subtle.generateKey(
+      {
+        name: 'HMAC',
+        hash,
+      },
+      true,
+      ['sign', 'verify'],
+    ),
+    subtle.generateKey(
+      {
+        name: 'AES-KW',
+        length: 256,
+      },
+      true,
+      ['wrapKey', 'unwrapKey'],
+    ),
   ]);
 
   const wrappedKey = await subtle.wrapKey(format, key, wrappingKey, 'AES-KW');
@@ -254,8 +302,8 @@ async function unwrapHmacKey(
   wrappedKey,
   wrappingKey,
   format = 'jwk',
-  hash = 'SHA-512') {
-
+  hash = 'SHA-512',
+) {
   const key = await subtle.unwrapKey(
     format,
     wrappedKey,
@@ -263,7 +311,8 @@ async function unwrapHmacKey(
     'AES-KW',
     { name: 'HMAC', hash },
     true,
-    ['sign', 'verify']);
+    ['sign', 'verify'],
+  );
 
   return key;
 }
@@ -276,19 +325,22 @@ const { subtle } = globalThis.crypto;
 
 async function sign(key, data) {
   const ec = new TextEncoder();
-  const signature =
-    await subtle.sign('RSASSA-PKCS1-v1_5', key, ec.encode(data));
+  const signature = await subtle.sign(
+    'RSASSA-PKCS1-v1_5',
+    key,
+    ec.encode(data),
+  );
   return signature;
 }
 
 async function verify(key, signature, data) {
   const ec = new TextEncoder();
-  const verified =
-    await subtle.verify(
-      'RSASSA-PKCS1-v1_5',
-      key,
-      signature,
-      ec.encode(data));
+  const verified = await subtle.verify(
+    'RSASSA-PKCS1-v1_5',
+    key,
+    signature,
+    ec.encode(data),
+  );
   return verified;
 }
 ```
@@ -300,18 +352,19 @@ const { subtle } = globalThis.crypto;
 
 async function pbkdf2(pass, salt, iterations = 1000, length = 256) {
   const ec = new TextEncoder();
-  const key = await subtle.importKey(
-    'raw',
-    ec.encode(pass),
-    'PBKDF2',
-    false,
-    ['deriveBits']);
-  const bits = await subtle.deriveBits({
-    name: 'PBKDF2',
-    hash: 'SHA-512',
-    salt: ec.encode(salt),
-    iterations,
-  }, key, length);
+  const key = await subtle.importKey('raw', ec.encode(pass), 'PBKDF2', false, [
+    'deriveBits',
+  ]);
+  const bits = await subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      hash: 'SHA-512',
+      salt: ec.encode(salt),
+      iterations,
+    },
+    key,
+    length,
+  );
   return bits;
 }
 
@@ -322,16 +375,23 @@ async function pbkdf2Key(pass, salt, iterations = 1000, length = 256) {
     ec.encode(pass),
     'PBKDF2',
     false,
-    ['deriveKey']);
-  const key = await subtle.deriveKey({
-    name: 'PBKDF2',
-    hash: 'SHA-512',
-    salt: ec.encode(salt),
-    iterations,
-  }, keyMaterial, {
-    name: 'AES-GCM',
-    length,
-  }, true, ['encrypt', 'decrypt']);
+    ['deriveKey'],
+  );
+  const key = await subtle.deriveKey(
+    {
+      name: 'PBKDF2',
+      hash: 'SHA-512',
+      salt: ec.encode(salt),
+      iterations,
+    },
+    keyMaterial,
+    {
+      name: 'AES-GCM',
+      length,
+    },
+    true,
+    ['encrypt', 'decrypt'],
+  );
   return key;
 }
 ```
@@ -382,9 +442,8 @@ implementation and the APIs supported for each:
 added: v15.0.0
 -->
 
-`globalThis.crypto` is an instance of the `Crypto`
-class. `Crypto` is a singleton that provides access to the remainder of the
-crypto API.
+`globalThis.crypto` is an instance of the `Crypto` class. `Crypto` is a
+singleton that provides access to the remainder of the crypto API.
 
 ### `crypto.subtle`
 
@@ -408,8 +467,8 @@ added: v15.0.0
 Generates cryptographically strong random values. The given `typedArray` is
 filled with random values, and a reference to `typedArray` is returned.
 
-The given `typedArray` must be an integer-based instance of {TypedArray},
-i.e. `Float32Array` and `Float64Array` are not accepted.
+The given `typedArray` must be an integer-based instance of {TypedArray}, i.e.
+`Float32Array` and `Float64Array` are not accepted.
 
 An error will be thrown if the given `typedArray` is larger than 65,536 bytes.
 
@@ -468,8 +527,8 @@ added: v15.0.0
 
 * Type: {string} One of `'secret'`, `'private'`, or `'public'`.
 
-A string identifying whether the key is a symmetric (`'secret'`) or
-asymmetric (`'private'` or `'public'`) key.
+A string identifying whether the key is a symmetric (`'secret'`) or asymmetric
+(`'private'` or `'public'`) key.
 
 ### `cryptoKey.usages`
 
@@ -479,8 +538,7 @@ added: v15.0.0
 
 * Type: {string\[]}
 
-An array of strings identifying the operations for which the
-key may be used.
+An array of strings identifying the operations for which the key may be used.
 
 The possible usages are:
 
@@ -557,10 +615,10 @@ added: v15.0.0
 * `data`: {ArrayBuffer|TypedArray|DataView|Buffer}
 * Returns: {Promise} Fulfills with an {ArrayBuffer}
 
-Using the method and parameters specified in `algorithm` and the keying
-material provided by `key`, `subtle.decrypt()` attempts to decipher the
-provided `data`. If successful, the returned promise will be resolved with
-an {ArrayBuffer} containing the plaintext result.
+Using the method and parameters specified in `algorithm` and the keying material
+provided by `key`, `subtle.decrypt()` attempts to decipher the provided `data`.
+If successful, the returned promise will be resolved with an {ArrayBuffer}
+containing the plaintext result.
 
 The algorithms currently supported include:
 
@@ -590,12 +648,11 @@ changes:
 
 <!--lint enable maximum-line-length remark-lint-->
 
-Using the method and parameters specified in `algorithm` and the keying
-material provided by `baseKey`, `subtle.deriveBits()` attempts to generate
-`length` bits.
+Using the method and parameters specified in `algorithm` and the keying material
+provided by `baseKey`, `subtle.deriveBits()` attempts to generate `length` bits.
 
-The Node.js implementation requires that when `length` is a
-number it must be multiple of `8`.
+The Node.js implementation requires that when `length` is a number it must be
+multiple of `8`.
 
 When `length` is `null` the maximum number of bits for a given algorithm is
 generated. This is allowed for the `'ECDH'`, `'X25519'`, and `'X448'`
@@ -636,8 +693,8 @@ changes:
 <!--lint enable maximum-line-length remark-lint-->
 
 Using the method and parameters specified in `algorithm`, and the keying
-material provided by `baseKey`, `subtle.deriveKey()` attempts to generate
-a new {CryptoKey} based on the method and parameters in `derivedKeyAlgorithm`.
+material provided by `baseKey`, `subtle.deriveKey()` attempts to generate a new
+{CryptoKey} based on the method and parameters in `derivedKeyAlgorithm`.
 
 Calling `subtle.deriveKey()` is equivalent to calling `subtle.deriveBits()` to
 generate raw keying material, then passing the result into the
@@ -673,8 +730,8 @@ If `algorithm` is provided as a {string}, it must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If `algorithm` is provided as an {Object}, it must have a `name` property
-whose value is one of the above.
+If `algorithm` is provided as an {Object}, it must have a `name` property whose
+value is one of the above.
 
 ### `subtle.encrypt(algorithm, key, data)`
 
@@ -687,10 +744,10 @@ added: v15.0.0
 * `data`: {ArrayBuffer|TypedArray|DataView|Buffer}
 * Returns: {Promise} Fulfills with an {ArrayBuffer}
 
-Using the method and parameters specified by `algorithm` and the keying
-material provided by `key`, `subtle.encrypt()` attempts to encipher `data`.
-If successful, the returned promise is resolved with an {ArrayBuffer}
-containing the encrypted result.
+Using the method and parameters specified by `algorithm` and the keying material
+provided by `key`, `subtle.encrypt()` attempts to encipher `data`. If
+successful, the returned promise is resolved with an {ArrayBuffer} containing
+the encrypted result.
 
 The algorithms currently supported include:
 
@@ -723,12 +780,12 @@ Exports the given key into the specified format, if supported.
 
 If the {CryptoKey} is not extractable, the returned promise will reject.
 
-When `format` is either `'pkcs8'` or `'spki'` and the export is successful,
-the returned promise will be resolved with an {ArrayBuffer} containing the
-exported key data.
+When `format` is either `'pkcs8'` or `'spki'` and the export is successful, the
+returned promise will be resolved with an {ArrayBuffer} containing the exported
+key data.
 
-When `format` is `'jwk'` and the export is successful, the returned promise
-will be resolved with a JavaScript object conforming to the [JSON Web Key][]
+When `format` is `'jwk'` and the export is successful, the returned promise will
+be resolved with a JavaScript object conforming to the [JSON Web Key][]
 specification.
 
 | Key Type                                                  | `'spki'` | `'pkcs8'` | `'jwk'` | `'raw'` |
@@ -756,7 +813,8 @@ added: v15.0.0
 
 <!--lint disable maximum-line-length remark-lint-->
 
-* `algorithm`: {AlgorithmIdentifier|RsaHashedKeyGenParams|EcKeyGenParams|HmacKeyGenParams|AesKeyGenParams}
+* `algorithm`:
+  {AlgorithmIdentifier|RsaHashedKeyGenParams|EcKeyGenParams|HmacKeyGenParams|AesKeyGenParams}
 
 <!--lint enable maximum-line-length remark-lint-->
 
@@ -810,7 +868,8 @@ changes:
 
 <!--lint disable maximum-line-length remark-lint-->
 
-* `algorithm`: {AlgorithmIdentifier|RsaHashedImportParams|EcKeyImportParams|HmacImportParams}
+* `algorithm`:
+  {AlgorithmIdentifier|RsaHashedImportParams|EcKeyImportParams|HmacImportParams}
 
 <!--lint enable maximum-line-length remark-lint-->
 
@@ -818,8 +877,8 @@ changes:
 * `keyUsages`: {string\[]} See [Key usages][].
 * Returns: {Promise} Fulfills with a {CryptoKey}
 
-The `subtle.importKey()` method attempts to interpret the provided `keyData`
-as the given `format` to create a {CryptoKey} instance using the provided
+The `subtle.importKey()` method attempts to interpret the provided `keyData` as
+the given `format` to create a {CryptoKey} instance using the provided
 `algorithm`, `extractable`, and `keyUsages` arguments. If the import is
 successful, the returned promise will be resolved with the created {CryptoKey}.
 
@@ -869,8 +928,8 @@ changes:
 
 Using the method and parameters given by `algorithm` and the keying material
 provided by `key`, `subtle.sign()` attempts to generate a cryptographic
-signature of `data`. If successful, the returned promise is resolved with
-an {ArrayBuffer} containing the generated signature.
+signature of `data`. If successful, the returned promise is resolved with an
+{ArrayBuffer} containing the generated signature.
 
 The algorithms currently supported include:
 
@@ -893,8 +952,10 @@ added: v15.0.0
 
 <!--lint disable maximum-line-length remark-lint-->
 
-* `unwrapAlgo`: {AlgorithmIdentifier|RsaOaepParams|AesCtrParams|AesCbcParams|AesGcmParams}
-* `unwrappedKeyAlgo`: {AlgorithmIdentifier|RsaHashedImportParams|EcKeyImportParams|HmacImportParams}
+* `unwrapAlgo`:
+  {AlgorithmIdentifier|RsaOaepParams|AesCtrParams|AesCbcParams|AesGcmParams}
+* `unwrappedKeyAlgo`:
+  {AlgorithmIdentifier|RsaHashedImportParams|EcKeyImportParams|HmacImportParams}
 
 <!--lint enable maximum-line-length remark-lint-->
 
@@ -959,9 +1020,9 @@ changes:
 <!--lint enable maximum-line-length remark-lint-->
 
 Using the method and parameters given in `algorithm` and the keying material
-provided by `key`, `subtle.verify()` attempts to verify that `signature` is
-a valid cryptographic signature of `data`. The returned promise is resolved
-with either `true` or `false`.
+provided by `key`, `subtle.verify()` attempts to verify that `signature` is a
+valid cryptographic signature of `data`. The returned promise is resolved with
+either `true` or `false`.
 
 The algorithms currently supported include:
 
@@ -983,7 +1044,8 @@ added: v15.0.0
 * `format`: {string} Must be one of `'raw'`, `'pkcs8'`, `'spki'`, or `'jwk'`.
 * `key`: {CryptoKey}
 * `wrappingKey`: {CryptoKey}
-* `wrapAlgo`: {AlgorithmIdentifier|RsaOaepParams|AesCtrParams|AesCbcParams|AesGcmParams}
+* `wrapAlgo`:
+  {AlgorithmIdentifier|RsaOaepParams|AesCtrParams|AesCbcParams|AesGcmParams}
 * Returns: {Promise} Fulfills with an {ArrayBuffer}
 
 <!--lint enable maximum-line-length remark-lint-->
@@ -1008,9 +1070,9 @@ The wrapping algorithms currently supported include:
 
 ## Algorithm parameters
 
-The algorithm parameter objects define the methods and parameters used by
-the various {SubtleCrypto} methods. While described here as "classes", they
-are simple JavaScript dictionary objects.
+The algorithm parameter objects define the methods and parameters used by the
+various {SubtleCrypto} methods. While described here as "classes", they are
+simple JavaScript dictionary objects.
 
 ### Class: `AlgorithmIdentifier`
 
@@ -1044,8 +1106,8 @@ added: v15.0.0
 
 * Type: {ArrayBuffer|TypedArray|DataView|Buffer}
 
-Provides the initialization vector. It must be exactly 16-bytes in length
-and should be unpredictable and cryptographically random.
+Provides the initialization vector. It must be exactly 16-bytes in length and
+should be unpredictable and cryptographically random.
 
 #### `aesCbcParams.name`
 
@@ -1080,8 +1142,8 @@ counter and the remaining bits as the nonce.
 added: v15.0.0
 -->
 
-* Type: {number} The number of bits in the `aesCtrParams.counter` that are
-  to be used as the counter.
+* Type: {number} The number of bits in the `aesCtrParams.counter` that are to be
+  used as the counter.
 
 #### `aesCtrParams.name`
 
@@ -1140,9 +1202,9 @@ added: v15.0.0
 added: v15.0.0
 -->
 
-* Type: {number} The size in bits of the generated authentication tag.
-  This values must be one of `32`, `64`, `96`, `104`, `112`, `120`, or
-  `128`. **Default:** `128`.
+* Type: {number} The size in bits of the generated authentication tag. This
+  values must be one of `32`, `64`, `96`, `104`, `112`, `120`, or `128`.
+  **Default:** `128`.
 
 ### Class: `AesKeyGenParams`
 
@@ -1158,8 +1220,8 @@ added: v15.0.0
 
 * Type: {number}
 
-The length of the AES key to be generated. This must be either `128`, `192`,
-or `256`.
+The length of the AES key to be generated. This must be either `128`, `192`, or
+`256`.
 
 #### `aesKeyGenParams.name`
 
@@ -1193,9 +1255,8 @@ added: v15.0.0
 * Type: {CryptoKey}
 
 ECDH key derivation operates by taking as input one parties private key and
-another parties public key -- using both to generate a common shared secret.
-The `ecdhKeyDeriveParams.public` property is set to the other parties public
-key.
+another parties public key -- using both to generate a common shared secret. The
+`ecdhKeyDeriveParams.public` property is set to the other parties public key.
 
 ### Class: `EcdsaParams`
 
@@ -1218,8 +1279,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `ecdsaParams.name`
 
@@ -1299,10 +1360,9 @@ added:
 
 * Type: {ArrayBuffer|TypedArray|DataView|Buffer|undefined}
 
-The `context` member represents the optional context data to associate with
-the message.
-The Node.js Web Crypto API implementation only supports zero-length context
-which is equivalent to not providing context at all.
+The `context` member represents the optional context data to associate with the
+message. The Node.js Web Crypto API implementation only supports zero-length
+context which is equivalent to not providing context at all.
 
 ### Class: `HkdfParams`
 
@@ -1325,8 +1385,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `hkdfParams.info`
 
@@ -1336,8 +1396,8 @@ added: v15.0.0
 
 * Type: {ArrayBuffer|TypedArray|DataView|Buffer}
 
-Provides application-specific contextual input to the HKDF algorithm.
-This can be zero-length but must be provided.
+Provides application-specific contextual input to the HKDF algorithm. This can
+be zero-length but must be provided.
 
 #### `hkdfParams.name`
 
@@ -1355,10 +1415,10 @@ added: v15.0.0
 
 * Type: {ArrayBuffer|TypedArray|DataView|Buffer}
 
-The salt value significantly improves the strength of the HKDF algorithm.
-It should be random or pseudorandom and should be the same length as the
-output of the digest function (for instance, if using `'SHA-256'` as the
-digest, the salt should be 256-bits of random data).
+The salt value significantly improves the strength of the HKDF algorithm. It
+should be random or pseudorandom and should be the same length as the output of
+the digest function (for instance, if using `'SHA-256'` as the digest, the salt
+should be 256-bits of random data).
 
 ### Class: `HmacImportParams`
 
@@ -1381,8 +1441,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `hmacImportParams.length`
 
@@ -1392,8 +1452,8 @@ added: v15.0.0
 
 * Type: {number}
 
-The optional number of bits in the HMAC key. This is optional and should
-be omitted for most cases.
+The optional number of bits in the HMAC key. This is optional and should be
+omitted for most cases.
 
 #### `hmacImportParams.name`
 
@@ -1424,8 +1484,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `hmacKeyGenParams.length`
 
@@ -1435,9 +1495,9 @@ added: v15.0.0
 
 * Type: {number}
 
-The number of bits to generate for the HMAC key. If omitted,
-the length will be determined by the hash algorithm used.
-This is optional and should be omitted for most cases.
+The number of bits to generate for the HMAC key. If omitted, the length will be
+determined by the hash algorithm used. This is optional and should be omitted
+for most cases.
 
 #### `hmacKeyGenParams.name`
 
@@ -1468,8 +1528,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `pbkdf2Params.iterations`
 
@@ -1520,8 +1580,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `rsaHashedImportParams.name`
 
@@ -1553,8 +1613,8 @@ If represented as a {string}, the value must be one of:
 * `'SHA-384'`
 * `'SHA-512'`
 
-If represented as an {Object}, the object must have a `name` property
-whose value is one of the above listed values.
+If represented as an {Object}, the object must have a `name` property whose
+value is one of the above listed values.
 
 #### `rsaHashedKeyGenParams.modulusLength`
 
@@ -1564,8 +1624,8 @@ added: v15.0.0
 
 * Type: {number}
 
-The length in bits of the RSA modulus. As a best practice, this should be
-at least `2048`.
+The length in bits of the RSA modulus. As a best practice, this should be at
+least `2048`.
 
 #### `rsaHashedKeyGenParams.name`
 
@@ -1641,8 +1701,8 @@ added: v15.0.0
 
 The length (in bytes) of the random salt to use.
 
-[^1]: An experimental implementation of
-    [Secure Curves in the Web Cryptography API][] as of 30 August 2023
+[^1]: An experimental implementation of [Secure Curves in the Web Cryptography
+    API][] as of 30 August 2023
 
 [JSON Web Key]: https://tools.ietf.org/html/rfc7517
 [Key usages]: #cryptokeyusages

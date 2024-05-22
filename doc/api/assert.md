@@ -230,9 +230,8 @@ changes:
 
 > Stability: 0 - Deprecated
 
-This feature is deprecated and will be removed in a future version.
-Please consider using alternatives such as the
-[`mock`][] helper function.
+This feature is deprecated and will be removed in a future version. Please
+consider using alternatives such as the [`mock`][] helper function.
 
 ### `new assert.CallTracker()`
 
@@ -299,9 +298,8 @@ added:
 * Returns: {Function} A function that wraps `fn`.
 
 The wrapper function is expected to be called exactly `exact` times. If the
-function has not been called exactly `exact` times when
-[`tracker.verify()`][] is called, then [`tracker.verify()`][] will throw an
-error.
+function has not been called exactly `exact` times when [`tracker.verify()`][]
+is called, then [`tracker.verify()`][] will throw an error.
 
 ```mjs
 import assert from 'node:assert';
@@ -354,8 +352,9 @@ function func() {}
 const callsfunc = tracker.calls(func);
 callsfunc(1, 2, 3);
 
-assert.deepStrictEqual(tracker.getCalls(callsfunc),
-                       [{ thisArg: undefined, arguments: [1, 2, 3] }]);
+assert.deepStrictEqual(tracker.getCalls(callsfunc), [
+  { thisArg: undefined, arguments: [1, 2, 3] },
+]);
 ```
 
 ```cjs
@@ -368,8 +367,9 @@ function func() {}
 const callsfunc = tracker.calls(func);
 callsfunc(1, 2, 3);
 
-assert.deepStrictEqual(tracker.getCalls(callsfunc),
-                       [{ thisArg: undefined, arguments: [1, 2, 3] }]);
+assert.deepStrictEqual(tracker.getCalls(callsfunc), [
+  { thisArg: undefined, arguments: [1, 2, 3] },
+]);
 ```
 
 ### `tracker.report()`
@@ -455,9 +455,9 @@ added:
 
 * `fn` {Function} a tracked function to reset.
 
-Reset calls of the call tracker.
-If a tracked function is passed as an argument, the calls will be reset for it.
-If no arguments are passed, all tracked functions will be reset.
+Reset calls of the call tracker. If a tracked function is passed as an argument,
+the calls will be reset for it. If no arguments are passed, all tracked
+functions will be reset.
 
 ```mjs
 import assert from 'node:assert';
@@ -499,9 +499,9 @@ added:
   - v12.19.0
 -->
 
-Iterates through the list of functions passed to
-[`tracker.calls()`][] and will throw an error for functions that
-have not been called the expected number of times.
+Iterates through the list of functions passed to [`tracker.calls()`][] and will
+throw an error for functions that have not been called the expected number of
+times.
 
 ```mjs
 import assert from 'node:assert';
@@ -614,25 +614,23 @@ Tests for deep equality between the `actual` and `expected` parameters. Consider
 using [`assert.deepStrictEqual()`][] instead. [`assert.deepEqual()`][] can have
 surprising results.
 
-_Deep equality_ means that the enumerable "own" properties of child objects
-are also recursively evaluated by the following rules.
+_Deep equality_ means that the enumerable "own" properties of child objects are
+also recursively evaluated by the following rules.
 
 ### Comparison details
 
-* Primitive values are compared with the [`==` operator][],
-  with the exception of `NaN`. It is treated as being identical in case
-  both sides are `NaN`.
+* Primitive values are compared with the [`==` operator][], with the exception
+  of `NaN`. It is treated as being identical in case both sides are `NaN`.
 * [Type tags][Object.prototype.toString()] of objects should be the same.
 * Only [enumerable "own" properties][] are considered.
-* [`Error`][] names, messages, causes, and errors are always compared,
-  even if these are not enumerable properties.
+* [`Error`][] names, messages, causes, and errors are always compared, even if
+  these are not enumerable properties.
 * [Object wrappers][] are compared both as objects and unwrapped values.
 * `Object` properties are compared unordered.
 * [`Map`][] keys and [`Set`][] items are compared unordered.
 * Recursion stops when both sides differ or both sides encounter a circular
   reference.
-* Implementation does not test the [`[[Prototype]]`][prototype-spec] of
-  objects.
+* Implementation does not test the [`[[Prototype]]`][prototype-spec] of objects.
 * [`Symbol`][] properties are not compared.
 * [`WeakMap`][] and [`WeakSet`][] comparison does not rely on their values.
 * [`RegExp`][] lastIndex, flags, and source are always compared, even if these
@@ -655,8 +653,8 @@ const assert = require('node:assert');
 assert.deepEqual('+00000000', false);
 ```
 
-"Deep" equality means that the enumerable "own" properties of child objects
-are evaluated also:
+"Deep" equality means that the enumerable "own" properties of child objects are
+evaluated also:
 
 ```mjs
 import assert from 'node:assert';
@@ -778,20 +776,19 @@ changes:
 * `expected` {any}
 * `message` {string|Error}
 
-Tests for deep equality between the `actual` and `expected` parameters.
-"Deep" equality means that the enumerable "own" properties of child objects
-are recursively evaluated also by the following rules.
+Tests for deep equality between the `actual` and `expected` parameters. "Deep"
+equality means that the enumerable "own" properties of child objects are
+recursively evaluated also by the following rules.
 
 ### Comparison details
 
 * Primitive values are compared using [`Object.is()`][].
 * [Type tags][Object.prototype.toString()] of objects should be the same.
-* [`[[Prototype]]`][prototype-spec] of objects are compared using
-  the [`===` operator][].
+* [`[[Prototype]]`][prototype-spec] of objects are compared using the [`===`
+  operator][].
 * Only [enumerable "own" properties][] are considered.
-* [`Error`][] names, messages, causes, and errors are always compared,
-  even if these are not enumerable properties.
-  `errors` is also compared.
+* [`Error`][] names, messages, causes, and errors are always compared, even if
+  these are not enumerable properties. `errors` is also compared.
 * Enumerable own [`Symbol`][] properties are compared as well.
 * [Object wrappers][] are compared both as objects and unwrapped values.
 * `Object` properties are compared unordered.
@@ -1054,9 +1051,9 @@ added: v10.0.0
 * `error` {RegExp|Function}
 * `message` {string}
 
-Awaits the `asyncFn` promise or, if `asyncFn` is a function, immediately
-calls the function and awaits the returned promise to complete. It will then
-check that the promise is not rejected.
+Awaits the `asyncFn` promise or, if `asyncFn` is a function, immediately calls
+the function and awaits the returned promise to complete. It will then check
+that the promise is not rejected.
 
 If `asyncFn` is a function and it throws an error synchronously,
 `assert.doesNotReject()` will return a rejected `Promise` with that error. If
@@ -1078,43 +1075,35 @@ Besides the async nature to await the completion behaves identically to
 ```mjs
 import assert from 'node:assert/strict';
 
-await assert.doesNotReject(
-  async () => {
-    throw new TypeError('Wrong value');
-  },
-  SyntaxError,
-);
+await assert.doesNotReject(async () => {
+  throw new TypeError('Wrong value');
+}, SyntaxError);
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
 (async () => {
-  await assert.doesNotReject(
-    async () => {
-      throw new TypeError('Wrong value');
-    },
-    SyntaxError,
-  );
+  await assert.doesNotReject(async () => {
+    throw new TypeError('Wrong value');
+  }, SyntaxError);
 })();
 ```
 
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.doesNotReject(Promise.reject(new TypeError('Wrong value')))
-  .then(() => {
-    // ...
-  });
+assert.doesNotReject(Promise.reject(new TypeError('Wrong value'))).then(() => {
+  // ...
+});
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.doesNotReject(Promise.reject(new TypeError('Wrong value')))
-  .then(() => {
-    // ...
-  });
+assert.doesNotReject(Promise.reject(new TypeError('Wrong value'))).then(() => {
+  // ...
+});
 ```
 
 ## `assert.doesNotThrow(fn[, error][, message])`
@@ -1138,10 +1127,10 @@ changes:
 
 Asserts that the function `fn` does not throw an error.
 
-Using `assert.doesNotThrow()` is actually not useful because there
-is no benefit in catching an error and then rethrowing it. Instead, consider
-adding a comment next to the specific code path that should not throw and keep
-error messages as expressive as possible.
+Using `assert.doesNotThrow()` is actually not useful because there is no benefit
+in catching an error and then rethrowing it. Instead, consider adding a comment
+next to the specific code path that should not throw and keep error messages as
+expressive as possible.
 
 When `assert.doesNotThrow()` is called, it will immediately call the `fn`
 function.
@@ -1160,23 +1149,17 @@ matching error type in the assertion:
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  SyntaxError,
-);
+assert.doesNotThrow(() => {
+  throw new TypeError('Wrong value');
+}, SyntaxError);
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  SyntaxError,
-);
+assert.doesNotThrow(() => {
+  throw new TypeError('Wrong value');
+}, SyntaxError);
 ```
 
 However, the following will result in an [`AssertionError`][] with the message
@@ -1185,23 +1168,17 @@ However, the following will result in an [`AssertionError`][] with the message
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  TypeError,
-);
+assert.doesNotThrow(() => {
+  throw new TypeError('Wrong value');
+}, TypeError);
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.doesNotThrow(
-  () => {
-    throw new TypeError('Wrong value');
-  },
-  TypeError,
-);
+assert.doesNotThrow(() => {
+  throw new TypeError('Wrong value');
+}, TypeError);
 ```
 
 If an [`AssertionError`][] is thrown and a value is provided for the `message`
@@ -1264,8 +1241,8 @@ An alias of [`assert.strictEqual()`][].
 > Stability: 3 - Legacy: Use [`assert.strictEqual()`][] instead.
 
 Tests shallow, coercive equality between the `actual` and `expected` parameters
-using the [`==` operator][]. `NaN` is specially handled
-and treated as being identical if both sides are `NaN`.
+using the [`==` operator][]. `NaN` is specially handled and treated as being
+identical if both sides are `NaN`.
 
 ```mjs
 import assert from 'node:assert';
@@ -1371,9 +1348,9 @@ If `message` is falsy, the error message is set as the values of `actual` and
 `expected` arguments are provided, `operator` will default to `'!='`. If
 `message` is provided as third argument it will be used as the error message and
 the other arguments will be stored as properties on the thrown object. If
-`stackStartFn` is provided, all stack frames above that function will be
-removed from stacktrace (see [`Error.captureStackTrace`][]). If no arguments are
-given, the default message `Failed` will be used.
+`stackStartFn` is provided, all stack frames above that function will be removed
+from stacktrace (see [`Error.captureStackTrace`][]). If no arguments are given,
+the default message `Failed` will be used.
 
 ```mjs
 import assert from 'node:assert/strict';
@@ -1413,8 +1390,8 @@ assert.fail(1, 2, new TypeError('need array'));
 // TypeError: need array
 ```
 
-In the last three cases `actual`, `expected`, and `operator` have no
-influence on the error message.
+In the last three cases `actual`, `expected`, and `operator` have no influence
+on the error message.
 
 Example use of `stackStartFn` for truncating the exception's stacktrace:
 
@@ -1891,9 +1868,8 @@ If `value` is not truthy, an [`AssertionError`][] is thrown with a `message`
 property set equal to the value of the `message` parameter. If the `message`
 parameter is `undefined`, a default error message is assigned. If the `message`
 parameter is an instance of an [`Error`][] then it will be thrown instead of the
-`AssertionError`.
-If no arguments are passed in at all `message` will be set to the string:
-``'No value argument passed to `assert.ok()`'``.
+`AssertionError`. If no arguments are passed in at all `message` will be set to
+the string: ``'No value argument passed to `assert.ok()`'``.
 
 Be aware that in the `repl` the error message will be different to the one
 thrown in a file! See below for further details.
@@ -1909,7 +1885,7 @@ assert.ok(1);
 assert.ok();
 // AssertionError: No value argument passed to `assert.ok()`
 
-assert.ok(false, 'it\'s false');
+assert.ok(false, "it's false");
 // AssertionError: it's false
 
 // In the repl:
@@ -1944,7 +1920,7 @@ assert.ok(1);
 assert.ok();
 // AssertionError: No value argument passed to `assert.ok()`
 
-assert.ok(false, 'it\'s false');
+assert.ok(false, "it's false");
 // AssertionError: it's false
 
 // In the repl:
@@ -1998,9 +1974,9 @@ added: v10.0.0
 * `error` {RegExp|Function|Object|Error}
 * `message` {string}
 
-Awaits the `asyncFn` promise or, if `asyncFn` is a function, immediately
-calls the function and awaits the returned promise to complete. It will then
-check that the promise is rejected.
+Awaits the `asyncFn` promise or, if `asyncFn` is a function, immediately calls
+the function and awaits the returned promise to complete. It will then check
+that the promise is rejected.
 
 If `asyncFn` is a function and it throws an error synchronously,
 `assert.rejects()` will return a rejected `Promise` with that error. If the
@@ -2084,10 +2060,7 @@ const assert = require('node:assert/strict');
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.rejects(
-  Promise.reject(new Error('Wrong value')),
-  Error,
-).then(() => {
+assert.rejects(Promise.reject(new Error('Wrong value')), Error).then(() => {
   // ...
 });
 ```
@@ -2095,19 +2068,16 @@ assert.rejects(
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.rejects(
-  Promise.reject(new Error('Wrong value')),
-  Error,
-).then(() => {
+assert.rejects(Promise.reject(new Error('Wrong value')), Error).then(() => {
   // ...
 });
 ```
 
-`error` cannot be a string. If a string is provided as the second
-argument, then `error` is assumed to be omitted and the string will be used for
-`message` instead. This can lead to easy-to-miss mistakes. Please read the
-example in [`assert.throws()`][] carefully if using a string as the second
-argument gets considered.
+`error` cannot be a string. If a string is provided as the second argument, then
+`error` is assumed to be omitted and the string will be used for `message`
+instead. This can lead to easy-to-miss mistakes. Please read the example in
+[`assert.throws()`][] carefully if using a string as the second argument gets
+considered.
 
 ## `assert.strictEqual(actual, expected[, message])`
 
@@ -2367,23 +2337,17 @@ Validate instanceof using constructor:
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
-  },
-  Error,
-);
+assert.throws(() => {
+  throw new Error('Wrong value');
+}, Error);
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
-  },
-  Error,
-);
+assert.throws(() => {
+  throw new Error('Wrong value');
+}, Error);
 ```
 
 Validate error message using [`RegExp`][]:
@@ -2394,29 +2358,23 @@ therefore also include the error name.
 ```mjs
 import assert from 'node:assert/strict';
 
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
-  },
-  /^Error: Wrong value$/,
-);
+assert.throws(() => {
+  throw new Error('Wrong value');
+}, /^Error: Wrong value$/);
 ```
 
 ```cjs
 const assert = require('node:assert/strict');
 
-assert.throws(
-  () => {
-    throw new Error('Wrong value');
-  },
-  /^Error: Wrong value$/,
-);
+assert.throws(() => {
+  throw new Error('Wrong value');
+}, /^Error: Wrong value$/);
 ```
 
 Custom error validation:
 
-The function must return `true` to indicate all internal validations passed.
-It will otherwise fail with an [`AssertionError`][].
+The function must return `true` to indicate all internal validations passed. It
+will otherwise fail with an [`AssertionError`][].
 
 ```mjs
 import assert from 'node:assert/strict';
@@ -2460,12 +2418,12 @@ assert.throws(
 );
 ```
 
-`error` cannot be a string. If a string is provided as the second
-argument, then `error` is assumed to be omitted and the string will be used for
-`message` instead. This can lead to easy-to-miss mistakes. Using the same
-message as the thrown error message is going to result in an
-`ERR_AMBIGUOUS_ARGUMENT` error. Please read the example below carefully if using
-a string as the second argument gets considered:
+`error` cannot be a string. If a string is provided as the second argument, then
+`error` is assumed to be omitted and the string will be used for `message`
+instead. This can lead to easy-to-miss mistakes. Using the same message as the
+thrown error message is going to result in an `ERR_AMBIGUOUS_ARGUMENT` error.
+Please read the example below carefully if using a string as the second argument
+gets considered:
 
 ```mjs
 import assert from 'node:assert/strict';

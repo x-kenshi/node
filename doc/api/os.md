@@ -51,8 +51,8 @@ added: v0.5.0
 
 Returns the operating system CPU architecture for which the Node.js binary was
 compiled. Possible values are `'arm'`, `'arm64'`, `'ia32'`, `'loong64'`,
-`'mips'`, `'mipsel'`, `'ppc'`, `'ppc64'`, `'riscv64'`, `'s390'`, `'s390x'`,
-and `'x64'`.
+`'mips'`, `'mipsel'`, `'ppc'`, `'ppc64'`, `'riscv64'`, `'s390'`, `'s390x'`, and
+`'x64'`.
 
 The return value is equivalent to [`process.arch`][].
 
@@ -139,7 +139,7 @@ The properties included on each object include:
       irq: 20,
     },
   },
-]
+];
 ```
 
 `nice` values are POSIX-only. On Windows, the `nice` values of all processors
@@ -210,11 +210,11 @@ added: v2.3.0
 
 Returns the string path of the current user's home directory.
 
-On POSIX, it uses the `$HOME` environment variable if defined. Otherwise it
-uses the [effective UID][EUID] to look up the user's home directory.
+On POSIX, it uses the `$HOME` environment variable if defined. Otherwise it uses
+the [effective UID][EUID] to look up the user's home directory.
 
-On Windows, it uses the `USERPROFILE` environment variable if defined.
-Otherwise it uses the path to the profile directory of the current user.
+On Windows, it uses the `USERPROFILE` environment variable if defined. Otherwise
+it uses the path to the profile directory of the current user.
 
 ## `os.hostname()`
 
@@ -252,12 +252,12 @@ added:
 
 * Returns: {string}
 
-Returns the machine type as a string, such as `arm`, `arm64`, `aarch64`,
-`mips`, `mips64`, `ppc64`, `ppc64le`, `s390`, `s390x`, `i386`, `i686`, `x86_64`.
+Returns the machine type as a string, such as `arm`, `arm64`, `aarch64`, `mips`,
+`mips64`, `ppc64`, `ppc64le`, `s390`, `s390x`, `i386`, `i686`, `x86_64`.
 
-On POSIX systems, the machine type is determined by calling
-[`uname(3)`][]. On Windows, `RtlGetVersion()` is used, and if it is not
-available, `GetVersionExW()` will be used. See
+On POSIX systems, the machine type is determined by calling [`uname(3)`][]. On
+Windows, `RtlGetVersion()` is used, and if it is not available,
+`GetVersionExW()` will be used. See
 <https://en.wikipedia.org/wiki/Uname#Examples> for more information.
 
 ## `os.networkInterfaces()`
@@ -287,13 +287,12 @@ The properties available on the assigned network address object include:
 * `netmask` {string} The IPv4 or IPv6 network mask
 * `family` {string} Either `IPv4` or `IPv6`
 * `mac` {string} The MAC address of the network interface
-* `internal` {boolean} `true` if the network interface is a loopback or
-  similar interface that is not remotely accessible; otherwise `false`
-* `scopeid` {number} The numeric IPv6 scope ID (only specified when `family`
-  is `IPv6`)
-* `cidr` {string} The assigned IPv4 or IPv6 address with the routing prefix
-  in CIDR notation. If the `netmask` is invalid, this property is set
-  to `null`.
+* `internal` {boolean} `true` if the network interface is a loopback or similar
+  interface that is not remotely accessible; otherwise `false`
+* `scopeid` {number} The numeric IPv6 scope ID (only specified when `family` is
+  `IPv6`)
+* `cidr` {string} The assigned IPv4 or IPv6 address with the routing prefix in
+  CIDR notation. If the `netmask` is invalid, this property is set to `null`.
 
 <!-- eslint-skip -->
 
@@ -348,10 +347,10 @@ added: v0.5.0
 
 * Returns: {string}
 
-Returns a string identifying the operating system platform for which
-the Node.js binary was compiled. The value is set at compile time.
-Possible values are `'aix'`, `'darwin'`, `'freebsd'`,`'linux'`,
-`'openbsd'`, `'sunos'`, and `'win32'`.
+Returns a string identifying the operating system platform for which the Node.js
+binary was compiled. The value is set at compile time. Possible values are
+`'aix'`, `'darwin'`, `'freebsd'`,`'linux'`, `'openbsd'`, `'sunos'`, and
+`'win32'`.
 
 The return value is equivalent to [`process.platform`][].
 
@@ -378,8 +377,8 @@ On POSIX systems, the operating system release is determined by calling
 added: v10.10.0
 -->
 
-* `pid` {integer} The process ID to set scheduling priority for.
-  **Default:** `0`.
+* `pid` {integer} The process ID to set scheduling priority for. **Default:**
+  `0`.
 * `priority` {integer} The scheduling priority to assign to the process.
 
 Attempts to set the scheduling priority for the process specified by `pid`. If
@@ -463,9 +462,9 @@ added: v6.0.0
     values will be `Buffer` instances. **Default:** `'utf8'`.
 * Returns: {Object}
 
-Returns information about the currently effective user. On POSIX platforms,
-this is typically a subset of the password file. The returned object includes
-the `username`, `uid`, `gid`, `shell`, and `homedir`. On Windows, the `uid` and
+Returns information about the currently effective user. On POSIX platforms, this
+is typically a subset of the password file. The returned object includes the
+`username`, `uid`, `gid`, `shell`, and `homedir`. On Windows, the `uid` and
 `gid` fields are `-1`, and `shell` is `null`.
 
 The value of `homedir` returned by `os.userInfo()` is provided by the operating
@@ -1253,9 +1252,8 @@ The following error codes are specific to the Windows operating system.
 
 ### dlopen constants
 
-If available on the operating system, the following constants
-are exported in `os.constants.dlopen`. See dlopen(3) for detailed
-information.
+If available on the operating system, the following constants are exported in
+`os.constants.dlopen`. See dlopen(3) for detailed information.
 
 <table>
   <tr>

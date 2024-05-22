@@ -34,60 +34,44 @@ There are three primary types of objects:
 ### Example `ReadableStream`
 
 This example creates a simple `ReadableStream` that pushes the current
-`performance.now()` timestamp once every second forever. An async iterable
-is used to read the data from the stream.
+`performance.now()` timestamp once every second forever. An async iterable is
+used to read the data from the stream.
 
 ```mjs
-import {
-  ReadableStream,
-} from 'node:stream/web';
+import { ReadableStream } from 'node:stream/web';
 
-import {
-  setInterval as every,
-} from 'node:timers/promises';
+import { setInterval as every } from 'node:timers/promises';
 
-import {
-  performance,
-} from 'node:perf_hooks';
+import { performance } from 'node:perf_hooks';
 
 const SECOND = 1000;
 
 const stream = new ReadableStream({
   async start(controller) {
-    for await (const _ of every(SECOND))
-      controller.enqueue(performance.now());
+    for await (const _ of every(SECOND)) controller.enqueue(performance.now());
   },
 });
 
-for await (const value of stream)
-  console.log(value);
+for await (const value of stream) console.log(value);
 ```
 
 ```cjs
-const {
-  ReadableStream,
-} = require('node:stream/web');
+const { ReadableStream } = require('node:stream/web');
 
-const {
-  setInterval: every,
-} = require('node:timers/promises');
+const { setInterval: every } = require('node:timers/promises');
 
-const {
-  performance,
-} = require('node:perf_hooks');
+const { performance } = require('node:perf_hooks');
 
 const SECOND = 1000;
 
 const stream = new ReadableStream({
   async start(controller) {
-    for await (const _ of every(SECOND))
-      controller.enqueue(performance.now());
+    for await (const _ of every(SECOND)) controller.enqueue(performance.now());
   },
 });
 
 (async () => {
-  for await (const value of stream)
-    console.log(value);
+  for await (const value of stream) console.log(value);
 })();
 ```
 
@@ -114,13 +98,15 @@ added: v16.5.0
 * `underlyingSource` {Object}
   * `start` {Function} A user-defined function that is invoked immediately when
     the `ReadableStream` is created.
-    * `controller` {ReadableStreamDefaultController|ReadableByteStreamController}
+    * `controller`
+      {ReadableStreamDefaultController|ReadableByteStreamController}
     * Returns: `undefined` or a promise fulfilled with `undefined`.
   * `pull` {Function} A user-defined function that is called repeatedly when the
     `ReadableStream` internal queue is not full. The operation may be sync or
     async. If async, the function will not be called again until the previously
     returned promise is fulfilled.
-    * `controller` {ReadableStreamDefaultController|ReadableByteStreamController}
+    * `controller`
+      {ReadableStreamDefaultController|ReadableByteStreamController}
     * Returns: A promise fulfilled with `undefined`.
   * `cancel` {Function} A user-defined function that is called when the
     `ReadableStream` is canceled.
@@ -129,9 +115,9 @@ added: v16.5.0
   * `type` {string} Must be `'bytes'` or `undefined`.
   * `autoAllocateChunkSize` {number} Used only when `type` is equal to
     `'bytes'`. When set to a non-zero value a view buffer is automatically
-    allocated to `ReadableByteStreamController.byobRequest`. When not set
-    one must use stream's internal queues to transfer data via the default
-    reader `ReadableStreamDefaultReader`.
+    allocated to `ReadableByteStreamController.byobRequest`. When not set one
+    must use stream's internal queues to transfer data via the default reader
+    `ReadableStreamDefaultReader`.
 * `strategy` {Object}
   * `highWaterMark` {number} The maximum internal queue size before backpressure
     is applied.
@@ -151,9 +137,8 @@ added: v16.5.0
 * Type: {boolean} Set to `true` if there is an active reader for this
   {ReadableStream}.
 
-The `readableStream.locked` property is `false` by default, and is
-switched to `true` while there is an active reader consuming the
-stream's data.
+The `readableStream.locked` property is `false` by default, and is switched to
+`true` while there is an active reader consuming the stream's data.
 
 #### `readableStream.cancel([reason])`
 
@@ -162,8 +147,8 @@ added: v16.5.0
 -->
 
 * `reason` {any}
-* Returns: A promise fulfilled with `undefined` once cancelation has
-  been completed.
+* Returns: A promise fulfilled with `undefined` once cancelation has been
+  completed.
 
 #### `readableStream.getReader([options])`
 
@@ -205,36 +190,32 @@ added: v16.5.0
 
 * `transform` {Object}
   * `readable` {ReadableStream} The `ReadableStream` to which
-    `transform.writable` will push the potentially modified data
-    it receives from this `ReadableStream`.
+    `transform.writable` will push the potentially modified data it receives
+    from this `ReadableStream`.
   * `writable` {WritableStream} The `WritableStream` to which this
     `ReadableStream`'s data will be written.
 * `options` {Object}
-  * `preventAbort` {boolean} When `true`, errors in this `ReadableStream`
-    will not cause `transform.writable` to be aborted.
+  * `preventAbort` {boolean} When `true`, errors in this `ReadableStream` will
+    not cause `transform.writable` to be aborted.
   * `preventCancel` {boolean} When `true`, errors in the destination
-    `transform.writable` do not cause this `ReadableStream` to be
-    canceled.
-  * `preventClose` {boolean} When `true`, closing this `ReadableStream`
-    does not cause `transform.writable` to be closed.
-  * `signal` {AbortSignal} Allows the transfer of data to be canceled
-    using an {AbortController}.
+    `transform.writable` do not cause this `ReadableStream` to be canceled.
+  * `preventClose` {boolean} When `true`, closing this `ReadableStream` does not
+    cause `transform.writable` to be closed.
+  * `signal` {AbortSignal} Allows the transfer of data to be canceled using an
+    {AbortController}.
 * Returns: {ReadableStream} From `transform.readable`.
 
 Connects this {ReadableStream} to the pair of {ReadableStream} and
-{WritableStream} provided in the `transform` argument such that the
-data from this {ReadableStream} is written in to `transform.writable`,
-possibly transformed, then pushed to `transform.readable`. Once the
-pipeline is configured, `transform.readable` is returned.
+{WritableStream} provided in the `transform` argument such that the data from
+this {ReadableStream} is written in to `transform.writable`, possibly
+transformed, then pushed to `transform.readable`. Once the pipeline is
+configured, `transform.readable` is returned.
 
-Causes the `readableStream.locked` to be `true` while the pipe operation
-is active.
+Causes the `readableStream.locked` to be `true` while the pipe operation is
+active.
 
 ```mjs
-import {
-  ReadableStream,
-  TransformStream,
-} from 'node:stream/web';
+import { ReadableStream, TransformStream } from 'node:stream/web';
 
 const stream = new ReadableStream({
   start(controller) {
@@ -250,16 +231,12 @@ const transform = new TransformStream({
 
 const transformedStream = stream.pipeThrough(transform);
 
-for await (const chunk of transformedStream)
-  console.log(chunk);
-  // Prints: A
+for await (const chunk of transformedStream) console.log(chunk);
+// Prints: A
 ```
 
 ```cjs
-const {
-  ReadableStream,
-  TransformStream,
-} = require('node:stream/web');
+const { ReadableStream, TransformStream } = require('node:stream/web');
 
 const stream = new ReadableStream({
   start(controller) {
@@ -276,9 +253,8 @@ const transform = new TransformStream({
 const transformedStream = stream.pipeThrough(transform);
 
 (async () => {
-  for await (const chunk of transformedStream)
-    console.log(chunk);
-    // Prints: A
+  for await (const chunk of transformedStream) console.log(chunk);
+  // Prints: A
 })();
 ```
 
@@ -291,18 +267,18 @@ added: v16.5.0
 * `destination` {WritableStream} A {WritableStream} to which this
   `ReadableStream`'s data will be written.
 * `options` {Object}
-  * `preventAbort` {boolean} When `true`, errors in this `ReadableStream`
-    will not cause `destination` to be aborted.
-  * `preventCancel` {boolean} When `true`, errors in the `destination`
-    will not cause this `ReadableStream` to be canceled.
-  * `preventClose` {boolean} When `true`, closing this `ReadableStream`
-    does not cause `destination` to be closed.
-  * `signal` {AbortSignal} Allows the transfer of data to be canceled
-    using an {AbortController}.
+  * `preventAbort` {boolean} When `true`, errors in this `ReadableStream` will
+    not cause `destination` to be aborted.
+  * `preventCancel` {boolean} When `true`, errors in the `destination` will not
+    cause this `ReadableStream` to be canceled.
+  * `preventClose` {boolean} When `true`, closing this `ReadableStream` does not
+    cause `destination` to be closed.
+  * `signal` {AbortSignal} Allows the transfer of data to be canceled using an
+    {AbortController}.
 * Returns: A promise fulfilled with `undefined`
 
-Causes the `readableStream.locked` to be `true` while the pipe operation
-is active.
+Causes the `readableStream.locked` to be `true` while the pipe operation is
+active.
 
 #### `readableStream.tee()`
 
@@ -319,8 +295,7 @@ changes:
 * Returns: {ReadableStream\[]}
 
 Returns a pair of new {ReadableStream} instances to which this
-`ReadableStream`'s data will be forwarded. Each will receive the
-same data.
+`ReadableStream`'s data will be forwarded. Each will receive the same data.
 
 Causes the `readableStream.locked` to be `true`.
 
@@ -331,15 +306,15 @@ added: v16.5.0
 -->
 
 * `options` {Object}
-  * `preventCancel` {boolean} When `true`, prevents the {ReadableStream}
-    from being closed when the async iterator abruptly terminates.
-    **Default**: `false`.
+  * `preventCancel` {boolean} When `true`, prevents the {ReadableStream} from
+    being closed when the async iterator abruptly terminates. **Default**:
+    `false`.
 
 Creates and returns an async iterator usable for consuming this
 `ReadableStream`'s data.
 
-Causes the `readableStream.locked` to be `true` while the async iterator
-is active.
+Causes the `readableStream.locked` to be `true` while the async iterator is
+active.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -360,17 +335,15 @@ import { Buffer } from 'node:buffer';
 
 const stream = new ReadableStream(getSomeSource());
 
-for await (const chunk of stream)
-  console.log(Buffer.from(chunk).toString());
+for await (const chunk of stream) console.log(Buffer.from(chunk).toString());
 ```
 
 The async iterator will consume the {ReadableStream} until it terminates.
 
-By default, if the async iterator exits early (via either a `break`,
-`return`, or a `throw`), the {ReadableStream} will be closed. To prevent
-automatic closing of the {ReadableStream}, use the `readableStream.values()`
-method to acquire the async iterator and set the `preventCancel` option to
-`true`.
+By default, if the async iterator exits early (via either a `break`, `return`,
+or a `throw`), the {ReadableStream} will be closed. To prevent automatic closing
+of the {ReadableStream}, use the `readableStream.values()` method to acquire the
+async iterator and set the `preventCancel` option to `true`.
 
 The {ReadableStream} must not be locked (that is, it must not have an existing
 active reader). During the async iteration, the {ReadableStream} will be locked.
@@ -385,9 +358,12 @@ const stream = new ReadableStream(getReadableSourceSomehow());
 const { port1, port2 } = new MessageChannel();
 
 port1.onmessage = ({ data }) => {
-  data.getReader().read().then((chunk) => {
-    console.log(chunk);
-  });
+  data
+    .getReader()
+    .read()
+    .then((chunk) => {
+      console.log(chunk);
+    });
 };
 
 port2.postMessage(stream, [stream]);
@@ -415,8 +391,7 @@ async function* asyncIterableGenerator() {
 
 const stream = ReadableStream.from(asyncIterableGenerator());
 
-for await (const chunk of stream)
-  console.log(chunk); // Prints: 'a', 'b', 'c'
+for await (const chunk of stream) console.log(chunk); // Prints: 'a', 'b', 'c'
 ```
 
 ```cjs
@@ -431,8 +406,7 @@ async function* asyncIterableGenerator() {
 (async () => {
   const stream = ReadableStream.from(asyncIterableGenerator());
 
-  for await (const chunk of stream)
-    console.log(chunk); // Prints: 'a', 'b', 'c'
+  for await (const chunk of stream) console.log(chunk); // Prints: 'a', 'b', 'c'
 })();
 ```
 
@@ -446,11 +420,10 @@ changes:
     description: This class is now exposed on the global object.
 -->
 
-By default, calling `readableStream.getReader()` with no arguments
-will return an instance of `ReadableStreamDefaultReader`. The default
-reader treats the chunks of data passed through the stream as opaque
-values, which allows the {ReadableStream} to work with generally any
-JavaScript value.
+By default, calling `readableStream.getReader()` with no arguments will return
+an instance of `ReadableStreamDefaultReader`. The default reader treats the
+chunks of data passed through the stream as opaque values, which allows the
+{ReadableStream} to work with generally any JavaScript value.
 
 #### `new ReadableStreamDefaultReader(stream)`
 
@@ -460,8 +433,8 @@ added: v16.5.0
 
 * `stream` {ReadableStream}
 
-Creates a new {ReadableStreamDefaultReader} that is locked to the
-given {ReadableStream}.
+Creates a new {ReadableStreamDefaultReader} that is locked to the given
+{ReadableStream}.
 
 #### `readableStreamDefaultReader.cancel([reason])`
 
@@ -472,8 +445,8 @@ added: v16.5.0
 * `reason` {any}
 * Returns: A promise fulfilled with `undefined`.
 
-Cancels the {ReadableStream} and returns a promise that is fulfilled
-when the underlying stream has been canceled.
+Cancels the {ReadableStream} and returns a promise that is fulfilled when the
+underlying stream has been canceled.
 
 #### `readableStreamDefaultReader.closed`
 
@@ -495,9 +468,8 @@ added: v16.5.0
   * `value` {any}
   * `done` {boolean}
 
-Requests the next chunk of data from the underlying {ReadableStream}
-and returns a promise that is fulfilled with the data once it is
-available.
+Requests the next chunk of data from the underlying {ReadableStream} and returns
+a promise that is fulfilled with the data once it is available.
 
 #### `readableStreamDefaultReader.releaseLock()`
 
@@ -517,23 +489,17 @@ changes:
     description: This class is now exposed on the global object.
 -->
 
-The `ReadableStreamBYOBReader` is an alternative consumer for
-byte-oriented {ReadableStream}s (those that are created with
-`underlyingSource.type` set equal to `'bytes'` when the
-`ReadableStream` was created).
+The `ReadableStreamBYOBReader` is an alternative consumer for byte-oriented
+{ReadableStream}s (those that are created with `underlyingSource.type` set equal
+to `'bytes'` when the `ReadableStream` was created).
 
-The `BYOB` is short for "bring your own buffer". This is a
-pattern that allows for more efficient reading of byte-oriented
-data that avoids extraneous copying.
+The `BYOB` is short for "bring your own buffer". This is a pattern that allows
+for more efficient reading of byte-oriented data that avoids extraneous copying.
 
 ```mjs
-import {
-  open,
-} from 'node:fs/promises';
+import { open } from 'node:fs/promises';
 
-import {
-  ReadableStream,
-} from 'node:stream/web';
+import { ReadableStream } from 'node:stream/web';
 
 import { Buffer } from 'node:buffer';
 
@@ -548,9 +514,7 @@ class Source {
 
   async pull(controller) {
     const view = controller.byobRequest?.view;
-    const {
-      bytesRead,
-    } = await this.file.read({
+    const { bytesRead } = await this.file.read({
       buffer: view,
       offset: view.byteOffset,
       length: view.byteLength,
@@ -573,8 +537,7 @@ async function read(stream) {
   let result;
   do {
     result = await reader.read(Buffer.alloc(100));
-    if (result.value !== undefined)
-      chunks.push(Buffer.from(result.value));
+    if (result.value !== undefined) chunks.push(Buffer.from(result.value));
   } while (!result.done);
 
   return Buffer.concat(chunks);
@@ -592,8 +555,8 @@ added: v16.5.0
 
 * `stream` {ReadableStream}
 
-Creates a new `ReadableStreamBYOBReader` that is locked to the
-given {ReadableStream}.
+Creates a new `ReadableStreamBYOBReader` that is locked to the given
+{ReadableStream}.
 
 #### `readableStreamBYOBReader.cancel([reason])`
 
@@ -604,8 +567,8 @@ added: v16.5.0
 * `reason` {any}
 * Returns: A promise fulfilled with `undefined`.
 
-Cancels the {ReadableStream} and returns a promise that is fulfilled
-when the underlying stream has been canceled.
+Cancels the {ReadableStream} and returns a promise that is fulfilled when the
+underlying stream has been canceled.
 
 #### `readableStreamBYOBReader.closed`
 
@@ -629,28 +592,25 @@ changes:
 
 * `view` {Buffer|TypedArray|DataView}
 * `options` {Object}
-  * `min` {number} When set, the returned promise will only be
-    fulfilled as soon as `min` number of elements are available.
-    When not set, the promise fulfills when at least one element
-    is available.
+  * `min` {number} When set, the returned promise will only be fulfilled as soon
+    as `min` number of elements are available. When not set, the promise
+    fulfills when at least one element is available.
 * Returns: A promise fulfilled with an object:
   * `value` {TypedArray|DataView}
   * `done` {boolean}
 
-Requests the next chunk of data from the underlying {ReadableStream}
-and returns a promise that is fulfilled with the data once it is
-available.
+Requests the next chunk of data from the underlying {ReadableStream} and returns
+a promise that is fulfilled with the data once it is available.
 
-Do not pass a pooled {Buffer} object instance in to this method.
-Pooled `Buffer` objects are created using `Buffer.allocUnsafe()`,
-or `Buffer.from()`, or are often returned by various `node:fs` module
-callbacks. These types of `Buffer`s use a shared underlying
-{ArrayBuffer} object that contains all of the data from all of
-the pooled `Buffer` instances. When a `Buffer`, {TypedArray},
-or {DataView} is passed in to `readableStreamBYOBReader.read()`,
-the view's underlying `ArrayBuffer` is _detached_, invalidating
-all existing views that may exist on that `ArrayBuffer`. This
-can have disastrous consequences for your application.
+Do not pass a pooled {Buffer} object instance in to this method. Pooled `Buffer`
+objects are created using `Buffer.allocUnsafe()`, or `Buffer.from()`, or are
+often returned by various `node:fs` module callbacks. These types of `Buffer`s
+use a shared underlying {ArrayBuffer} object that contains all of the data from
+all of the pooled `Buffer` instances. When a `Buffer`, {TypedArray}, or
+{DataView} is passed in to `readableStreamBYOBReader.read()`, the view's
+underlying `ArrayBuffer` is _detached_, invalidating all existing views that may
+exist on that `ArrayBuffer`. This can have disastrous consequences for your
+application.
 
 #### `readableStreamBYOBReader.releaseLock()`
 
@@ -666,10 +626,10 @@ Releases this reader's lock on the underlying {ReadableStream}.
 added: v16.5.0
 -->
 
-Every {ReadableStream} has a controller that is responsible for
-the internal state and management of the stream's queue. The
-`ReadableStreamDefaultController` is the default controller
-implementation for `ReadableStream`s that are not byte-oriented.
+Every {ReadableStream} has a controller that is responsible for the internal
+state and management of the stream's queue. The
+`ReadableStreamDefaultController` is the default controller implementation for
+`ReadableStream`s that are not byte-oriented.
 
 #### `readableStreamDefaultController.close()`
 
@@ -687,8 +647,7 @@ added: v16.5.0
 
 * Type: {number}
 
-Returns the amount of data remaining to fill the {ReadableStream}'s
-queue.
+Returns the amount of data remaining to fill the {ReadableStream}'s queue.
 
 #### `readableStreamDefaultController.enqueue([chunk])`
 
@@ -720,9 +679,9 @@ changes:
     description: Support handling a BYOB pull request from a released reader.
 -->
 
-Every {ReadableStream} has a controller that is responsible for
-the internal state and management of the stream's queue. The
-`ReadableByteStreamController` is for byte-oriented `ReadableStream`s.
+Every {ReadableStream} has a controller that is responsible for the internal
+state and management of the stream's queue. The `ReadableByteStreamController`
+is for byte-oriented `ReadableStream`s.
 
 #### `readableByteStreamController.byobRequest`
 
@@ -748,8 +707,7 @@ added: v16.5.0
 
 * Type: {number}
 
-Returns the amount of data remaining to fill the {ReadableStream}'s
-queue.
+Returns the amount of data remaining to fill the {ReadableStream}'s queue.
 
 #### `readableByteStreamController.enqueue(chunk)`
 
@@ -781,15 +739,13 @@ changes:
     description: This class is now exposed on the global object.
 -->
 
-When using `ReadableByteStreamController` in byte-oriented
-streams, and when using the `ReadableStreamBYOBReader`,
-the `readableByteStreamController.byobRequest` property
-provides access to a `ReadableStreamBYOBRequest` instance
-that represents the current read request. The object
-is used to gain access to the `ArrayBuffer`/`TypedArray`
-that has been provided for the read request to fill,
-and provides methods for signaling that the data has
-been provided.
+When using `ReadableByteStreamController` in byte-oriented streams, and when
+using the `ReadableStreamBYOBReader`, the
+`readableByteStreamController.byobRequest` property provides access to a
+`ReadableStreamBYOBRequest` instance that represents the current read request.
+The object is used to gain access to the `ArrayBuffer`/`TypedArray` that has
+been provided for the read request to fill, and provides methods for signaling
+that the data has been provided.
 
 #### `readableStreamBYOBRequest.respond(bytesWritten)`
 
@@ -799,8 +755,8 @@ added: v16.5.0
 
 * `bytesWritten` {number}
 
-Signals that a `bytesWritten` number of bytes have been written
-to `readableStreamBYOBRequest.view`.
+Signals that a `bytesWritten` number of bytes have been written to
+`readableStreamBYOBRequest.view`.
 
 #### `readableStreamBYOBRequest.respondWithNewView(view)`
 
@@ -810,8 +766,8 @@ added: v16.5.0
 
 * `view` {Buffer|TypedArray|DataView}
 
-Signals that the request has been fulfilled with bytes written
-to a new `Buffer`, `TypedArray`, or `DataView`.
+Signals that the request has been fulfilled with bytes written to a new
+`Buffer`, `TypedArray`, or `DataView`.
 
 #### `readableStreamBYOBRequest.view`
 
@@ -834,9 +790,7 @@ changes:
 The `WritableStream` is a destination to which stream data is sent.
 
 ```mjs
-import {
-  WritableStream,
-} from 'node:stream/web';
+import { WritableStream } from 'node:stream/web';
 
 const stream = new WritableStream({
   write(chunk) {
@@ -889,8 +843,8 @@ added: v16.5.0
 * `reason` {any}
 * Returns: A promise fulfilled with `undefined`.
 
-Abruptly terminates the `WritableStream`. All queued writes will be
-canceled with their associated promises rejected.
+Abruptly terminates the `WritableStream`. All queued writes will be canceled
+with their associated promises rejected.
 
 #### `writableStream.close()`
 
@@ -910,8 +864,8 @@ added: v16.5.0
 
 * Returns: {WritableStreamDefaultWriter}
 
-Creates and returns a new writer instance that can be used to write
-data into the `WritableStream`.
+Creates and returns a new writer instance that can be used to write data into
+the `WritableStream`.
 
 #### `writableStream.locked`
 
@@ -921,9 +875,8 @@ added: v16.5.0
 
 * Type: {boolean}
 
-The `writableStream.locked` property is `false` by default, and is
-switched to `true` while there is an active writer attached to this
-`WritableStream`.
+The `writableStream.locked` property is `false` by default, and is switched to
+`true` while there is an active writer attached to this `WritableStream`.
 
 #### Transferring with postMessage()
 
@@ -971,8 +924,8 @@ added: v16.5.0
 * `reason` {any}
 * Returns: A promise fulfilled with `undefined`.
 
-Abruptly terminates the `WritableStream`. All queued writes will be
-canceled with their associated promises rejected.
+Abruptly terminates the `WritableStream`. All queued writes will be canceled
+with their associated promises rejected.
 
 #### `writableStreamDefaultWriter.close()`
 
@@ -1010,8 +963,8 @@ The amount of data required to fill the {WritableStream}'s queue.
 added: v16.5.0
 -->
 
-* Type: {Promise} Fulfilled with `undefined` when the writer is ready
-  to be used.
+* Type: {Promise} Fulfilled with `undefined` when the writer is ready to be
+  used.
 
 #### `writableStreamDefaultWriter.releaseLock()`
 
@@ -1042,8 +995,8 @@ changes:
     description: This class is now exposed on the global object.
 -->
 
-The `WritableStreamDefaultController` manages the {WritableStream}'s
-internal state.
+The `WritableStreamDefaultController` manages the {WritableStream}'s internal
+state.
 
 #### `writableStreamDefaultController.error([error])`
 
@@ -1053,14 +1006,14 @@ added: v16.5.0
 
 * `error` {any}
 
-Called by user-code to signal that an error has occurred while processing
-the `WritableStream` data. When called, the {WritableStream} will be aborted,
-with currently pending writes canceled.
+Called by user-code to signal that an error has occurred while processing the
+`WritableStream` data. When called, the {WritableStream} will be aborted, with
+currently pending writes canceled.
 
 #### `writableStreamDefaultController.signal`
 
-* Type: {AbortSignal} An `AbortSignal` that can be used to cancel pending
-  write or close operations when a {WritableStream} is aborted.
+* Type: {AbortSignal} An `AbortSignal` that can be used to cancel pending write
+  or close operations when a {WritableStream} is aborted.
 
 ### Class: `TransformStream`
 
@@ -1078,9 +1031,7 @@ and potentially transformed, before being pushed into the `ReadableStream`'s
 queue.
 
 ```mjs
-import {
-  TransformStream,
-} from 'node:stream/web';
+import { TransformStream } from 'node:stream/web';
 
 const transform = new TransformStream({
   transform(chunk, controller) {
@@ -1178,8 +1129,8 @@ changes:
     description: This class is now exposed on the global object.
 -->
 
-The `TransformStreamDefaultController` manages the internal state
-of the `TransformStream`.
+The `TransformStreamDefaultController` manages the internal state of the
+`TransformStream`.
 
 #### `transformStreamDefaultController.desiredSize`
 
@@ -1209,9 +1160,8 @@ added: v16.5.0
 
 * `reason` {any}
 
-Signals to both the readable and writable side that an error has occurred
-while processing the transform data, causing both sides to be abruptly
-closed.
+Signals to both the readable and writable side that an error has occurred while
+processing the transform data, causing both sides to be abruptly closed.
 
 #### `transformStreamDefaultController.terminate()`
 
@@ -1219,8 +1169,8 @@ closed.
 added: v16.5.0
 -->
 
-Closes the readable side of the transport and causes the writable side
-to be abruptly closed with an error.
+Closes the readable side of the transport and causes the writable side to be
+abruptly closed with an error.
 
 ### Class: `ByteLengthQueuingStrategy`
 
@@ -1501,19 +1451,12 @@ added: v17.0.0
 added: v16.7.0
 -->
 
-The utility consumer functions provide common options for consuming
-streams.
+The utility consumer functions provide common options for consuming streams.
 
 They are accessed using:
 
 ```mjs
-import {
-  arrayBuffer,
-  blob,
-  buffer,
-  json,
-  text,
-} from 'node:stream/consumers';
+import { arrayBuffer, blob, buffer, json, text } from 'node:stream/consumers';
 ```
 
 ```cjs
@@ -1533,8 +1476,8 @@ added: v16.7.0
 -->
 
 * `stream` {ReadableStream|stream.Readable|AsyncIterator}
-* Returns: {Promise} Fulfills with an `ArrayBuffer` containing the full
-  contents of the stream.
+* Returns: {Promise} Fulfills with an `ArrayBuffer` containing the full contents
+  of the stream.
 
 ```mjs
 import { arrayBuffer } from 'node:stream/consumers';
@@ -1571,8 +1514,8 @@ added: v16.7.0
 -->
 
 * `stream` {ReadableStream|stream.Readable|AsyncIterator}
-* Returns: {Promise} Fulfills with a {Blob} containing the full contents
-  of the stream.
+* Returns: {Promise} Fulfills with a {Blob} containing the full contents of the
+  stream.
 
 ```mjs
 import { blob } from 'node:stream/consumers';
@@ -1604,8 +1547,8 @@ added: v16.7.0
 -->
 
 * `stream` {ReadableStream|stream.Readable|AsyncIterator}
-* Returns: {Promise} Fulfills with a {Buffer} containing the full
-  contents of the stream.
+* Returns: {Promise} Fulfills with a {Buffer} containing the full contents of
+  the stream.
 
 ```mjs
 import { buffer } from 'node:stream/consumers';
@@ -1641,8 +1584,8 @@ added: v16.7.0
 -->
 
 * `stream` {ReadableStream|stream.Readable|AsyncIterator}
-* Returns: {Promise} Fulfills with the contents of the stream parsed as a
-  UTF-8 encoded string that is then passed through `JSON.parse()`.
+* Returns: {Promise} Fulfills with the contents of the stream parsed as a UTF-8
+  encoded string that is then passed through `JSON.parse()`.
 
 ```mjs
 import { json } from 'node:stream/consumers';
@@ -1690,8 +1633,8 @@ added: v16.7.0
 -->
 
 * `stream` {ReadableStream|stream.Readable|AsyncIterator}
-* Returns: {Promise} Fulfills with the contents of the stream parsed as a
-  UTF-8 encoded string.
+* Returns: {Promise} Fulfills with the contents of the stream parsed as a UTF-8
+  encoded string.
 
 ```mjs
 import { text } from 'node:stream/consumers';

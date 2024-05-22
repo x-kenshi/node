@@ -33,18 +33,19 @@ changes:
 
 <!-- type=global -->
 
-A utility class used to signal cancelation in selected `Promise`-based APIs.
-The API is based on the Web API [`AbortController`][].
+A utility class used to signal cancelation in selected `Promise`-based APIs. The
+API is based on the Web API [`AbortController`][].
 
 ```js
 const ac = new AbortController();
 
-ac.signal.addEventListener('abort', () => console.log('Aborted!'),
-                           { once: true });
+ac.signal.addEventListener('abort', () => console.log('Aborted!'), {
+  once: true,
+});
 
 ac.abort();
 
-console.log(ac.signal.aborted);  // Prints true
+console.log(ac.signal.aborted); // Prints true
 ```
 
 ### `abortController.abort([reason])`
@@ -61,11 +62,11 @@ changes:
     description: Added the new optional reason argument.
 -->
 
-* `reason` {any} An optional reason, retrievable on the `AbortSignal`'s
-  `reason` property.
+* `reason` {any} An optional reason, retrievable on the `AbortSignal`'s `reason`
+  property.
 
-Triggers the abort signal, causing the `abortController.signal` to emit
-the `'abort'` event.
+Triggers the abort signal, causing the `abortController.signal` to emit the
+`'abort'` event.
 
 ### `abortController.signal`
 
@@ -87,8 +88,8 @@ added:
 
 * Extends: {EventTarget}
 
-The `AbortSignal` is used to notify observers when the
-`abortController.abort()` method is called.
+The `AbortSignal` is used to notify observers when the `abortController.abort()`
+method is called.
 
 #### Static method: `AbortSignal.abort([reason])`
 
@@ -117,8 +118,8 @@ added:
   - v16.14.0
 -->
 
-* `delay` {number} The number of milliseconds to wait before triggering
-  the AbortSignal.
+* `delay` {number} The number of milliseconds to wait before triggering the
+  AbortSignal.
 
 Returns a new `AbortSignal` which will be aborted in `delay` milliseconds.
 
@@ -130,11 +131,12 @@ added:
   - v18.17.0
 -->
 
-* `signals` {AbortSignal\[]} The `AbortSignal`s of which to compose a new `AbortSignal`.
+* `signals` {AbortSignal\[]} The `AbortSignal`s of which to compose a new
+  `AbortSignal`.
 
-Returns a new `AbortSignal` which will be aborted if any of the provided
-signals are aborted. Its [`abortSignal.reason`][] will be set to whichever
-one of the `signals` caused it to be aborted.
+Returns a new `AbortSignal` which will be aborted if any of the provided signals
+are aborted. Its [`abortSignal.reason`][] will be set to whichever one of the
+`signals` caused it to be aborted.
 
 #### Event: `'abort'`
 
@@ -144,9 +146,9 @@ added:
   - v14.17.0
 -->
 
-The `'abort'` event is emitted when the `abortController.abort()` method
-is called. The callback is invoked with a single object argument with a
-single `type` property set to `'abort'`:
+The `'abort'` event is emitted when the `abortController.abort()` method is
+called. The callback is invoked with a single object argument with a single
+`type` property set to `'abort'`:
 
 ```js
 const ac = new AbortController();
@@ -155,23 +157,27 @@ const ac = new AbortController();
 ac.signal.onabort = () => console.log('aborted!');
 
 // Or the EventTarget API...
-ac.signal.addEventListener('abort', (event) => {
-  console.log(event.type);  // Prints 'abort'
-}, { once: true });
+ac.signal.addEventListener(
+  'abort',
+  (event) => {
+    console.log(event.type); // Prints 'abort'
+  },
+  { once: true },
+);
 
 ac.abort();
 ```
 
-The `AbortController` with which the `AbortSignal` is associated will only
-ever trigger the `'abort'` event once. We recommended that code check
-that the `abortSignal.aborted` attribute is `false` before adding an `'abort'`
-event listener.
+The `AbortController` with which the `AbortSignal` is associated will only ever
+trigger the `'abort'` event once. We recommended that code check that the
+`abortSignal.aborted` attribute is `false` before adding an `'abort'` event
+listener.
 
 Any event listeners attached to the `AbortSignal` should use the
 `{ once: true }` option (or, if using the `EventEmitter` APIs to attach a
-listener, use the `once()` method) to ensure that the event listener is
-removed as soon as the `'abort'` event is handled. Failure to do so may
-result in memory leaks.
+listener, use the `once()` method) to ensure that the event listener is removed
+as soon as the `'abort'` event is handled. Failure to do so may result in memory
+leaks.
 
 #### `abortSignal.aborted`
 
@@ -193,8 +199,8 @@ added:
 
 * Type: {Function}
 
-An optional callback function that may be set by user code to be notified
-when the `abortController.abort()` function has been called.
+An optional callback function that may be set by user code to be notified when
+the `abortController.abort()` function has been called.
 
 #### `abortSignal.reason`
 
@@ -211,7 +217,7 @@ An optional reason specified when the `AbortSignal` was triggered.
 ```js
 const ac = new AbortController();
 ac.abort(new Error('boom!'));
-console.log(ac.signal.reason);  // Error: boom!
+console.log(ac.signal.reason); // Error: boom!
 ```
 
 #### `abortSignal.throwIfAborted()`
@@ -371,9 +377,9 @@ changes:
 
 > Stability: 2 - Stable.
 
-A browser-compatible implementation of {Crypto}. This global is available
-only if the Node.js binary was compiled with including support for the
-`node:crypto` module.
+A browser-compatible implementation of {Crypto}. This global is available only
+if the Node.js binary was compiled with including support for the `node:crypto`
+module.
 
 ## `crypto`
 
@@ -458,8 +464,9 @@ changes:
 
 <!-- type=global -->
 
-A browser-compatible implementation of the `Event` class. See
-[`EventTarget` and `Event` API][] for more details.
+A browser-compatible implementation of the `Event` class. See \[`EventTarget` and
+`Event` API]\[`EventTarget` and
+\`Event\` API] for more details.
 
 ## `EventTarget`
 
@@ -546,8 +553,8 @@ In browsers, the top-level scope has traditionally been the global scope. This
 means that `var something` will define a new global variable, except within
 ECMAScript modules. In Node.js, this is different. The top-level scope is not
 the global scope; `var something` inside a Node.js module will be local to that
-module, regardless of whether it is a [CommonJS module][] or an
-[ECMAScript module][].
+module, regardless of whether it is a [CommonJS module][] or an [ECMAScript
+module][].
 
 ## Class `Headers`
 
@@ -637,7 +644,9 @@ The `navigator.hardwareConcurrency` read-only property returns the number of
 logical processors available to the current Node.js instance.
 
 ```js
-console.log(`This process is running on ${navigator.hardwareConcurrency} logical processors`);
+console.log(
+  `This process is running on ${navigator.hardwareConcurrency} logical processors`,
+);
 ```
 
 ### `navigator.language`
@@ -650,15 +659,17 @@ added: v21.2.0
 
 The `navigator.language` read-only property returns a string representing the
 preferred language of the Node.js instance. The language will be determined by
-the ICU library used by Node.js at runtime based on the
-default language of the operating system.
+the ICU library used by Node.js at runtime based on the default language of the
+operating system.
 
 The value is representing the language version as defined in [RFC 5646][].
 
 The fallback value on builds without ICU is `'en-US'`.
 
 ```js
-console.log(`The preferred language of the Node.js instance has the tag '${navigator.language}'`);
+console.log(
+  `The preferred language of the Node.js instance has the tag '${navigator.language}'`,
+);
 ```
 
 ### `navigator.languages`
@@ -670,10 +681,10 @@ added: v21.2.0
 * {Array<string>}
 
 The `navigator.languages` read-only property returns an array of strings
-representing the preferred languages of the Node.js instance.
-By default `navigator.languages` contains only the value of
-`navigator.language`, which will be determined by the ICU library used by
-Node.js at runtime based on the default language of the operating system.
+representing the preferred languages of the Node.js instance. By default
+`navigator.languages` contains only the value of `navigator.language`, which
+will be determined by the ICU library used by Node.js at runtime based on the
+default language of the operating system.
 
 The fallback value on builds without ICU is `['en-US']`.
 
@@ -704,8 +715,8 @@ added: v21.1.0
 
 * {string}
 
-The `navigator.userAgent` read-only property returns user agent
-consisting of the runtime name and major version number.
+The `navigator.userAgent` read-only property returns user agent consisting of
+the runtime name and major version number.
 
 ```js
 console.log(`The user-agent is ${navigator.userAgent}`); // Prints "Node.js/21"
@@ -759,8 +770,8 @@ added: v19.0.0
 
 <!-- type=global -->
 
-The `PerformanceObserverEntryList` class. See
-[`PerformanceObserverEntryList`][] for more details.
+The `PerformanceObserverEntryList` class. See [`PerformanceObserverEntryList`][]
+for more details.
 
 ## `PerformanceResourceTiming`
 
@@ -807,10 +818,10 @@ The `queueMicrotask()` method queues a microtask to invoke `callback`. If
 `callback` throws an exception, the [`process` object][] `'uncaughtException'`
 event will be emitted.
 
-The microtask queue is managed by V8 and may be used in a similar manner to
-the [`process.nextTick()`][] queue, which is managed by Node.js. The
-`process.nextTick()` queue is always processed before the microtask queue
-within each turn of the Node.js event loop.
+The microtask queue is managed by V8 and may be used in a similar manner to the
+[`process.nextTick()`][] queue, which is managed by Node.js. The
+`process.nextTick()` queue is always processed before the microtask queue within
+each turn of the Node.js event loop.
 
 ```js
 // Here, `queueMicrotask()` is used to ensure the 'load' event is always
@@ -1095,9 +1106,9 @@ added: v8.0.0
 
 * {Object}
 
-The object that acts as the namespace for all W3C
-[WebAssembly][webassembly-org] related functionality. See the
-[Mozilla Developer Network][webassembly-mdn] for usage and compatibility.
+The object that acts as the namespace for all W3C [WebAssembly][webassembly-org]
+related functionality. See the [Mozilla Developer Network][webassembly-mdn] for
+usage and compatibility.
 
 ## `WebSocket`
 
@@ -1113,8 +1124,8 @@ changes:
 
 > Stability: 1 - Experimental.
 
-A browser-compatible implementation of [`WebSocket`][]. Disable this API
-with the [`--no-experimental-websocket`][] CLI flag.
+A browser-compatible implementation of [`WebSocket`][]. Disable this API with
+the [`--no-experimental-websocket`][] CLI flag.
 
 ## Class: `WritableStream`
 

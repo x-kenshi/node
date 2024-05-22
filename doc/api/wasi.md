@@ -159,8 +159,8 @@ changes:
 -->
 
 * `options` {Object}
-  * `args` {Array} An array of strings that the WebAssembly application will
-    see as command-line arguments. The first argument is the virtual path to the
+  * `args` {Array} An array of strings that the WebAssembly application will see
+    as command-line arguments. The first argument is the virtual path to the
     WASI command itself. **Default:** `[]`.
   * `env` {Object} An object similar to `process.env` that the WebAssembly
     application will see as its environment. **Default:** `{}`.
@@ -169,10 +169,10 @@ changes:
     directories within the file system. The corresponding values in `preopens`
     are the real paths to those directories on the host machine.
   * `returnOnExit` {boolean} By default, when WASI applications call
-    `__wasi_proc_exit()`  `wasi.start()` will return with the exit code
-    specified rather than terminating the process. Setting this option to
-    `false` will cause the Node.js process to exit with the specified
-    exit code instead.  **Default:** `true`.
+    `__wasi_proc_exit()` `wasi.start()` will return with the exit code specified
+    rather than terminating the process. Setting this option to `false` will
+    cause the Node.js process to exit with the specified exit code instead.
+    **Default:** `true`.
   * `stdin` {integer} The file descriptor used as standard input in the
     WebAssembly application. **Default:** `0`.
   * `stdout` {integer} The file descriptor used as standard output in the
@@ -180,8 +180,7 @@ changes:
   * `stderr` {integer} The file descriptor used as standard error in the
     WebAssembly application. **Default:** `2`.
   * `version` {string} The version of WASI requested. Currently the only
-    supported versions are `unstable` and `preview1`. This option is
-    mandatory.
+    supported versions are `unstable` and `preview1`. This option is mandatory.
 
 ### `wasi.getImportObject()`
 
@@ -189,8 +188,8 @@ changes:
 added: v19.8.0
 -->
 
-Return an import object that can be passed to `WebAssembly.instantiate()` if
-no other WASM imports are needed beyond those provided by WASI.
+Return an import object that can be passed to `WebAssembly.instantiate()` if no
+other WASM imports are needed beyond those provided by WASI.
 
 If version `unstable` was passed into the constructor it will return:
 

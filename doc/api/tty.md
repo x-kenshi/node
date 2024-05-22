@@ -14,8 +14,8 @@ directly. However, it can be accessed using:
 const tty = require('node:tty');
 ```
 
-When Node.js detects that it is being run with a text terminal ("TTY")
-attached, [`process.stdin`][] will, by default, be initialized as an instance of
+When Node.js detects that it is being run with a text terminal ("TTY") attached,
+[`process.stdin`][] will, by default, be initialized as an instance of
 `tty.ReadStream` and both [`process.stdout`][] and [`process.stderr`][] will, by
 default, be instances of `tty.WriteStream`. The preferred method of determining
 whether Node.js is being run within a TTY context is to check that the value of
@@ -29,8 +29,7 @@ false
 ```
 
 In most cases, there should be little to no reason for an application to
-manually create instances of the `tty.ReadStream` and `tty.WriteStream`
-classes.
+manually create instances of the `tty.ReadStream` and `tty.WriteStream` classes.
 
 ## Class: `tty.ReadStream`
 
@@ -81,9 +80,7 @@ Allows configuration of `tty.ReadStream` so that it operates as a raw device.
 
 When in raw mode, input is always available character-by-character, not
 including modifiers. Additionally, all special processing of characters by the
-terminal is disabled, including echoing input
-characters. <kbd>Ctrl</kbd>+<kbd>C</kbd> will no longer cause a `SIGINT` when
-in this mode.
+terminal is disabled, including echoing input characters. <kbd>Ctrl</kbd>+<kbd>C</kbd> will no longer cause a `SIGINT` when in this mode.
 
 ## Class: `tty.WriteStream`
 
@@ -94,9 +91,9 @@ added: v0.5.8
 * Extends: {net.Socket}
 
 Represents the writable side of a TTY. In normal circumstances,
-[`process.stdout`][] and [`process.stderr`][] will be the only
-`tty.WriteStream` instances created for a Node.js process and there
-should be no reason to create additional instances.
+[`process.stdout`][] and [`process.stderr`][] will be the only `tty.WriteStream`
+instances created for a Node.js process and there should be no reason to create
+additional instances.
 
 ### Event: `'resize'`
 
@@ -104,8 +101,8 @@ should be no reason to create additional instances.
 added: v0.7.7
 -->
 
-The `'resize'` event is emitted whenever either of the `writeStream.columns`
-or `writeStream.rows` properties have changed. No arguments are passed to the
+The `'resize'` event is emitted whenever either of the `writeStream.columns` or
+`writeStream.rows` properties have changed. No arguments are passed to the
 listener callback when called.
 
 ```js
@@ -205,9 +202,9 @@ Returns:
 Use this to determine what colors the terminal supports. Due to the nature of
 colors in terminals it is possible to either have false positives or false
 negatives. It depends on process information and the environment variables that
-may lie about what terminal is used.
-It is possible to pass in an `env` object to simulate the usage of a specific
-terminal. This can be useful to check how specific environment settings behave.
+may lie about what terminal is used. It is possible to pass in an `env` object
+to simulate the usage of a specific terminal. This can be useful to check how
+specific environment settings behave.
 
 To enforce a specific color support, use one of the below environment settings.
 
@@ -227,10 +224,10 @@ added: v0.7.7
 
 * Returns: {number\[]}
 
-`writeStream.getWindowSize()` returns the size of the TTY
-corresponding to this `WriteStream`. The array is of the type
-`[numColumns, numRows]` where `numColumns` and `numRows` represent the number
-of columns and rows in the corresponding TTY.
+`writeStream.getWindowSize()` returns the size of the TTY corresponding to this
+`WriteStream`. The array is of the type `[numColumns, numRows]` where
+`numColumns` and `numRows` represent the number of columns and rows in the
+corresponding TTY.
 
 ### `writeStream.hasColors([count][, env])`
 
@@ -298,8 +295,8 @@ current position.
 added: v0.7.7
 -->
 
-A `number` specifying the number of rows the TTY currently has. This property
-is updated whenever the `'resize'` event is emitted.
+A `number` specifying the number of rows the TTY currently has. This property is
+updated whenever the `'resize'` event is emitted.
 
 ## `tty.isatty(fd)`
 
@@ -310,8 +307,8 @@ added: v0.5.8
 * `fd` {number} A numeric file descriptor
 * Returns: {boolean}
 
-The `tty.isatty()` method returns `true` if the given `fd` is associated with
-a TTY and `false` if it is not, including whenever `fd` is not a non-negative
+The `tty.isatty()` method returns `true` if the given `fd` is associated with a
+TTY and `false` if it is not, including whenever `fd` is not a non-negative
 integer.
 
 [`process.stderr`]: process.md#processstderr

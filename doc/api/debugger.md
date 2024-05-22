@@ -30,9 +30,9 @@ Break on start in myscript.js:2
 debug>
 ```
 
-The debugger automatically breaks on the first executable line. To instead
-run until the first breakpoint (specified by a [`debugger`][] statement), set
-the `NODE_INSPECT_RESUME_ON_START` environment variable to `1`.
+The debugger automatically breaks on the first executable line. To instead run
+until the first breakpoint (specified by a [`debugger`][] statement), set the
+`NODE_INSPECT_RESUME_ON_START` environment variable to `1`.
 
 ```console
 $ cat myscript.js
@@ -92,10 +92,10 @@ command.
 
 ## Watchers
 
-It is possible to watch expression and variable values while debugging. On
-every breakpoint, each expression from the watchers list will be evaluated
-in the current context and displayed immediately before the breakpoint's
-source code listing.
+It is possible to watch expression and variable values while debugging. On every
+breakpoint, each expression from the watchers list will be evaluated in the
+current context and displayed immediately before the breakpoint's source code
+listing.
 
 To begin watching an expression, type `watch('my_expression')`. The command
 `watchers` will print the active watchers. To remove a watcher, type
@@ -125,8 +125,8 @@ To begin watching an expression, type `watch('my_expression')`. The command
 * `clearBreakpoint('script.js', 1)`, `cb(...)`: Clear breakpoint in `script.js`
   on line 1
 
-It is also possible to set a breakpoint in a file (module) that
-is not loaded yet:
+It is also possible to set a breakpoint in a file (module) that is not loaded
+yet:
 
 ```console
 $ node inspect main.js
@@ -208,8 +208,8 @@ debug>
 * `profiles`: List all completed CPU profiling sessions
 * `profiles[n].save(filepath = 'node.cpuprofile')`: Save CPU profiling session
   to disk as JSON
-* `takeHeapSnapshot(filepath = 'node.heapsnapshot')`: Take a heap snapshot
-  and save to disk as JSON
+* `takeHeapSnapshot(filepath = 'node.heapsnapshot')`: Take a heap snapshot and
+  save to disk as JSON
 
 ### Execution control
 
@@ -226,29 +226,32 @@ debug>
 
 ### V8 inspector integration for Node.js
 
-V8 Inspector integration allows attaching Chrome DevTools to Node.js
-instances for debugging and profiling. It uses the
-[Chrome DevTools Protocol][].
+V8 Inspector integration allows attaching Chrome DevTools to Node.js instances
+for debugging and profiling. It uses the [Chrome DevTools Protocol][].
 
 V8 Inspector can be enabled by passing the `--inspect` flag when starting a
 Node.js application. It is also possible to supply a custom port with that flag,
 e.g. `--inspect=9222` will accept DevTools connections on port 9222.
 
-Using the `--inspect` flag will execute the code immediately before debugger is connected.
-This means that the code will start running before you can start debugging, which might
-not be ideal if you want to debug from the very beginning.
+Using the `--inspect` flag will execute the code immediately before debugger is
+connected. This means that the code will start running before you can start
+debugging, which might not be ideal if you want to debug from the very
+beginning.
 
 In such cases, you have two alternatives:
 
-1. `--inspect-wait` flag: This flag will wait for debugger to be attached before executing the code.
-   This allows you to start debugging right from the beginning of the execution.
-2. `--inspect-brk` flag: Unlike `--inspect`, this flag will break on the first line of the code
-   as soon as debugger is attached. This is useful when you want to debug the code step by step
-   from the very beginning, without any code execution prior to debugging.
+1. `--inspect-wait` flag: This flag will wait for debugger to be attached before
+   executing the code. This allows you to start debugging right from the
+   beginning of the execution.
+2. `--inspect-brk` flag: Unlike `--inspect`, this flag will break on the first
+   line of the code as soon as debugger is attached. This is useful when you
+   want to debug the code step by step from the very beginning, without any code
+   execution prior to debugging.
 
-So, when deciding between `--inspect`, `--inspect-wait`, and `--inspect-brk`, consider whether you want
-the code to start executing immediately, wait for debugger to be attached before execution,
-or break on the first line for step-by-step debugging.
+So, when deciding between `--inspect`, `--inspect-wait`, and `--inspect-brk`,
+consider whether you want the code to start executing immediately, wait for
+debugger to be attached before execution, or break on the first line for
+step-by-step debugging.
 
 ```console
 $ node --inspect index.js
@@ -256,15 +259,14 @@ Debugger listening on ws://127.0.0.1:9229/dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
 For help, see: https://nodejs.org/en/docs/inspector
 ```
 
-(In the example above, the UUID dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
-at the end of the URL is generated on the fly, it varies in different
-debugging sessions.)
+(In the example above, the UUID dc9010dd-f8b8-4ac5-a510-c1a114ec7d29 at the end
+of the URL is generated on the fly, it varies in different debugging sessions.)
 
-If the Chrome browser is older than 66.0.3345.0,
-use `inspector.html` instead of `js_app.html` in the above URL.
+If the Chrome browser is older than 66.0.3345.0, use `inspector.html` instead of
+`js_app.html` in the above URL.
 
-Chrome DevTools doesn't support debugging [worker threads][] yet.
-[ndb][] can be used to debug them.
+Chrome DevTools doesn't support debugging [worker threads][] yet. [ndb][] can be
+used to debug them.
 
 [Chrome DevTools Protocol]: https://chromedevtools.github.io/devtools-protocol/
 [`debugger`]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/debugger

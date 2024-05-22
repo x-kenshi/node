@@ -2,24 +2,24 @@
 
 <!--introduced_in=v12.19.0-->
 
-Node.js provides a number of C++ APIs that can be used to execute JavaScript
-in a Node.js environment from other C++ software.
+Node.js provides a number of C++ APIs that can be used to execute JavaScript in
+a Node.js environment from other C++ software.
 
 The documentation for these APIs can be found in [src/node.h][] in the Node.js
 source tree. In addition to the APIs exposed by Node.js, some required concepts
 are provided by the V8 embedder API.
 
-Because using Node.js as an embedded library is different from writing code
-that is executed by Node.js, breaking changes do not follow typical Node.js
+Because using Node.js as an embedded library is different from writing code that
+is executed by Node.js, breaking changes do not follow typical Node.js
 [deprecation policy][] and may occur on each semver-major release without prior
 warning.
 
 ## Example embedding application
 
-The following sections will provide an overview over how to use these APIs
-to create an application from scratch that will perform the equivalent of
-`node -e <code>`, i.e. that will take a piece of JavaScript and run it in
-a Node.js-specific environment.
+The following sections will provide an overview over how to use these APIs to
+create an application from scratch that will perform the equivalent of
+`node -e <code>`, i.e. that will take a piece of JavaScript and run it in a
+Node.js-specific environment.
 
 The full code can be found [in the Node.js source tree][embedtest.cc].
 
@@ -92,21 +92,21 @@ to as `node::Environment`. Each `node::Environment` is associated with:
   shared by multiple `node::Environment`s that use the same `v8::Isolate`.
   Currently, no testing if performed for this scenario.
 
-In order to set up a `v8::Isolate`, an `v8::ArrayBuffer::Allocator` needs
-to be provided. One possible choice is the default Node.js allocator, which
-can be created through `node::ArrayBufferAllocator::Create()`. Using the Node.js
-allocator allows minor performance optimizations when addons use the Node.js
-C++ `Buffer` API, and is required in order to track `ArrayBuffer` memory in
+In order to set up a `v8::Isolate`, an `v8::ArrayBuffer::Allocator` needs to be
+provided. One possible choice is the default Node.js allocator, which can be
+created through `node::ArrayBufferAllocator::Create()`. Using the Node.js
+allocator allows minor performance optimizations when addons use the Node.js C++
+`Buffer` API, and is required in order to track `ArrayBuffer` memory in
 [`process.memoryUsage()`][].
 
-Additionally, each `v8::Isolate` that is used for a Node.js instance needs to
-be registered and unregistered with the `MultiIsolatePlatform` instance, if one
-is being used, in order for the platform to know which event loop to use
-for tasks scheduled by the `v8::Isolate`.
+Additionally, each `v8::Isolate` that is used for a Node.js instance needs to be
+registered and unregistered with the `MultiIsolatePlatform` instance, if one is
+being used, in order for the platform to know which event loop to use for tasks
+scheduled by the `v8::Isolate`.
 
-The `node::NewIsolate()` helper function creates a `v8::Isolate`,
-sets it up with some Node.js-specific hooks (e.g. the Node.js error handler),
-and registers it with the platform automatically.
+The `node::NewIsolate()` helper function creates a `v8::Isolate`, sets it up
+with some Node.js-specific hooks (e.g. the Node.js error handler), and registers
+it with the platform automatically.
 
 ```cpp
 int RunNodeInstance(MultiIsolatePlatform* platform,

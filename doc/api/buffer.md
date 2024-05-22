@@ -159,40 +159,39 @@ The character encodings currently supported by Node.js are the following:
 Converting a `Buffer` into a string using one of the above is referred to as
 decoding, and converting a string into a `Buffer` is referred to as encoding.
 
-Node.js also supports the following binary-to-text encodings. For
-binary-to-text encodings, the naming convention is reversed: Converting a
-`Buffer` into a string is typically referred to as encoding, and converting a
-string into a `Buffer` as decoding.
+Node.js also supports the following binary-to-text encodings. For binary-to-text
+encodings, the naming convention is reversed: Converting a `Buffer` into a
+string is typically referred to as encoding, and converting a string into a
+`Buffer` as decoding.
 
-* `'base64'`: [Base64][] encoding. When creating a `Buffer` from a string,
-  this encoding will also correctly accept "URL and Filename Safe Alphabet" as
+* `'base64'`: [Base64][] encoding. When creating a `Buffer` from a string, this
+  encoding will also correctly accept "URL and Filename Safe Alphabet" as
   specified in [RFC 4648, Section 5][]. Whitespace characters such as spaces,
   tabs, and new lines contained within the base64-encoded string are ignored.
 
-* `'base64url'`: [base64url][] encoding as specified in
-  [RFC 4648, Section 5][]. When creating a `Buffer` from a string, this
-  encoding will also correctly accept regular base64-encoded strings. When
-  encoding a `Buffer` to a string, this encoding will omit padding.
+* `'base64url'`: [base64url][] encoding as specified in [RFC 4648, Section 5][].
+  When creating a `Buffer` from a string, this encoding will also correctly
+  accept regular base64-encoded strings. When encoding a `Buffer` to a string,
+  this encoding will omit padding.
 
-* `'hex'`: Encode each byte as two hexadecimal characters. Data truncation
-  may occur when decoding strings that do not exclusively consist of an even
-  number of hexadecimal characters. See below for an example.
+* `'hex'`: Encode each byte as two hexadecimal characters. Data truncation may
+  occur when decoding strings that do not exclusively consist of an even number
+  of hexadecimal characters. See below for an example.
 
 The following legacy character encodings are also supported:
 
 * `'ascii'`: For 7-bit [ASCII][] data only. When encoding a string into a
   `Buffer`, this is equivalent to using `'latin1'`. When decoding a `Buffer`
   into a string, using this encoding will additionally unset the highest bit of
-  each byte before decoding as `'latin1'`.
-  Generally, there should be no reason to use this encoding, as `'utf8'`
-  (or, if the data is known to always be ASCII-only, `'latin1'`) will be a
-  better choice when encoding or decoding ASCII-only text. It is only provided
-  for legacy compatibility.
+  each byte before decoding as `'latin1'`. Generally, there should be no reason
+  to use this encoding, as `'utf8'` (or, if the data is known to always be
+  ASCII-only, `'latin1'`) will be a better choice when encoding or decoding
+  ASCII-only text. It is only provided for legacy compatibility.
 
-* `'binary'`: Alias for `'latin1'`.
-  The name of this encoding can be very misleading, as all of the
-  encodings listed here convert between strings and binary data. For converting
-  between strings and `Buffer`s, typically `'utf8'` is the right choice.
+* `'binary'`: Alias for `'latin1'`. The name of this encoding can be very
+  misleading, as all of the encodings listed here convert between strings and
+  binary data. For converting between strings and `Buffer`s, typically `'utf8'`
+  is the right choice.
 
 * `'ucs2'`, `'ucs-2'`: Aliases of `'utf16le'`. UCS-2 used to refer to a variant
   of UTF-16 that did not support characters that had code points larger than
@@ -226,8 +225,8 @@ Buffer.from('1634', 'hex');
 // Prints <Buffer 16 34>, all data represented.
 ```
 
-Modern Web browsers follow the [WHATWG Encoding Standard][] which aliases
-both `'latin1'` and `'ISO-8859-1'` to `'win-1252'`. This means that while doing
+Modern Web browsers follow the [WHATWG Encoding Standard][] which aliases both
+`'latin1'` and `'ISO-8859-1'` to `'win-1252'`. This means that while doing
 something like `http.get()`, if the returned charset is one of those listed in
 the WHATWG specification it is possible that the server actually returned
 `'win-1252'`-encoded data, and using `'latin1'` encoding may incorrectly decode
@@ -249,20 +248,21 @@ however, subtle incompatibilities between the `Buffer` API and the
 
 In particular:
 
-* While [`TypedArray.prototype.slice()`][] creates a copy of part of the `TypedArray`,
-  [`Buffer.prototype.slice()`][`buf.slice()`] creates a view over the existing `Buffer`
-  without copying. This behavior can be surprising, and only exists for legacy
-  compatibility. [`TypedArray.prototype.subarray()`][] can be used to achieve
-  the behavior of [`Buffer.prototype.slice()`][`buf.slice()`] on both `Buffer`s
-  and other `TypedArray`s and should be preferred.
+* While [`TypedArray.prototype.slice()`][] creates a copy of part of the
+  `TypedArray`, [`Buffer.prototype.slice()`][`buf.slice()`] creates a view over
+  the existing `Buffer` without copying. This behavior can be surprising, and
+  only exists for legacy compatibility. [`TypedArray.prototype.subarray()`][]
+  can be used to achieve the behavior of
+  [`Buffer.prototype.slice()`][`buf.slice()`] on both `Buffer`s and other
+  `TypedArray`s and should be preferred.
 * [`buf.toString()`][] is incompatible with its `TypedArray` equivalent.
 * A number of methods, e.g. [`buf.indexOf()`][], support additional arguments.
 
 There are two ways to create new [`TypedArray`][] instances from a `Buffer`:
 
 * Passing a `Buffer` to a [`TypedArray`][] constructor will copy the `Buffer`s
-  contents, interpreted as an array of integers, and not as a byte sequence
-  of the target type.
+  contents, interpreted as an array of integers, and not as a byte sequence of
+  the target type.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -296,7 +296,8 @@ const buf = Buffer.from('hello', 'utf16le');
 const uint16array = new Uint16Array(
   buf.buffer,
   buf.byteOffset,
-  buf.length / Uint16Array.BYTES_PER_ELEMENT);
+  buf.length / Uint16Array.BYTES_PER_ELEMENT,
+);
 
 console.log(uint16array);
 
@@ -310,17 +311,18 @@ const buf = Buffer.from('hello', 'utf16le');
 const uint16array = new Uint16Array(
   buf.buffer,
   buf.byteOffset,
-  buf.length / Uint16Array.BYTES_PER_ELEMENT);
+  buf.length / Uint16Array.BYTES_PER_ELEMENT,
+);
 
 console.log(uint16array);
 
 // Prints: Uint16Array(5) [ 104, 101, 108, 108, 111 ]
 ```
 
-It is possible to create a new `Buffer` that shares the same allocated
-memory as a [`TypedArray`][] instance by using the `TypedArray` object's
-`.buffer` property in the same way. [`Buffer.from()`][`Buffer.from(arrayBuf)`]
-behaves like `new Uint8Array()` in this context.
+It is possible to create a new `Buffer` that shares the same allocated memory as
+a [`TypedArray`][] instance by using the `TypedArray` object's `.buffer`
+property in the same way. [`Buffer.from()`][`Buffer.from(arrayBuf)`] behaves
+like `new Uint8Array()` in this context.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -376,8 +378,8 @@ console.log(buf2);
 // Prints: <Buffer 88 13 70 17>
 ```
 
-When creating a `Buffer` using a [`TypedArray`][]'s `.buffer`, it is
-possible to use only a portion of the underlying [`ArrayBuffer`][] by passing in
+When creating a `Buffer` using a [`TypedArray`][]'s `.buffer`, it is possible to
+use only a portion of the underlying [`ArrayBuffer`][] by passing in
 `byteOffset` and `length` parameters.
 
 ```mjs
@@ -447,8 +449,8 @@ for (const b of buf) {
 //   3
 ```
 
-Additionally, the [`buf.values()`][], [`buf.keys()`][], and
-[`buf.entries()`][] methods can be used to create iterators.
+Additionally, the [`buf.values()`][], [`buf.keys()`][], and [`buf.entries()`][]
+methods can be used to create iterators.
 
 ## Class: `Blob`
 
@@ -484,12 +486,12 @@ changes:
   array of string, {ArrayBuffer}, {TypedArray}, {DataView}, or {Blob} objects,
   or any mix of such objects, that will be stored within the `Blob`.
 * `options` {Object}
-  * `endings` {string} One of either `'transparent'` or `'native'`. When set
-    to `'native'`, line endings in string source parts will be converted to
-    the platform native line-ending as specified by `require('node:os').EOL`.
+  * `endings` {string} One of either `'transparent'` or `'native'`. When set to
+    `'native'`, line endings in string source parts will be converted to the
+    platform native line-ending as specified by `require('node:os').EOL`.
   * `type` {string} The Blob content-type. The intent is for `type` to convey
-    the MIME media type of the data, however no validation of the type format
-    is performed.
+    the MIME media type of the data, however no validation of the type format is
+    performed.
 
 Creates a new `Blob` object containing a concatenation of the given sources.
 
@@ -510,8 +512,8 @@ added:
 
 * Returns: {Promise}
 
-Returns a promise that fulfills with an {ArrayBuffer} containing a copy of
-the `Blob` data.
+Returns a promise that fulfills with an {ArrayBuffer} containing a copy of the
+`Blob` data.
 
 ### `blob.size`
 
@@ -636,8 +638,8 @@ blob.text().then(console.log);
 
 ## Class: `Buffer`
 
-The `Buffer` class is a global type for dealing with binary data directly.
-It can be constructed in a variety of ways.
+The `Buffer` class is a global type for dealing with binary data directly. It
+can be constructed in a variety of ways.
 
 ### Static method: `Buffer.alloc(size[, fill[, encoding]])`
 
@@ -669,11 +671,11 @@ changes:
 * `size` {integer} The desired length of the new `Buffer`.
 * `fill` {string|Buffer|Uint8Array|integer} A value to pre-fill the new `Buffer`
   with. **Default:** `0`.
-* `encoding` {string} If `fill` is a string, this is its encoding.
-  **Default:** `'utf8'`.
+* `encoding` {string} If `fill` is a string, this is its encoding. **Default:**
+  `'utf8'`.
 
-Allocates a new `Buffer` of `size` bytes. If `fill` is `undefined`, the
-`Buffer` will be zero-filled.
+Allocates a new `Buffer` of `size` bytes. If `fill` is `undefined`, the `Buffer`
+will be zero-filled.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -693,9 +695,8 @@ console.log(buf);
 // Prints: <Buffer 00 00 00 00 00>
 ```
 
-If `size` is larger than
-[`buffer.constants.MAX_LENGTH`][] or smaller than 0, [`ERR_OUT_OF_RANGE`][]
-is thrown.
+If `size` is larger than [`buffer.constants.MAX_LENGTH`][] or smaller than 0,
+[`ERR_OUT_OF_RANGE`][] is thrown.
 
 If `fill` is specified, the allocated `Buffer` will be initialized by calling
 [`buf.fill(fill)`][`buf.fill()`].
@@ -767,13 +768,13 @@ changes:
 * `size` {integer} The desired length of the new `Buffer`.
 
 Allocates a new `Buffer` of `size` bytes. If `size` is larger than
-[`buffer.constants.MAX_LENGTH`][] or smaller than 0, [`ERR_OUT_OF_RANGE`][]
-is thrown.
+[`buffer.constants.MAX_LENGTH`][] or smaller than 0, [`ERR_OUT_OF_RANGE`][] is
+thrown.
 
 The underlying memory for `Buffer` instances created in this way is _not
-initialized_. The contents of the newly created `Buffer` are unknown and
-_may contain sensitive data_. Use [`Buffer.alloc()`][] instead to initialize
-`Buffer` instances with zeroes.
+initialized_. The contents of the newly created `Buffer` are unknown and _may
+contain sensitive data_. Use [`Buffer.alloc()`][] instead to initialize `Buffer`
+instances with zeroes.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -805,11 +806,11 @@ console.log(buf);
 
 A `TypeError` will be thrown if `size` is not a number.
 
-The `Buffer` module pre-allocates an internal `Buffer` instance of
-size [`Buffer.poolSize`][] that is used as a pool for the fast allocation of new
-`Buffer` instances created using [`Buffer.allocUnsafe()`][], [`Buffer.from(array)`][],
-and [`Buffer.concat()`][] only when `size` is less than
-`Buffer.poolSize >>> 1` (floor of [`Buffer.poolSize`][] divided by two).
+The `Buffer` module pre-allocates an internal `Buffer` instance of size
+[`Buffer.poolSize`][] that is used as a pool for the fast allocation of new
+`Buffer` instances created using [`Buffer.allocUnsafe()`][],
+[`Buffer.from(array)`][], and [`Buffer.concat()`][] only when `size` is less
+than `Buffer.poolSize >>> 1` (floor of [`Buffer.poolSize`][] divided by two).
 
 Use of this pre-allocated internal memory pool is a key difference between
 calling `Buffer.alloc(size, fill)` vs. `Buffer.allocUnsafe(size).fill(fill)`.
@@ -837,13 +838,13 @@ changes:
 * `size` {integer} The desired length of the new `Buffer`.
 
 Allocates a new `Buffer` of `size` bytes. If `size` is larger than
-[`buffer.constants.MAX_LENGTH`][] or smaller than 0, [`ERR_OUT_OF_RANGE`][]
-is thrown. A zero-length `Buffer` is created if `size` is 0.
+[`buffer.constants.MAX_LENGTH`][] or smaller than 0, [`ERR_OUT_OF_RANGE`][] is
+thrown. A zero-length `Buffer` is created if `size` is 0.
 
 The underlying memory for `Buffer` instances created in this way is _not
-initialized_. The contents of the newly created `Buffer` are unknown and
-_may contain sensitive data_. Use [`buf.fill(0)`][`buf.fill()`] to initialize
-such `Buffer` instances with zeroes.
+initialized_. The contents of the newly created `Buffer` are unknown and _may
+contain sensitive data_. Use [`buf.fill(0)`][`buf.fill()`] to initialize such
+`Buffer` instances with zeroes.
 
 When using [`Buffer.allocUnsafe()`][] to allocate new `Buffer` instances,
 allocations under 4 KiB are sliced from a single pre-allocated `Buffer`. This
@@ -853,9 +854,9 @@ performance and memory usage by eliminating the need to track and clean up as
 many individual `ArrayBuffer` objects.
 
 However, in the case where a developer may need to retain a small chunk of
-memory from a pool for an indeterminate amount of time, it may be appropriate
-to create an un-pooled `Buffer` instance using `Buffer.allocUnsafeSlow()` and
-then copying out the relevant bits.
+memory from a pool for an indeterminate amount of time, it may be appropriate to
+create an un-pooled `Buffer` instance using `Buffer.allocUnsafeSlow()` and then
+copying out the relevant bits.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -919,9 +920,9 @@ changes:
   **Default:** `'utf8'`.
 * Returns: {integer} The number of bytes contained within `string`.
 
-Returns the byte length of a string when encoded using `encoding`.
-This is not the same as [`String.prototype.length`][], which does not account
-for the encoding that is used to convert the string into bytes.
+Returns the byte length of a string when encoded using `encoding`. This is not
+the same as [`String.prototype.length`][], which does not account for the
+encoding that is used to convert the string into bytes.
 
 For `'base64'`, `'base64url'`, and `'hex'`, this function assumes valid input.
 For strings that contain non-base64/hex-encoded data (e.g. whitespace), the
@@ -933,8 +934,10 @@ import { Buffer } from 'node:buffer';
 
 const str = '\u00bd + \u00bc = \u00be';
 
-console.log(`${str}: ${str.length} characters, ` +
-            `${Buffer.byteLength(str, 'utf8')} bytes`);
+console.log(
+  `${str}: ${str.length} characters, ` +
+    `${Buffer.byteLength(str, 'utf8')} bytes`,
+);
 // Prints: ½ + ¼ = ¾: 9 characters, 12 bytes
 ```
 
@@ -943,14 +946,16 @@ const { Buffer } = require('node:buffer');
 
 const str = '\u00bd + \u00bc = \u00be';
 
-console.log(`${str}: ${str.length} characters, ` +
-            `${Buffer.byteLength(str, 'utf8')} bytes`);
+console.log(
+  `${str}: ${str.length} characters, ` +
+    `${Buffer.byteLength(str, 'utf8')} bytes`,
+);
 // Prints: ½ + ¼ = ¾: 9 characters, 12 bytes
 ```
 
 When `string` is a `Buffer`/[`DataView`][]/[`TypedArray`][]/[`ArrayBuffer`][]/
-[`SharedArrayBuffer`][], the byte length as reported by `.byteLength`
-is returned.
+[`SharedArrayBuffer`][], the byte length as reported by `.byteLength` is
+returned.
 
 ### Static method: `Buffer.compare(buf1, buf2)`
 
@@ -1007,8 +1012,8 @@ changes:
 
 * `list` {Buffer\[] | Uint8Array\[]} List of `Buffer` or [`Uint8Array`][]
   instances to concatenate.
-* `totalLength` {integer} Total length of the `Buffer` instances in `list`
-  when concatenated.
+* `totalLength` {integer} Total length of the `Buffer` instances in `list` when
+  concatenated.
 * Returns: {Buffer}
 
 Returns a new `Buffer` which is the result of concatenating all the `Buffer`
@@ -1079,8 +1084,8 @@ added:
 
 * `view` {TypedArray} The {TypedArray} to copy.
 * `offset` {integer} The starting offset within `view`. **Default:**: `0`.
-* `length` {integer} The number of elements from `view` to copy.
-  **Default:** `view.length - offset`.
+* `length` {integer} The number of elements from `view` to copy. **Default:**
+  `view.length - offset`.
 
 Copies the underlying memory of `view` into a new `Buffer`.
 
@@ -1119,8 +1124,8 @@ const buf = Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72]);
 ```
 
 If `array` is an `Array`-like object (that is, one with a `length` property of
-type `number`), it is treated as if it is an array, unless it is a `Buffer` or
-a `Uint8Array`. This means all other `TypedArray` variants get treated as an
+type `number`), it is treated as if it is an array, unless it is a `Buffer` or a
+`Uint8Array`. This means all other `TypedArray` variants get treated as an
 `Array`. To create a `Buffer` from the bytes backing a `TypedArray`, use
 [`Buffer.copyBytesFrom()`][].
 
@@ -1140,8 +1145,8 @@ added: v5.10.0
   [`SharedArrayBuffer`][], for example the `.buffer` property of a
   [`TypedArray`][].
 * `byteOffset` {integer} Index of first byte to expose. **Default:** `0`.
-* `length` {integer} Number of bytes to expose.
-  **Default:** `arrayBuffer.byteLength - byteOffset`.
+* `length` {integer} Number of bytes to expose. **Default:**
+  `arrayBuffer.byteLength - byteOffset`.
 
 This creates a view of the [`ArrayBuffer`][] without copying the underlying
 memory. For example, when passed a reference to the `.buffer` property of a
@@ -1217,10 +1222,10 @@ A `TypeError` will be thrown if `arrayBuffer` is not an [`ArrayBuffer`][] or a
 [`SharedArrayBuffer`][] or another type appropriate for `Buffer.from()`
 variants.
 
-It is important to remember that a backing `ArrayBuffer` can cover a range
-of memory that extends beyond the bounds of a `TypedArray` view. A new
-`Buffer` created using the `buffer` property of a `TypedArray` may extend
-beyond the range of the `TypedArray`:
+It is important to remember that a backing `ArrayBuffer` can cover a range of
+memory that extends beyond the bounds of a `TypedArray` view. A new `Buffer`
+created using the `buffer` property of a `TypedArray` may extend beyond the
+range of the `TypedArray`:
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -1430,8 +1435,8 @@ added: v0.9.1
 * `encoding` {string} A character encoding name to check.
 * Returns: {boolean}
 
-Returns `true` if `encoding` is the name of a supported character encoding,
-or `false` otherwise.
+Returns `true` if `encoding` is the name of a supported character encoding, or
+`false` otherwise.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -1481,8 +1486,8 @@ for pooling. This value may be modified.
 * `index` {integer}
 
 The index operator `[index]` can be used to get and set the octet at position
-`index` in `buf`. The values refer to individual bytes, so the legal value
-range is between `0x00` and `0xFF` (hex) or `0` and `255` (decimal).
+`index` in `buf`. The values refer to individual bytes, so the legal value range
+is between `0x00` and `0xFF` (hex) or `0` and `255` (decimal).
 
 This operator is inherited from `Uint8Array`, so its behavior on out-of-bounds
 access is the same as `Uint8Array`. In other words, `buf[index]` returns
@@ -1558,16 +1563,16 @@ console.log(buffer.buffer === arrayBuffer);
 
 * {integer} The `byteOffset` of the `Buffer`s underlying `ArrayBuffer` object.
 
-When setting `byteOffset` in `Buffer.from(ArrayBuffer, byteOffset, length)`,
-or sometimes when allocating a `Buffer` smaller than `Buffer.poolSize`, the
-buffer does not start from a zero offset on the underlying `ArrayBuffer`.
+When setting `byteOffset` in `Buffer.from(ArrayBuffer, byteOffset, length)`, or
+sometimes when allocating a `Buffer` smaller than `Buffer.poolSize`, the buffer
+does not start from a zero offset on the underlying `ArrayBuffer`.
 
 This can cause problems when accessing the underlying `ArrayBuffer` directly
-using `buf.buffer`, as other parts of the `ArrayBuffer` may be unrelated
-to the `Buffer` object itself.
+using `buf.buffer`, as other parts of the `ArrayBuffer` may be unrelated to the
+`Buffer` object itself.
 
-A common issue when creating a `TypedArray` object that shares its memory with
-a `Buffer` is that in this case one needs to specify the `byteOffset` correctly:
+A common issue when creating a `TypedArray` object that shares its memory with a
+`Buffer` is that in this case one needs to specify the `byteOffset` correctly:
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -1614,13 +1619,13 @@ changes:
   (not inclusive). **Default:** `target.length`.
 * `sourceStart` {integer} The offset within `buf` at which to begin comparison.
   **Default:** `0`.
-* `sourceEnd` {integer} The offset within `buf` at which to end comparison
-  (not inclusive). **Default:** [`buf.length`][].
+* `sourceEnd` {integer} The offset within `buf` at which to end comparison (not
+  inclusive). **Default:** [`buf.length`][].
 * Returns: {integer}
 
-Compares `buf` with `target` and returns a number indicating whether `buf`
-comes before, after, or is the same as `target` in sort order.
-Comparison is based on the actual sequence of bytes in each `Buffer`.
+Compares `buf` with `target` and returns a number indicating whether `buf` comes
+before, after, or is the same as `target` in sort order. Comparison is based on
+the actual sequence of bytes in each `Buffer`.
 
 * `0` is returned if `target` is the same as `buf`
 * `1` is returned if `target` should come _before_ `buf` when sorted.
@@ -1712,8 +1717,8 @@ added: v0.1.90
 -->
 
 * `target` {Buffer|Uint8Array} A `Buffer` or [`Uint8Array`][] to copy into.
-* `targetStart` {integer} The offset within `target` at which to begin
-  writing. **Default:** `0`.
+* `targetStart` {integer} The offset within `target` at which to begin writing.
+  **Default:** `0`.
 * `sourceStart` {integer} The offset within `buf` from which to begin copying.
   **Default:** `0`.
 * `sourceEnd` {integer} The offset within `buf` at which to stop copying (not
@@ -1724,8 +1729,8 @@ Copies data from a region of `buf` to a region in `target`, even if the `target`
 memory region overlaps with `buf`.
 
 [`TypedArray.prototype.set()`][] performs the same operation, and is available
-for all TypedArrays, including Node.js `Buffer`s, although it takes
-different function arguments.
+for all TypedArrays, including Node.js `Buffer`s, although it takes different
+function arguments.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -1975,8 +1980,8 @@ console.log(c.fill(''));
 integer. If the resulting integer is greater than `255` (decimal), `buf` will be
 filled with `value & 255`.
 
-If the final write of a `fill()` operation falls on a multi-byte character,
-then only the bytes of that character that fit into `buf` are written:
+If the final write of a `fill()` operation falls on a multi-byte character, then
+only the bytes of that character that fit into `buf` are written:
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -1996,8 +2001,8 @@ console.log(Buffer.allocUnsafe(5).fill('\u0222'));
 // Prints: <Buffer c8 a2 c8 a2 c8>
 ```
 
-If `value` contains invalid characters, it is truncated; if no valid
-fill data remains, an exception is thrown:
+If `value` contains invalid characters, it is truncated; if no valid fill data
+remains, an exception is thrown:
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -2034,8 +2039,8 @@ added: v5.3.0
 * `value` {string|Buffer|Uint8Array|integer} What to search for.
 * `byteOffset` {integer} Where to begin searching in `buf`. If negative, then
   offset is calculated from the end of `buf`. **Default:** `0`.
-* `encoding` {string} If `value` is a string, this is its encoding.
-  **Default:** `'utf8'`.
+* `encoding` {string} If `value` is a string, this is its encoding. **Default:**
+  `'utf8'`.
 * Returns: {boolean} `true` if `value` was found in `buf`, `false` otherwise.
 
 Equivalent to [`buf.indexOf() !== -1`][`buf.indexOf()`].
@@ -2111,10 +2116,10 @@ If `value` is:
 
 * a string, `value` is interpreted according to the character encoding in
   `encoding`.
-* a `Buffer` or [`Uint8Array`][], `value` will be used in its entirety.
-  To compare a partial `Buffer`, use [`buf.subarray`][].
-* a number, `value` will be interpreted as an unsigned 8-bit integer
-  value between `0` and `255`.
+* a `Buffer` or [`Uint8Array`][], `value` will be used in its entirety. To
+  compare a partial `Buffer`, use [`buf.subarray`][].
+* a number, `value` will be interpreted as an unsigned 8-bit integer value
+  between `0` and `255`.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -2212,8 +2217,8 @@ console.log(b.indexOf('b', null));
 console.log(b.indexOf('b', []));
 ```
 
-If `value` is an empty string or empty `Buffer` and `byteOffset` is less
-than `buf.length`, `byteOffset` will be returned. If `value` is empty and
+If `value` is an empty string or empty `Buffer` and `byteOffset` is less than
+`buf.length`, `byteOffset` will be returned. If `value` is empty and
 `byteOffset` is at least `buf.length`, `buf.length` will be returned.
 
 ### `buf.keys()`
@@ -2272,8 +2277,7 @@ changes:
 
 * `value` {string|Buffer|Uint8Array|integer} What to search for.
 * `byteOffset` {integer} Where to begin searching in `buf`. If negative, then
-  offset is calculated from the end of `buf`. **Default:**
-  `buf.length - 1`.
+  offset is calculated from the end of `buf`. **Default:** `buf.length - 1`.
 * `encoding` {string} If `value` is a string, this is the encoding used to
   determine the binary representation of the string that will be searched for in
   `buf`. **Default:** `'utf8'`.
@@ -2457,8 +2461,7 @@ added:
 
 Reads a signed, big-endian 64-bit integer from `buf` at the specified `offset`.
 
-Integers read from a `Buffer` are interpreted as two's complement signed
-values.
+Integers read from a `Buffer` are interpreted as two's complement signed values.
 
 ### `buf.readBigInt64LE([offset])`
 
@@ -2475,8 +2478,7 @@ added:
 Reads a signed, little-endian 64-bit integer from `buf` at the specified
 `offset`.
 
-Integers read from a `Buffer` are interpreted as two's complement signed
-values.
+Integers read from a `Buffer` are interpreted as two's complement signed values.
 
 ### `buf.readBigUInt64BE([offset])`
 
@@ -2928,9 +2930,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer}
 
-Reads `byteLength` number of bytes from `buf` at the specified `offset`
-and interprets the result as a big-endian, two's complement signed value
-supporting up to 48 bits of accuracy.
+Reads `byteLength` number of bytes from `buf` at the specified `offset` and
+interprets the result as a big-endian, two's complement signed value supporting
+up to 48 bits of accuracy.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -2975,8 +2977,8 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer}
 
-Reads `byteLength` number of bytes from `buf` at the specified `offset`
-and interprets the result as a little-endian, two's complement signed value
+Reads `byteLength` number of bytes from `buf` at the specified `offset` and
+interprets the result as a little-endian, two's complement signed value
 supporting up to 48 bits of accuracy.
 
 ```mjs
@@ -3257,9 +3259,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer}
 
-Reads `byteLength` number of bytes from `buf` at the specified `offset`
-and interprets the result as an unsigned big-endian integer supporting
-up to 48 bits of accuracy.
+Reads `byteLength` number of bytes from `buf` at the specified `offset` and
+interprets the result as an unsigned big-endian integer supporting up to 48 bits
+of accuracy.
 
 This function is also available under the `readUintBE` alias.
 
@@ -3307,9 +3309,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer}
 
-Reads `byteLength` number of bytes from `buf` at the specified `offset`
-and interprets the result as an unsigned, little-endian integer supporting
-up to 48 bits of accuracy.
+Reads `byteLength` number of bytes from `buf` at the specified `offset` and
+interprets the result as an unsigned, little-endian integer supporting up to 48
+bits of accuracy.
 
 This function is also available under the `readUintLE` alias.
 
@@ -3338,8 +3340,8 @@ added: v3.0.0
 -->
 
 * `start` {integer} Where the new `Buffer` will start. **Default:** `0`.
-* `end` {integer} Where the new `Buffer` will end (not inclusive).
-  **Default:** [`buf.length`][].
+* `end` {integer} Where the new `Buffer` will end (not inclusive). **Default:**
+  [`buf.length`][].
 * Returns: {Buffer}
 
 Returns a new `Buffer` that references the same memory as the original, but
@@ -3401,8 +3403,8 @@ console.log(buf2.toString('ascii', 0, buf2.length));
 // Prints: !bc
 ```
 
-Specifying negative indexes causes the slice to be generated relative to the
-end of `buf` rather than the beginning.
+Specifying negative indexes causes the slice to be generated relative to the end
+of `buf` rather than the beginning.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -3463,8 +3465,8 @@ changes:
 -->
 
 * `start` {integer} Where the new `Buffer` will start. **Default:** `0`.
-* `end` {integer} Where the new `Buffer` will end (not inclusive).
-  **Default:** [`buf.length`][].
+* `end` {integer} Where the new `Buffer` will end (not inclusive). **Default:**
+  [`buf.length`][].
 * Returns: {Buffer}
 
 > Stability: 0 - Deprecated: Use [`buf.subarray`][] instead.
@@ -3472,9 +3474,8 @@ changes:
 Returns a new `Buffer` that references the same memory as the original, but
 offset and cropped by the `start` and `end` indexes.
 
-This method is not compatible with the `Uint8Array.prototype.slice()`,
-which is a superclass of `Buffer`. To copy the slice, use
-`Uint8Array.prototype.slice()`.
+This method is not compatible with the `Uint8Array.prototype.slice()`, which is
+a superclass of `Buffer`. To copy the slice, use `Uint8Array.prototype.slice()`.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -3528,9 +3529,9 @@ added: v5.10.0
 
 * Returns: {Buffer} A reference to `buf`.
 
-Interprets `buf` as an array of unsigned 16-bit integers and swaps the
-byte order _in-place_. Throws [`ERR_INVALID_BUFFER_SIZE`][] if [`buf.length`][]
-is not a multiple of 2.
+Interprets `buf` as an array of unsigned 16-bit integers and swaps the byte
+order _in-place_. Throws [`ERR_INVALID_BUFFER_SIZE`][] if [`buf.length`][] is
+not a multiple of 2.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -3595,9 +3596,9 @@ added: v5.10.0
 
 * Returns: {Buffer} A reference to `buf`.
 
-Interprets `buf` as an array of unsigned 32-bit integers and swaps the
-byte order _in-place_. Throws [`ERR_INVALID_BUFFER_SIZE`][] if [`buf.length`][]
-is not a multiple of 4.
+Interprets `buf` as an array of unsigned 32-bit integers and swaps the byte
+order _in-place_. Throws [`ERR_INVALID_BUFFER_SIZE`][] if [`buf.length`][] is
+not a multiple of 4.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -3697,8 +3698,8 @@ added: v0.9.2
 Returns a JSON representation of `buf`. [`JSON.stringify()`][] implicitly calls
 this function when stringifying a `Buffer` instance.
 
-`Buffer.from()` accepts objects in the format returned from this method.
-In particular, `Buffer.from(buf.toJSON())` works like `Buffer.from(buf)`.
+`Buffer.from()` accepts objects in the format returned from this method. In
+particular, `Buffer.from(buf.toJSON())` works like `Buffer.from(buf)`.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -3710,9 +3711,7 @@ console.log(json);
 // Prints: {"type":"Buffer","data":[1,2,3,4,5]}
 
 const copy = JSON.parse(json, (key, value) => {
-  return value && value.type === 'Buffer' ?
-    Buffer.from(value) :
-    value;
+  return value && value.type === 'Buffer' ? Buffer.from(value) : value;
 });
 
 console.log(copy);
@@ -3729,9 +3728,7 @@ console.log(json);
 // Prints: {"type":"Buffer","data":[1,2,3,4,5]}
 
 const copy = JSON.parse(json, (key, value) => {
-  return value && value.type === 'Buffer' ?
-    Buffer.from(value) :
-    value;
+  return value && value.type === 'Buffer' ? Buffer.from(value) : value;
 });
 
 console.log(copy);
@@ -3756,8 +3753,8 @@ Decodes `buf` to a string according to the specified character encoding in
 If `encoding` is `'utf8'` and a byte sequence in the input is not valid UTF-8,
 then each invalid byte is replaced with the replacement character `U+FFFD`.
 
-The maximum length of a string instance (in UTF-16 code units) is available
-as [`buffer.constants.MAX_STRING_LENGTH`][].
+The maximum length of a string instance (in UTF-16 code units) is available as
+[`buffer.constants.MAX_STRING_LENGTH`][].
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -4327,7 +4324,7 @@ changes:
   satisfy `0 <= offset <= buf.length - 2`. **Default:** `0`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `value` to `buf` at the specified `offset` as big-endian.  The `value`
+Writes `value` to `buf` at the specified `offset` as big-endian. The `value`
 must be a valid signed 16-bit integer. Behavior is undefined when `value` is
 anything other than a signed 16-bit integer.
 
@@ -4371,7 +4368,7 @@ changes:
   satisfy `0 <= offset <= buf.length - 2`. **Default:** `0`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `value` to `buf` at the specified `offset` as little-endian.  The `value`
+Writes `value` to `buf` at the specified `offset` as little-endian. The `value`
 must be a valid signed 16-bit integer. Behavior is undefined when `value` is
 anything other than a signed 16-bit integer.
 
@@ -4505,8 +4502,8 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `byteLength` bytes of `value` to `buf` at the specified `offset`
-as big-endian. Supports up to 48 bits of accuracy. Behavior is undefined when
+Writes `byteLength` bytes of `value` to `buf` at the specified `offset` as
+big-endian. Supports up to 48 bits of accuracy. Behavior is undefined when
 `value` is anything other than a signed integer.
 
 ```mjs
@@ -4549,9 +4546,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `byteLength` bytes of `value` to `buf` at the specified `offset`
-as little-endian. Supports up to 48 bits of accuracy. Behavior is undefined
-when `value` is anything other than a signed integer.
+Writes `byteLength` bytes of `value` to `buf` at the specified `offset` as
+little-endian. Supports up to 48 bits of accuracy. Behavior is undefined when
+`value` is anything other than a signed integer.
 
 ```mjs
 import { Buffer } from 'node:buffer';
@@ -4596,9 +4593,9 @@ changes:
   satisfy `0 <= offset <= buf.length - 1`. **Default:** `0`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `value` to `buf` at the specified `offset`. `value` must be a
-valid unsigned 8-bit integer. Behavior is undefined when `value` is anything
-other than an unsigned 8-bit integer.
+Writes `value` to `buf` at the specified `offset`. `value` must be a valid
+unsigned 8-bit integer. Behavior is undefined when `value` is anything other
+than an unsigned 8-bit integer.
 
 This function is also available under the `writeUint8` alias.
 
@@ -4652,8 +4649,8 @@ changes:
 * Returns: {integer} `offset` plus the number of bytes written.
 
 Writes `value` to `buf` at the specified `offset` as big-endian. The `value`
-must be a valid unsigned 16-bit integer. Behavior is undefined when `value`
-is anything other than an unsigned 16-bit integer.
+must be a valid unsigned 16-bit integer. Behavior is undefined when `value` is
+anything other than an unsigned 16-bit integer.
 
 This function is also available under the `writeUint16BE` alias.
 
@@ -4754,8 +4751,8 @@ changes:
 * Returns: {integer} `offset` plus the number of bytes written.
 
 Writes `value` to `buf` at the specified `offset` as big-endian. The `value`
-must be a valid unsigned 32-bit integer. Behavior is undefined when `value`
-is anything other than an unsigned 32-bit integer.
+must be a valid unsigned 32-bit integer. Behavior is undefined when `value` is
+anything other than an unsigned 32-bit integer.
 
 This function is also available under the `writeUint32BE` alias.
 
@@ -4853,9 +4850,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `byteLength` bytes of `value` to `buf` at the specified `offset`
-as big-endian. Supports up to 48 bits of accuracy. Behavior is undefined
-when `value` is anything other than an unsigned integer.
+Writes `byteLength` bytes of `value` to `buf` at the specified `offset` as
+big-endian. Supports up to 48 bits of accuracy. Behavior is undefined when
+`value` is anything other than an unsigned integer.
 
 This function is also available under the `writeUintBE` alias.
 
@@ -4904,9 +4901,9 @@ changes:
   `0 < byteLength <= 6`.
 * Returns: {integer} `offset` plus the number of bytes written.
 
-Writes `byteLength` bytes of `value` to `buf` at the specified `offset`
-as little-endian. Supports up to 48 bits of accuracy. Behavior is undefined
-when `value` is anything other than an unsigned integer.
+Writes `byteLength` bytes of `value` to `buf` at the specified `offset` as
+little-endian. Supports up to 48 bits of accuracy. Behavior is undefined when
+`value` is anything other than an unsigned integer.
 
 This function is also available under the `writeUintLE` alias.
 
@@ -4983,8 +4980,8 @@ changes:
 * `arrayBuffer` {ArrayBuffer|SharedArrayBuffer} An [`ArrayBuffer`][],
   [`SharedArrayBuffer`][] or the `.buffer` property of a [`TypedArray`][].
 * `byteOffset` {integer} Index of first byte to expose. **Default:** `0`.
-* `length` {integer} Number of bytes to expose.
-  **Default:** `arrayBuffer.byteLength - byteOffset`.
+* `length` {integer} Number of bytes to expose. **Default:**
+  `arrayBuffer.byteLength - byteOffset`.
 
 See
 [`Buffer.from(arrayBuffer[, byteOffset[, length]])`][`Buffer.from(arrayBuf)`].
@@ -5059,8 +5056,8 @@ changes:
     description: Calling this constructor emits a deprecation warning now.
 -->
 
-> Stability: 0 - Deprecated:
-> Use [`Buffer.from(string[, encoding])`][`Buffer.from(string)`] instead.
+> Stability: 0 - Deprecated: Use
+> [`Buffer.from(string[, encoding])`][`Buffer.from(string)`] instead.
 
 * `string` {string} String to encode.
 * `encoding` {string} The encoding of `string`. **Default:** `'utf8'`.
@@ -5096,12 +5093,12 @@ added:
   objects, or any mix of such objects, that will be stored within the `File`.
 * `fileName` {string} The name of the file.
 * `options` {Object}
-  * `endings` {string} One of either `'transparent'` or `'native'`. When set
-    to `'native'`, line endings in string source parts will be converted to
-    the platform native line-ending as specified by `require('node:os').EOL`.
+  * `endings` {string} One of either `'transparent'` or `'native'`. When set to
+    `'native'`, line endings in string source parts will be converted to the
+    platform native line-ending as specified by `require('node:os').EOL`.
   * `type` {string} The File content-type.
-  * `lastModified` {number} The last modified date of the file.
-    **Default:** `Date.now()`.
+  * `lastModified` {number} The last modified date of the file. **Default:**
+    `Date.now()`.
 
 ### `file.name`
 
@@ -5145,16 +5142,16 @@ added:
 
 * `data` {any} The Base64-encoded input string.
 
-Decodes a string of Base64-encoded data into bytes, and encodes those bytes
-into a string using Latin-1 (ISO-8859-1).
+Decodes a string of Base64-encoded data into bytes, and encodes those bytes into
+a string using Latin-1 (ISO-8859-1).
 
 The `data` may be any JavaScript-value that can be coerced into a string.
 
 **This function is only provided for compatibility with legacy web platform APIs
 and should never be used in new code, because they use strings to represent
-binary data and predate the introduction of typed arrays in JavaScript.
-For code running using Node.js APIs, converting between base64-encoded strings
-and binary data should be performed using `Buffer.from(str, 'base64')` and
+binary data and predate the introduction of typed arrays in JavaScript. For code
+running using Node.js APIs, converting between base64-encoded strings and binary
+data should be performed using `Buffer.from(str, 'base64')` and
 `buf.toString('base64')`.**
 
 ### `buffer.btoa(data)`
@@ -5176,9 +5173,9 @@ The `data` may be any JavaScript-value that can be coerced into a string.
 
 **This function is only provided for compatibility with legacy web platform APIs
 and should never be used in new code, because they use strings to represent
-binary data and predate the introduction of typed arrays in JavaScript.
-For code running using Node.js APIs, converting between base64-encoded strings
-and binary data should be performed using `Buffer.from(str, 'base64')` and
+binary data and predate the introduction of typed arrays in JavaScript. For code
+running using Node.js APIs, converting between base64-encoded strings and binary
+data should be performed using `Buffer.from(str, 'base64')` and
 `buf.toString('base64')`.**
 
 ### `buffer.isAscii(input)`
@@ -5221,9 +5218,9 @@ added: v0.5.4
 
 * {integer} **Default:** `50`
 
-Returns the maximum number of bytes that will be returned when
-`buf.inspect()` is called. This can be overridden by user modules. See
-[`util.inspect()`][] for more details on `buf.inspect()` behavior.
+Returns the maximum number of bytes that will be returned when `buf.inspect()`
+is called. This can be overridden by user modules. See [`util.inspect()`][] for
+more details on `buf.inspect()` behavior.
 
 ### `buffer.kMaxLength`
 
@@ -5257,8 +5254,8 @@ added: v16.7.0
   `URL.createObjectURL()`.
 * Returns: {Blob}
 
-Resolves a `'blob:nodedata:...'` an associated {Blob} object registered using
-a prior call to `URL.createObjectURL()`.
+Resolves a `'blob:nodedata:...'` an associated {Blob} object registered using a
+prior call to `URL.createObjectURL()`.
 
 ### `buffer.transcode(source, fromEnc, toEnc)`
 
@@ -5314,8 +5311,8 @@ deprecated: v6.0.0
 
 > Stability: 0 - Deprecated: Use [`Buffer.allocUnsafeSlow()`][] instead.
 
-See [`Buffer.allocUnsafeSlow()`][]. This was never a class in the sense that
-the constructor always returned a `Buffer` instance, rather than a `SlowBuffer`
+See [`Buffer.allocUnsafeSlow()`][]. This was never a class in the sense that the
+constructor always returned a `Buffer` instance, rather than a `SlowBuffer`
 instance.
 
 #### `new SlowBuffer(size)`
@@ -5370,30 +5367,30 @@ added: v8.2.0
 
 * {integer} The largest length allowed for a single `string` instance.
 
-Represents the largest `length` that a `string` primitive can have, counted
-in UTF-16 code units.
+Represents the largest `length` that a `string` primitive can have, counted in
+UTF-16 code units.
 
 This value may depend on the JS engine that is being used.
 
 ## `Buffer.from()`, `Buffer.alloc()`, and `Buffer.allocUnsafe()`
 
 In versions of Node.js prior to 6.0.0, `Buffer` instances were created using the
-`Buffer` constructor function, which allocates the returned `Buffer`
-differently based on what arguments are provided:
+`Buffer` constructor function, which allocates the returned `Buffer` differently
+based on what arguments are provided:
 
 * Passing a number as the first argument to `Buffer()` (e.g. `new Buffer(10)`)
   allocates a new `Buffer` object of the specified size. Prior to Node.js 8.0.0,
-  the memory allocated for such `Buffer` instances is _not_ initialized and
-  _can contain sensitive data_. Such `Buffer` instances _must_ be subsequently
+  the memory allocated for such `Buffer` instances is _not_ initialized and _can
+  contain sensitive data_. Such `Buffer` instances _must_ be subsequently
   initialized by using either [`buf.fill(0)`][`buf.fill()`] or by writing to the
-  entire `Buffer` before reading data from the `Buffer`.
-  While this behavior is _intentional_ to improve performance,
-  development experience has demonstrated that a more explicit distinction is
-  required between creating a fast-but-uninitialized `Buffer` versus creating a
-  slower-but-safer `Buffer`. Since Node.js 8.0.0, `Buffer(num)` and `new
-  Buffer(num)` return a `Buffer` with initialized memory.
-* Passing a string, array, or `Buffer` as the first argument copies the
-  passed object's data into the `Buffer`.
+  entire `Buffer` before reading data from the `Buffer`. While this behavior is
+  _intentional_ to improve performance, development experience has demonstrated
+  that a more explicit distinction is required between creating a
+  fast-but-uninitialized `Buffer` versus creating a slower-but-safer `Buffer`.
+  Since Node.js 8.0.0, `Buffer(num)` and `new Buffer(num)` return a `Buffer`
+  with initialized memory.
+* Passing a string, array, or `Buffer` as the first argument copies the passed
+  object's data into the `Buffer`.
 * Passing an [`ArrayBuffer`][] or a [`SharedArrayBuffer`][] returns a `Buffer`
   that shares allocated memory with the given array buffer.
 
@@ -5402,23 +5399,23 @@ first argument, security and reliability issues can be inadvertently introduced
 into applications when argument validation or `Buffer` initialization is not
 performed.
 
-For example, if an attacker can cause an application to receive a number where
-a string is expected, the application may call `new Buffer(100)`
-instead of `new Buffer("100")`, leading it to allocate a 100 byte buffer instead
-of allocating a 3 byte buffer with content `"100"`. This is commonly possible
-using JSON API calls. Since JSON distinguishes between numeric and string types,
-it allows injection of numbers where a naively written application that does not
-validate its input sufficiently might expect to always receive a string.
-Before Node.js 8.0.0, the 100 byte buffer might contain
-arbitrary pre-existing in-memory data, so may be used to expose in-memory
-secrets to a remote attacker. Since Node.js 8.0.0, exposure of memory cannot
-occur because the data is zero-filled. However, other attacks are still
-possible, such as causing very large buffers to be allocated by the server,
-leading to performance degradation or crashing on memory exhaustion.
+For example, if an attacker can cause an application to receive a number where a
+string is expected, the application may call `new Buffer(100)` instead of
+`new Buffer("100")`, leading it to allocate a 100 byte buffer instead of
+allocating a 3 byte buffer with content `"100"`. This is commonly possible using
+JSON API calls. Since JSON distinguishes between numeric and string types, it
+allows injection of numbers where a naively written application that does not
+validate its input sufficiently might expect to always receive a string. Before
+Node.js 8.0.0, the 100 byte buffer might contain arbitrary pre-existing
+in-memory data, so may be used to expose in-memory secrets to a remote attacker.
+Since Node.js 8.0.0, exposure of memory cannot occur because the data is
+zero-filled. However, other attacks are still possible, such as causing very
+large buffers to be allocated by the server, leading to performance degradation
+or crashing on memory exhaustion.
 
 To make the creation of `Buffer` instances more reliable and less error-prone,
-the various forms of the `new Buffer()` constructor have been **deprecated**
-and replaced by separate `Buffer.from()`, [`Buffer.alloc()`][], and
+the various forms of the `new Buffer()` constructor have been **deprecated** and
+replaced by separate `Buffer.from()`, [`Buffer.alloc()`][], and
 [`Buffer.allocUnsafe()`][] methods.
 
 _Developers should migrate all existing uses of the `new Buffer()` constructors
@@ -5439,16 +5436,15 @@ to one of these new APIs._
   created `Buffer` instances never contain old data that is potentially
   sensitive. A `TypeError` will be thrown if `size` is not a number.
 * [`Buffer.allocUnsafe(size)`][`Buffer.allocUnsafe()`] and
-  [`Buffer.allocUnsafeSlow(size)`][`Buffer.allocUnsafeSlow()`] each return a
-  new uninitialized `Buffer` of the specified `size`. Because the `Buffer` is
+  [`Buffer.allocUnsafeSlow(size)`][`Buffer.allocUnsafeSlow()`] each return a new
+  uninitialized `Buffer` of the specified `size`. Because the `Buffer` is
   uninitialized, the allocated segment of memory might contain old data that is
   potentially sensitive.
 
 `Buffer` instances returned by [`Buffer.allocUnsafe()`][] and
-[`Buffer.from(array)`][] _may_ be allocated off a shared internal memory pool
-if `size` is less than or equal to half [`Buffer.poolSize`][]. Instances
-returned by [`Buffer.allocUnsafeSlow()`][] _never_ use the shared internal
-memory pool.
+[`Buffer.from(array)`][] _may_ be allocated off a shared internal memory pool if
+`size` is less than or equal to half [`Buffer.poolSize`][]. Instances returned
+by [`Buffer.allocUnsafeSlow()`][] _never_ use the shared internal memory pool.
 
 ### The `--zero-fill-buffers` command-line option
 
