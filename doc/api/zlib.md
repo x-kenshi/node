@@ -11,8 +11,12 @@ Gzip, Deflate/Inflate, and Brotli.
 
 To access it:
 
-```js
+```cjs
 const zlib = require('node:zlib');
+```
+
+```mjs
+import zlib from 'node:zlib';
 ```
 
 Compression and decompression are built around the Node.js [Streams API][].
@@ -21,7 +25,7 @@ Compressing or decompressing a stream (such as a file) can be accomplished by
 piping the source stream through a `zlib` `Transform` stream into a destination
 stream:
 
-```js
+```cjs
 const { createGzip } = require('node:zlib');
 const { pipeline } = require('node:stream');
 const {
@@ -36,33 +40,34 @@ const destination = createWriteStream('input.txt.gz');
 pipeline(source, gzip, destination, (err) => {
   if (err) {
     console.error('An error occurred:', err);
-    process.exitCode = 1;
   }
 });
+```
 
-// Or, Promisified
+```mjs
+import { createGzip } from 'node:zlib';
+import { pipeline } from 'node:stream';
+import {
+  createReadStream,
+  createWriteStream,
+} from 'node:fs';
 
-const { promisify } = require('node:util');
-const pipe = promisify(pipeline);
+const gzip = createGzip();
+const source = createReadStream('input.txt');
+const destination = createWriteStream('input.txt.gz');
 
-async function do_gzip(input, output) {
-  const gzip = createGzip();
-  const source = createReadStream(input);
-  const destination = createWriteStream(output);
-  await pipe(source, gzip, destination);
-}
-
-do_gzip('input.txt', 'input.txt.gz')
-  .catch((err) => {
+pipeline(source, gzip, destination, (err) => {
+  if (err) {
     console.error('An error occurred:', err);
-    process.exitCode = 1;
-  });
+  }
+});
 ```
 
 It is also possible to compress or decompress data in a single step:
 
-```js
+```cjs
 const { deflate, unzip } = require('node:zlib');
+const { Buffer } = require('node:buffer');
 
 const input = '.................................';
 deflate(input, (err, buffer) => {
@@ -77,22 +82,30 @@ const buffer = Buffer.from('eJzT0yMAAGTvBe8=', 'base64');
 unzip(buffer, (err, buffer) => {
   if (err) {
     console.error('An error occurred:', err);
-    process.exitCode = 1;
   }
   console.log(buffer.toString());
 });
+```
 
-// Or, Promisified
+```mjs
+import { deflate, unzip } from 'node:zlib';
+import { Buffer } from 'node:buffer';
 
-const { promisify } = require('node:util');
-const do_unzip = promisify(unzip);
-
-do_unzip(buffer)
-  .then((buf) => console.log(buf.toString()))
-  .catch((err) => {
+const input = '.................................';
+deflate(input, (err, buffer) => {
+  if (err) {
     console.error('An error occurred:', err);
-    process.exitCode = 1;
-  });
+  }
+  console.log(buffer.toString('base64'));
+});
+
+const buffer = Buffer.from('eJzT0yMAAGTvBe8=', 'base64');
+unzip(buffer, (err, buffer) => {
+  if (err) {
+    console.error('An error occurred:', err);
+  }
+  console.log(buffer.toString());
+});
 ```
 
 ## Threadpool usage and performance considerations
@@ -104,14 +117,27 @@ limitations in some applications.
 Creating and using a large number of zlib objects simultaneously can cause
 significant memory fragmentation.
 
-```js
-const zlib = require('node:zlib');
+```cjs
+const { deflate } = require('node:zlib');
+const { Buffer } = require('node:buffer');
 
 const payload = Buffer.from('This is some data');
 
 // WARNING: DO NOT DO THIS!
 for (let i = 0; i < 30000; ++i) {
-  zlib.deflate(payload, (err, buffer) => {});
+  deflate(payload, (err, buffer) => {});
+}
+```
+
+```mjs
+import { deflate } from 'node:zlib';
+import { Buffer } from 'node:buffer';
+
+const payload = Buffer.from('This is some data');
+
+// WARNING: DO NOT DO THIS!
+for (let i = 0; i < 30000; ++i) {
+  deflate(payload, (err, buffer) => {});
 }
 ```
 
@@ -138,7 +164,7 @@ Using `zlib` encoding can be expensive, and the results ought to be cached.
 See [Memory usage tuning][] for more information on the speed/memory/compression
 tradeoffs involved in `zlib` usage.
 
-```js
+```cjs
 // Client request example
 const zlib = require('node:zlib');
 const http = require('node:http');
@@ -177,7 +203,45 @@ request.on('response', (response) => {
 });
 ```
 
-```js
+```mjs
+// Client request example
+import zlib from 'node:zlib';
+import http from 'node:http';
+import fs from 'node:fs';
+import { pipeline } from 'node:stream';
+
+const request = http.get({ host: 'example.com',
+                           path: '/',
+                           port: 80,
+                           headers: { 'Accept-Encoding': 'br,gzip,deflate' } });
+request.on('response', (response) => {
+  const output = fs.createWriteStream('example.com_index.html');
+
+  const onError = (err) => {
+    if (err) {
+      console.error('An error occurred:', err);
+    }
+  };
+
+  switch (response.headers['content-encoding']) {
+    case 'br':
+      pipeline(response, zlib.createBrotliDecompress(), output, onError);
+      break;
+    // Or, just use zlib.createUnzip() to handle both of the following cases:
+    case 'gzip':
+      pipeline(response, zlib.createGunzip(), output, onError);
+      break;
+    case 'deflate':
+      pipeline(response, zlib.createInflate(), output, onError);
+      break;
+    default:
+      pipeline(response, output, onError);
+      break;
+  }
+});
+```
+
+```cjs
 // server example
 // Running a gzip operation on every request is quite expensive.
 // It would be much more efficient to cache the compressed buffer.
@@ -225,17 +289,68 @@ http.createServer((request, response) => {
 }).listen(1337);
 ```
 
+```mjs
+// server example
+// Running a gzip operation on every request is quite expensive.
+// It would be much more efficient to cache the compressed buffer.
+import zlib from 'node:zlib';
+import http from 'node:http';
+import fs from 'node:fs';
+import { pipeline } from 'node:stream';
+
+http.createServer((request, response) => {
+  const raw = fs.createReadStream('index.html');
+  // Store both a compressed and an uncompressed version of the resource.
+  response.setHeader('Vary', 'Accept-Encoding');
+  let acceptEncoding = request.headers['accept-encoding'];
+  if (!acceptEncoding) {
+    acceptEncoding = '';
+  }
+
+  const onError = (err) => {
+    if (err) {
+      // If an error occurs, there's not much we can do because
+      // the server has already sent the 200 response code and
+      // some amount of data has already been sent to the client.
+      // The best we can do is terminate the response immediately
+      // and log the error.
+      response.end();
+      console.error('An error occurred:', err);
+    }
+  };
+
+  // Note: This is not a conformant accept-encoding parser.
+  // See https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
+  if (/\bdeflate\b/.test(acceptEncoding)) {
+    response.writeHead(200, { 'Content-Encoding': 'deflate' });
+    pipeline(raw, zlib.createDeflate(), response, onError);
+  } else if (/\bgzip\b/.test(acceptEncoding)) {
+    response.writeHead(200, { 'Content-Encoding': 'gzip' });
+    pipeline(raw, zlib.createGzip(), response, onError);
+  } else if (/\bbr\b/.test(acceptEncoding)) {
+    response.writeHead(200, { 'Content-Encoding': 'br' });
+    pipeline(raw, zlib.createBrotliCompress(), response, onError);
+  } else {
+    response.writeHead(200, {});
+    pipeline(raw, response, onError);
+  }
+}).listen(1337);
+```
+
 By default, the `zlib` methods will throw an error when decompressing
 truncated data. However, if it is known that the data is incomplete, or
 the desire is to inspect only the beginning of a compressed file, it is
 possible to suppress the default error handling by changing the flushing
 method that is used to decompress the last chunk of input data:
 
-```js
+```cjs
+const { unzip } = require('node:zlib');
+const { Buffer } = require('node:buffer');
+
 // This is a truncated version of the buffer from the above examples
 const buffer = Buffer.from('eJzT0yMA', 'base64');
 
-zlib.unzip(
+unzip(
   buffer,
   // For Brotli, the equivalent is zlib.constants.BROTLI_OPERATION_FLUSH.
   { finishFlush: zlib.constants.Z_SYNC_FLUSH },
@@ -243,6 +358,25 @@ zlib.unzip(
     if (err) {
       console.error('An error occurred:', err);
       process.exitCode = 1;
+    }
+    console.log(buffer.toString());
+  });
+```
+
+```mjs
+import { unzip } from 'node:zlib';
+import { Buffer } from 'node:buffer';
+
+// This is a truncated version of the buffer from the above examples
+const buffer = Buffer.from('eJzT0yMA', 'base64');
+
+unzip(
+  buffer,
+  // For Brotli, the equivalent is zlib.constants.BROTLI_OPERATION_FLUSH.
+  { finishFlush: zlib.constants.Z_SYNC_FLUSH },
+  (err, buffer) => {
+    if (err) {
+      console.error('An error occurred:', err);
     }
     console.log(buffer.toString());
   });
@@ -318,15 +452,51 @@ quality, but can be useful when data needs to be available as soon as possible.
 In the following example, `flush()` is used to write a compressed partial
 HTTP response to the client:
 
-```js
-const zlib = require('node:zlib');
+```cjs
+const { createGzip } = require('node:zlib');
 const http = require('node:http');
 const { pipeline } = require('node:stream');
 
 http.createServer((request, response) => {
   // For the sake of simplicity, the Accept-Encoding checks are omitted.
   response.writeHead(200, { 'content-encoding': 'gzip' });
-  const output = zlib.createGzip();
+  const output = createGzip();
+  let i;
+
+  pipeline(output, response, (err) => {
+    if (err) {
+      // If an error occurs, there's not much we can do because
+      // the server has already sent the 200 response code and
+      // some amount of data has already been sent to the client.
+      // The best we can do is terminate the response immediately
+      // and log the error.
+      clearInterval(i);
+      response.end();
+      console.error('An error occurred:', err);
+    }
+  });
+
+  i = setInterval(() => {
+    output.write(`The current time is ${Date()}\n`, () => {
+      // The data has been passed to zlib, but the compression algorithm may
+      // have decided to buffer the data for more efficient compression.
+      // Calling .flush() will make the data available as soon as the client
+      // is ready to receive it.
+      output.flush();
+    });
+  }, 1000);
+}).listen(1337);
+```
+
+```mjs
+import { createGzip } from 'node:zlib';
+import http from 'node:http';
+import { pipeline } from 'node:stream';
+
+http.createServer((request, response) => {
+  // For the sake of simplicity, the Accept-Encoding checks are omitted.
+  response.writeHead(200, { 'content-encoding': 'gzip' });
+  const output = createGzip();
   let i;
 
   pipeline(output, response, (err) => {
@@ -556,8 +726,23 @@ Each Brotli-based class takes an `options` object. All options are optional.
 
 For example:
 
-```js
-const stream = zlib.createBrotliCompress({
+```cjs
+const { createBrotliCompress } = require('node:zlib');
+
+const stream = createBrotliCompress({
+  chunkSize: 32 * 1024,
+  params: {
+    [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
+    [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
+    [zlib.constants.BROTLI_PARAM_SIZE_HINT]: fs.statSync(inputFile).size,
+  },
+});
+```
+
+```mjs
+import { createBrotliCompress } from 'node:zlib';
+
+const stream = createBrotliCompress({
   chunkSize: 32 * 1024,
   params: {
     [zlib.constants.BROTLI_PARAM_MODE]: zlib.constants.BROTLI_MODE_TEXT,
@@ -751,26 +936,26 @@ match the checksum produced by such a third-party library:
    `str.charCodeAt()`, on the Node.js side, convert the string into
    a buffer using `Buffer.from(str, 'utf16le')`.
 
-```mjs
-import zlib from 'node:zlib';
-import { Buffer } from 'node:buffer';
-
-let crc = zlib.crc32('hello');  // 907060870
-crc = zlib.crc32('world', crc);  // 4192936109
-
-crc = zlib.crc32(Buffer.from('hello', 'utf16le'));  // 1427272415
-crc = zlib.crc32(Buffer.from('world', 'utf16le'), crc);  // 4150509955
-```
-
 ```cjs
-const zlib = require('node:zlib');
+const { crc32 } = require('node:zlib');
 const { Buffer } = require('node:buffer');
 
-let crc = zlib.crc32('hello');  // 907060870
-crc = zlib.crc32('world', crc);  // 4192936109
+let crc = crc32('hello');  // 907060870
+crc = crc32('world', crc);  // 4192936109
 
-crc = zlib.crc32(Buffer.from('hello', 'utf16le'));  // 1427272415
-crc = zlib.crc32(Buffer.from('world', 'utf16le'), crc);  // 4150509955
+crc = crc32(Buffer.from('hello', 'utf16le'));  // 1427272415
+crc = crc32(Buffer.from('world', 'utf16le'), crc);  // 4150509955
+```
+
+```mjs
+import { crc32 } from 'node:zlib';
+import { Buffer } from 'node:buffer';
+
+let crc = crc32('hello');  // 907060870
+crc = crc32('world', crc);  // 4192936109
+
+crc = crc32(Buffer.from('hello', 'utf16le'));  // 1427272415
+crc = crc32(Buffer.from('world', 'utf16le'), crc);  // 4150509955
 ```
 
 ### `zlib.close([callback])`
