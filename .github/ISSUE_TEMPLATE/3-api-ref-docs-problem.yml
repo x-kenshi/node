@@ -1,18 +1,33 @@
-name: 📗 Open an issue regarding the Node.js API reference docs
-description: Let us know about any problematic API reference documents
+name: 📗 Open an issue regarding the Node.js API Documentation
+description: Let us know about any problematic API reference documents.
 labels: [doc]
 body:
   - type: markdown
     attributes:
-      value: |
-        Thank you for wanting to make nodejs.org better!
+      value: >-
+        **Thanks for filing this issue!**
 
-        Please fill in as much of the following form as you're able.
-  - type: input
-    attributes:
-      label: Affected URL(s)
+
+        Before you continue, there are a few things to note:
+
+        1. This form is for API Documentation issues
+        (<https://nodejs.org/api/>). For general website concerns, please visit
+        <https://github.com/nodejs/nodejs.org>.
+
+        2. If you have a suggested improvement, please open a pull-request with
+        your changes, rather than suggesting them via this form.
   - type: textarea
     attributes:
-      label: Description of the problem
+      label: Affected Resource(s)
+      description: >-
+        The affected resources. The anchor (`#...`) can help us identify exactly
+        where the issue is occuring.
+      placeholder: '- https://nodejs.org/api/xxx.html#yyy'
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Issue Description
+      description: What went wrong? How can it be reproduced?
     validations:
       required: true
