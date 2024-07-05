@@ -11,13 +11,13 @@
 # tsc
 
 /.github/CODEOWNERS @nodejs/tsc
-/.github/PULL_REQUEST_TEMPLATE.md @nodejs/tsc
-/.github/ISSUE_TEMPLATE/* @nodejs/tsc
+/.github/PULL_REQUEST_TEMPLATE.md @nodejs/tsc @nodejs/issue-triage
+/.github/ISSUE_TEMPLATE/* @nodejs/tsc @nodejs/issue-triage
 /CODE_OF_CONDUCT.md @nodejs/tsc
 /CONTRIBUTING.md @nodejs/tsc
 /doc/contributing/*.md @nodejs/tsc
 /GOVERNANCE.md @nodejs/tsc
-/SECURITY.md @nodejs/tsc
+/SECURITY.md @nodejs/tsc @nodejs/security-wg
 /LICENSE @nodejs/tsc
 /onboarding.md @nodejs/tsc
 
@@ -25,6 +25,52 @@
 /doc/api_assets @nodejs/nodejs-website
 /doc/template.html @nodejs/nodejs-website
 /tools/doc @nodejs/web-infra
+
+# assert
+
+/lib/assert.js @nodejs/assert
+/lib/assert/* @nodejs/assert
+/lib/internal/assert.js @nodejs/assert
+/lib/internal/assert/* @nodejs/assert
+
+# async_hooks
+
+/lib/async_hooks.js @nodejs/async_hooks
+/lib/internal/async_hooks.js @nodejs/async_hooks
+
+# buffer
+
+/lib/buffer.js @nodejs/buffer
+/lib/internal/buffer.js @nodejs/buffer
+
+# child_process
+
+/lib/child_process.js @nodejs/child_process
+/lib/internal/child_process.js @nodejs/child_process
+/lib/internal/child_process/* @nodejs/child_process
+
+# debugger
+
+/lib/internal/debugger/* @nodejs/debugger
+
+# dns
+
+/lib/dns.js @nodejs/dns
+/lib/dns/* @nodejs/dns
+/lib/internal/dns/* @nodejs/dns
+
+# fs
+
+/lib/fs.js @nodejs/fs
+/lib/fs/* @nodejs/fs
+/lib/internal/fs.js @nodejs/fs
+/lib/internal/fs/* @nodejs/fs
+
+# inspector
+
+/lib/inspector.js @nodejs/inspector
+/lib/inspector/* @nodejs/inspector
+/lib/internal/inspector_async_hook.js @nodejs/inspector
 
 # streams
 
