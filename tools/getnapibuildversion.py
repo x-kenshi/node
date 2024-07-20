@@ -1,7 +1,5 @@
-from __future__ import print_function
 import os
 import re
-
 
 def get_napi_version():
   napi_version_h = os.path.join(

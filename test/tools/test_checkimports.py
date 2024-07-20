@@ -33,7 +33,7 @@ class CheckImportsTest(unittest.TestCase):
                        False)
       output = out.getvalue()
       self.assertIn('does not use "Local"', output);
-      self.assertIn('using statements aren\'t sorted in', output);
+      self.assertIn('Using statements aren\'t sorted in', output);
       self.assertIn('Line 1: Actual: v8::MaybeLocal, Expected: v8::Array',
                     output);
       self.assertIn('Line 2: Actual: v8::Array, Expected: v8::Local',
@@ -60,7 +60,7 @@ class CheckImportsTest(unittest.TestCase):
       self.assertEqual(is_valid(path.join(self.fixturesDir, 'unsorted.cc')),
                        False)
       output = out.getvalue()
-      self.assertIn('using statements aren\'t sorted in', output);
+      self.assertIn('Using statements aren\'t sorted in', output);
       self.assertIn('Line 1: Actual: v8::MaybeLocal, Expected: v8::Array',
                     output);
       self.assertIn('Line 2: Actual: v8::Array, Expected: v8::MaybeLocal',

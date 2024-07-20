@@ -1,6 +1,4 @@
-from __future__ import print_function
 import os
-
 
 def get_major_minor_patch(text):
   for line in text.splitlines():
