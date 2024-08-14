@@ -1536,7 +1536,6 @@ lint-py-build:
 ifneq ("","$(wildcard tools/pip/site-packages/ruff)")
 # Lint the Python code with ruff.
 lint-py:
-	tools/pip/site-packages/bin/ruff --version
 	tools/pip/site-packages/bin/ruff check .
 else
 lint-py:
