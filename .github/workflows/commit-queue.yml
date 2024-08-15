@@ -36,6 +36,7 @@ jobs:
           prs=$(gh pr list \
                   --repo ${{ github.repository }} \
                   --base ${{ github.ref_name }} \
+                  --label 'author ready' \
                   --label 'commit-queue' \
                   --json 'number' \
                   --search "created:<=$(date --date="2 days ago"  +"%Y-%m-%dT%H:%M:%S%z")" \
