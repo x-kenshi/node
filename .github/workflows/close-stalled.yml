@@ -34,5 +34,7 @@ jobs:
           operations-per-run: 500
           # deactivates automatic removal of stalled label if issue gets any activity
           remove-stale-when-updated: false
+          # deactivates resetting of the stalled timer when if the issue gets any activity
+          ignore-updates: true
           # deactivates automatic stale labelling as we prefer to do that manually
           days-before-stale: -1
