@@ -1,28 +1,28 @@
-name: Close stale pull requests
+name: Close stale issues
 on:
   workflow_dispatch:
     inputs:
       endDate:
-        description: stop processing PRs after this date
+        description: stop processing issues after this date
         required: false
         type: string
 
 # yamllint disable rule:empty-lines
 env:
   CLOSE_MESSAGE: >
-    This pull request was opened more than a year ago and there has
+    This issue was opened more than a year ago and there has
     been no activity in the last 6 months. We value your contribution
     but since it has not progressed in the last 6 months it is being
-    closed. If you feel closing this pull request is not the right thing
+    closed. If you feel closing this issue is not the right thing
     to do, please leave a comment.
 
   WARN_MESSAGE: >
-    This pull request was opened more than a year ago and there has
+    This issue was opened more than a year ago and there has
     been no activity in the last 5 months. We value your contribution
     but since it has not progressed in the last 5 months it is being
     marked stale and will be closed if there is no progress in the
     next month. If you feel that is not the right thing to do please
-    comment on the pull request.
+    comment on the issue.
 # yamllint enable
 
 permissions:
@@ -32,6 +32,7 @@ jobs:
   stale:
     permissions:
       pull-requests: write  # for actions/stale to close stale PRs
+      issues: write  # for actions/stale to close stale issues
     if: github.repository == 'nodejs/node'
     runs-on: ubuntu-latest
     steps:
@@ -46,14 +47,13 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           end-date: ${{ env.END_DATE }}
-          days-before-issue-stale: -1
-          days-before-issue-close: -1
           days-before-stale: 150
           days-before-close: 30
           stale-issue-label: stale
           close-issue-message: ${{ env.CLOSE_MESSAGE }}
           stale-issue-message: ${{ env.WARN_MESSAGE }}
-          exempt-pr-labels: never-stale
+          exempt-pr-labels: never-stale, feature request
+          exempt-issue-labels: never-stale, feature request
           # max requests it will send per run to the GitHub API before it deliberately exits to avoid hitting API rate limits
           operations-per-run: 500
           remove-stale-when-updated: true
