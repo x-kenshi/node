@@ -6,6 +6,9 @@ on:
         description: stop processing PRs after this date
         required: false
         type: string
+  schedule:
+    # Run every day at 1:00 AM UTC.
+    - cron: 0 1 * * *
 
 # yamllint disable rule:empty-lines
 env:
