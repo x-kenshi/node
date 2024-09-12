@@ -40,12 +40,12 @@ int wmain(int argc, wchar_t* wargv[]) {
            SKIP_CHECK_STRLEN ||
        strncmp(buf, SKIP_CHECK_VALUE, SKIP_CHECK_STRLEN) != 0)) {
     fprintf(stderr,
-            "Node.js is only supported on Windows 10, Windows "
-            "Server 2016, or higher.\n"
-            "Setting the " SKIP_CHECK_VAR " environment variable "
-            "to 1 skips this\ncheck, but Node.js might not execute "
-            "correctly. Any issues encountered on\nunsupported "
-            "platforms will not be fixed.");
+            "Node.js is supported only on Windows 10, Windows "
+            "Server 2016, or later.\n"
+            "You can bypass this check by setting the " SKIP_CHECK_VAR " "
+            "environment variable to 1, but Node.js may not function "
+            "properly. Any problems encountered on unsupported platforms "
+            "will not be addressed.");
     exit(ERROR_EXE_MACHINE_TYPE_MISMATCH);
   }
 
