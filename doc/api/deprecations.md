@@ -137,9 +137,12 @@ The `CryptoStream.prototype.readyState` property was removed.
 
 <!-- YAML
 changes:
+  - version: REPLACEME
+    pr-url: https://github.com/nodejs/node/pull/SOON_PR
+    description: Runtime deprecation.
   - version: v10.0.0
     pr-url: https://github.com/nodejs/node/pull/19524
-    description: Runtime deprecation.
+    description: Application deprecation.
   - version: v6.12.0
     pr-url: https://github.com/nodejs/node/pull/10116
     description: A deprecation code has been assigned.
@@ -148,7 +151,7 @@ changes:
     description: Documentation-only deprecation.
 -->
 
-Type: Application (non-`node_modules` code only)
+Type: Runtime
 
 The `Buffer()` function and `new Buffer()` constructor are deprecated due to
 API usability issues that can lead to accidental security issues.
@@ -168,11 +171,6 @@ objects:
 * [`Buffer.from(buffer)`][]: Create a `Buffer` that copies `buffer`.
 * [`Buffer.from(string[, encoding])`][from_string_encoding]: Create a `Buffer`
   that copies `string`.
-
-Without `--pending-deprecation`, runtime warnings occur only for code not in
-`node_modules`. This means there will not be deprecation warnings for
-`Buffer()` usage in dependencies. With `--pending-deprecation`, a runtime
-warning results no matter where the `Buffer()` usage occurs.
 
 ### DEP0006: `child_process` `options.customFds`
 
