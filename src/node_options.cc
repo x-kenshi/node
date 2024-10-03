@@ -167,9 +167,9 @@ void EnvironmentOptions::CheckOptions(std::vector<std::string>* errors,
       errors->push_back("either --test or --interactive can be used, not both");
     }
 
-    if (watch_mode_paths.size() > 0) {
+    if (watch_mode_paths.size() > 0 || watch_mode_globs.size() > 0) {
       errors->push_back(
-          "--watch-path cannot be used in combination with --test");
+          "--watch-path and --watch-glob cannot be used in combination with --test");
     }
   }
 
@@ -782,6 +782,10 @@ EnvironmentOptionsParser::EnvironmentOptionsParser() {
             "run in watch mode",
             &EnvironmentOptions::watch_mode,
             kAllowedInEnvvar);
+  AddOption("--watch-glob",
+          "glob to watch",
+          &EnvironmentOptions::watch_mode_globs,
+          kAllowedInEnvvar);
   AddOption("--watch-path",
             "path to watch",
             &EnvironmentOptions::watch_mode_paths,
@@ -790,6 +794,7 @@ EnvironmentOptionsParser::EnvironmentOptionsParser() {
             "preserve outputs on watch mode restart",
             &EnvironmentOptions::watch_mode_preserve_output,
             kAllowedInEnvvar);
+  Implies("--watch-glob", "--watch");
   Implies("--watch-path", "--watch");
   AddOption("--check",
             "syntax check script without executing",

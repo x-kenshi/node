@@ -2269,7 +2269,7 @@ changes:
 -->
 
 Starts the Node.js command line test runner. This flag cannot be combined with
-`--watch-path`, `--check`, `--eval`, `--interactive`, or the inspector.
+`--watch-path`, `--watch-glob`, `--check`, `--eval`, `--interactive`, or the inspector.
 See the documentation on [running tests from the command line][]
 for more details.
 
@@ -2816,7 +2816,8 @@ When in watch mode, changes in the watched files cause the Node.js process to
 restart.
 By default, watch mode will watch the entry point
 and any required or imported module.
-Use `--watch-path` to specify what paths to watch.
+Use `--watch-path` to specify what paths to watch, and `--watch-glob` to specify
+what paths to watch using a glob.
 
 This flag cannot be combined with
 `--check`, `--eval`, `--interactive`, or the REPL.
@@ -2824,6 +2825,23 @@ This flag cannot be combined with
 ```bash
 node --watch index.js
 ```
+
+### `--watch-glob`
+
+<!--
+added: REPLACEME
+-->
+
+> Stability: 1 - Experimental
+
+Starts Node.js in watch mode and specifies what paths to watch via a glob.
+When in watch mode, changes in the watched paths cause the Node.js process to
+restart.
+This will turn off watching of required or imported modules, even when used in
+combination with `--watch`.
+
+This flag cannot be combined with
+`--check`, `--eval`, `--interactive`, `--test`, or the REPL.
 
 ### `--watch-path`
 
@@ -2853,10 +2871,6 @@ This flag cannot be combined with
 ```bash
 node --watch-path=./src --watch-path=./tests index.js
 ```
-
-This option is only supported on macOS and Windows.
-An `ERR_FEATURE_UNAVAILABLE_ON_PLATFORM` exception will be thrown
-when the option is used on a platform that does not support it.
 
 ### `--watch-preserve-output`
 
@@ -3151,6 +3165,7 @@ one is included in the list below.
 * `--use-largepages`
 * `--use-openssl-ca`
 * `--v8-pool-size`
+* `--watch-glob`
 * `--watch-path`
 * `--watch-preserve-output`
 * `--watch`

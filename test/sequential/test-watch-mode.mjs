@@ -280,6 +280,25 @@ describe('watch mode', { concurrency: !process.env.TEST_PARALLEL, timeout: 60_00
     assert.strictEqual(stderr, '');
   });
 
+  it('should watch changes to a file with watch-glob', async () => {
+    const dir = tmpdir.resolve('subdir1');
+    mkdirSync(dir);
+    const file = createTmpFile();
+    const watchedFile = createTmpFile('', '.js', dir);
+    const args = ['--watch-glob', `${dir}/*`, file];
+    const { stderr, stdout } = await runWriteSucceed({ file, watchedFile, args });
+
+    assert.strictEqual(stderr, '');
+    assert.deepStrictEqual(stdout, [
+      'running',
+      `Completed running ${inspect(file)}`,
+      `Restarting ${inspect(file)}`,
+      'running',
+      `Completed running ${inspect(file)}`,
+    ]);
+    assert.strictEqual(stderr, '');
+  });
+
   it('should watch when running an non-existing file - when specified under --watch-path', {
     skip: !supportsRecursive
   }, async () => {
