@@ -76,7 +76,7 @@ async function tests(options) {
     noPreview: '[Function: foo]',
     preview: [
       'foo',
-      '\x1B[90m[Function: foo]\x1B[39m\x1B[11G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\r',
+      '\x1B[90mfoo(x)\x1B[39m\x1B[11G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\r',
       '\x1B[36m[Function: foo]\x1B[39m',
     ]
   }, {
@@ -84,11 +84,9 @@ async function tests(options) {
     noPreview: '[Function: koo]',
     preview: [
       'k\x1B[90moo\x1B[39m\x1B[9G',
-      '\x1B[90m[Function: koo]\x1B[39m\x1B[9G\x1B[1A\x1B[1B\x1B[2K\x1B[1A' +
-        '\x1B[0Ko\x1B[90mo\x1B[39m\x1B[10G',
-      '\x1B[90m[Function: koo]\x1B[39m\x1B[10G\x1B[1A\x1B[1B\x1B[2K\x1B[1A' +
-        '\x1B[0Ko',
-      '\x1B[90m[Function: koo]\x1B[39m\x1B[11G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\r',
+      '\x1B[90mkoo()\x1B[39m\x1B[9G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\x1B[0Ko\x1B[90mo\x1B[39m\x1B[10G',
+      '\x1B[90mkoo()\x1B[39m\x1B[10G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\x1B[0Ko',
+      '\x1B[90mkoo()\x1B[39m\x1B[11G\x1B[1A\x1B[1B\x1B[2K\x1B[1A\r',
       '\x1B[36m[Function: koo]\x1B[39m',
     ]
   }, {
