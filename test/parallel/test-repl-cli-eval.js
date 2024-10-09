@@ -17,6 +17,6 @@ for (const extraFlags of [[], ['-e', '42']]) {
   proc.stdout.setEncoding('utf8');
   proc.stdout.on('data', (chunk) => stdout += chunk);
   proc.stdout.on('end', common.mustCall(() => {
-    assert(stdout.includes('<repl>'), `stdout: ${stdout}`);
+    assert.includes(stdout, '<repl>', `stdout: ${stdout}`);
   }));
 }

@@ -26,7 +26,7 @@ if (process.argv[2] === 'child') {
     stderr += data.toString('utf8');
   }, 1));
   child.on('exit', common.mustCall((code, signal) => {
-    assert(stderr.includes('failed'), `stderr: ${stderr}`);
+    assert.includes(stderr, 'failed', `stderr: ${stderr}`);
     const didAbort = common.nodeProcessAborted(code, signal);
     assert(didAbort, `process did not abort, code:${code} signal:${signal}`);
   }));

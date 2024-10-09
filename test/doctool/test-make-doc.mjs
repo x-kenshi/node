@@ -15,7 +15,7 @@ const apiURL = new URL('../../out/doc/api/', import.meta.url);
 const mdURL = new URL('../../doc/api/', import.meta.url);
 const allMD = fs.readdirSync(mdURL);
 const allDocs = fs.readdirSync(apiURL);
-assert.ok(allDocs.includes('index.html'));
+assert.includes(allDocs, 'index.html');
 
 const actualDocs = allDocs.filter(
   (name) => {
@@ -27,10 +27,7 @@ const actualDocs = allDocs.filter(
 for (const name of actualDocs) {
   if (name.startsWith('all.')) continue;
 
-  assert.ok(
-    allMD.includes(name.replace(/\.\w+$/, '.md')),
-    `Unexpected output: out/doc/api/${name}, remove and rerun.`,
-  );
+  assert.includes(allMD, name.replace(/\.\w+$/, '.md'), `Unexpected output: out/doc/api/${name}, remove and rerun.`);
 }
 
 const toc = fs.readFileSync(new URL('./index.html', apiURL), 'utf8');
@@ -49,7 +46,7 @@ const renamedDocs = ['policy.json', 'policy.html'];
 
 // Test that all the relative links in the TOC match to the actual documents.
 for (const expectedDoc of expectedDocs) {
-  assert.ok(actualDocs.includes(expectedDoc), `${expectedDoc} does not exist`);
+  assert.includes(actualDocs, expectedDoc, `${expectedDoc} does not exist`);
 }
 
 // Test that all the actual documents match to the relative links in the TOC
@@ -60,8 +57,7 @@ for (const actualDoc of actualDocs) {
   // 301 redirects are not yet automated. So keeping the old URL is a
   // reasonable workaround.
   if (renamedDocs.includes(actualDoc)) continue;
-  assert.ok(
-    expectedDocs.includes(actualDoc), `${actualDoc} does not match TOC`);
+  assert.includes(expectedDocs, actualDoc, `${actualDoc} does not match TOC`);
 
   assert.notStrictEqual(
     fs.statSync(new URL(`./${actualDoc}`, apiURL)).size,

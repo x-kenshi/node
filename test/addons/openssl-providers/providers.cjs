@@ -40,8 +40,7 @@ function assertArrayDoesNotInclude(array, item, desc) {
 }
 
 function assertArrayIncludes(array, item, desc) {
-  assert(array.includes(item),
-         `${desc} [${array}] does not include "${item}"`);
+  assert.includes(array, item, `${desc} [${array}] does not include "${item}"`);
 }
 
 function testProviderPresent(provider) {

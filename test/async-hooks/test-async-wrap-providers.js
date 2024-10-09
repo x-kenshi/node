@@ -7,7 +7,7 @@ const providers = internalBinding('async_wrap').Providers;
 const assert = require('assert');
 const { asyncWrapProviders } = require('async_hooks');
 
-assert.ok(typeof asyncWrapProviders === 'object');
+assert.strictEqual(typeof asyncWrapProviders, 'object');
 assert.deepStrictEqual(asyncWrapProviders, { __proto__: null, ...providers });
 
 const providerKeys = Object.keys(asyncWrapProviders);

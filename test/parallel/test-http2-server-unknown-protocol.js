@@ -43,6 +43,6 @@ server.listen(0, function() {
     ALPNProtocols: ['bogus']
   }).on('error', common.mustCall((err) => {
     const allowedErrors = ['ECONNRESET', 'ERR_SSL_TLSV1_ALERT_NO_APPLICATION_PROTOCOL'];
-    assert.ok(allowedErrors.includes(err.code), `'${err.code}' was not one of ${allowedErrors}.`);
+    assert.includes(allowedErrors, err.code, `'${err.code}' was not one of ${allowedErrors}.`);
   }));
 });

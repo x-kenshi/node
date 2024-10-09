@@ -30,8 +30,8 @@ const kinds = [
     assert(entry);
     assert.strictEqual(entry.name, 'gc');
     assert.strictEqual(entry.entryType, 'gc');
-    assert(kinds.includes(entry.kind));
-    assert(kinds.includes(entry.detail.kind));
+    assert.includes(kinds, entry.kind);
+    assert.includes(kinds, entry.detail.kind);
     assert.strictEqual(entry.flags, NODE_PERFORMANCE_GC_FLAGS_FORCED);
     assert.strictEqual(entry.detail.flags, NODE_PERFORMANCE_GC_FLAGS_FORCED);
     assert.strictEqual(typeof entry.startTime, 'number');

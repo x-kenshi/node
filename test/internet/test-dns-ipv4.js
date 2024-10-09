@@ -36,7 +36,7 @@ function TEST(f) {
 }
 
 function checkWrap(req) {
-  assert.ok(typeof req === 'object');
+  assert.strictEqual(typeof req, 'object');
 }
 
 TEST(async function test_resolve4(done) {
@@ -66,7 +66,7 @@ TEST(async function test_reverse_ipv4(done) {
 
     for (let i = 0; i < res.length; i++) {
       assert.ok(res[i]);
-      assert.ok(typeof res[i] === 'string');
+      assert.strictEqual(typeof res[i], 'string');
     }
   }
 
@@ -222,7 +222,7 @@ TEST(async function test_lookupservice_ip_ipv4(done) {
   function validateResult(res) {
     assert.strictEqual(typeof res.hostname, 'string');
     assert(res.hostname);
-    assert(['http', 'www', '80'].includes(res.service));
+    assert.includes(['http', 'www', '80'], res.service);
   }
 
   validateResult(await dnsPromises.lookupService('127.0.0.1', 80));
@@ -243,7 +243,7 @@ TEST(function test_lookupservice_ip_ipv4_promise(done) {
     .then(common.mustCall(({ hostname, service }) => {
       assert.strictEqual(typeof hostname, 'string');
       assert(hostname.length > 0);
-      assert(['http', 'www', '80'].includes(service));
+      assert.includes(['http', 'www', '80'], service);
       done();
     }));
 });

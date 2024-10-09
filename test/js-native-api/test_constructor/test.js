@@ -26,9 +26,9 @@ const propertyNames = [];
 for (const name in test_object) {
   propertyNames.push(name);
 }
-assert.ok(propertyNames.includes('echo'));
-assert.ok(propertyNames.includes('readwriteValue'));
-assert.ok(propertyNames.includes('readonlyValue'));
+assert.includes(propertyNames, 'echo');
+assert.includes(propertyNames, 'readwriteValue');
+assert.includes(propertyNames, 'readonlyValue');
 assert.ok(!propertyNames.includes('hiddenValue'));
 assert.ok(!propertyNames.includes('readwriteAccessor1'));
 assert.ok(!propertyNames.includes('readwriteAccessor2'));

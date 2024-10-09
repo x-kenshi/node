@@ -26,8 +26,7 @@ const cli = startCLI(['--port=0', script]);
   assert.match(cli.output, /not loaded yet/,
                'warns that the script was not loaded yet');
   await cli.stepCommand('cont');
-  assert.ok(cli.output.includes(`break in ${otherScript}:2`),
-            'found breakpoint in file that was not loaded yet');
+  assert.includes(cli.output, `break in ${otherScript}:2`, 'found breakpoint in file that was not loaded yet');
 })()
 .then(common.mustCall())
 .finally(() => cli.quit());

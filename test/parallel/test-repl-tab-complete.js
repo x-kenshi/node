@@ -83,7 +83,7 @@ testMe.complete('console?.zzz', common.mustCall((error, data) => {
 }));
 
 testMe.complete('console?.', common.mustCall((error, data) => {
-  assert(data[0].includes('console?.log'));
+  assert.includes(data[0], 'console?.log');
   assert.strictEqual(data[1], 'console?.');
 }));
 
@@ -244,7 +244,7 @@ const spaceTimeout = setTimeout(function() {
 
 testMe.complete(' ', common.mustSucceed((data) => {
   assert.strictEqual(data[1], '');
-  assert.ok(data[0].includes('globalThis'));
+  assert.includes(data[0], 'globalThis');
   clearTimeout(spaceTimeout);
 }));
 
@@ -284,7 +284,7 @@ testMe.complete('require(\'', common.mustCall(function(error, data) {
   repl.builtinModules.push(newModule);
   testMe.complete('require(\'', common.mustCall((_, [modules]) => {
     assert.strictEqual(data[0].length + 1, modules.length);
-    assert(modules.includes(newModule));
+    assert.includes(modules, newModule);
   }));
 }));
 
@@ -352,8 +352,8 @@ testMe.complete("require\t( 'n", common.mustCall(function(error, data) {
       assert.strictEqual(data.length, 2);
       assert.strictEqual(data[1], '.');
       assert.strictEqual(data[0].length, 2);
-      assert.ok(data[0].includes('./'));
-      assert.ok(data[0].includes('../'));
+      assert.includes(data[0], './');
+      assert.includes(data[0], '../');
     }));
   });
 
@@ -370,7 +370,7 @@ testMe.complete("require\t( 'n", common.mustCall(function(error, data) {
         assert.strictEqual(err, null);
         assert.strictEqual(data.length, 2);
         assert.strictEqual(data[1], path);
-        assert.ok(data[0].includes('./test-repl-tab-complete'));
+        assert.includes(data[0], './test-repl-tab-complete');
       }));
     });
   });
@@ -381,7 +381,7 @@ testMe.complete("require\t( 'n", common.mustCall(function(error, data) {
         assert.strictEqual(err, null);
         assert.strictEqual(data.length, 2);
         assert.strictEqual(data[1], path);
-        assert.ok(data[0].includes('../parallel/test-repl-tab-complete'));
+        assert.includes(data[0], '../parallel/test-repl-tab-complete');
       }));
     });
   });
@@ -391,7 +391,7 @@ testMe.complete("require\t( 'n", common.mustCall(function(error, data) {
     testMe.complete(`require('${path}`, common.mustSucceed((data) => {
       assert.strictEqual(data.length, 2);
       assert.strictEqual(data[1], path);
-      assert.ok(data[0].includes('../fixtures/repl-folder-extensions/foo.js'));
+      assert.includes(data[0], '../fixtures/repl-folder-extensions/foo.js');
     }));
   }
 
@@ -438,7 +438,7 @@ putIn.run(['var obj = {1:"a","1a":"b",a:"b"};']);
 testMe.complete('obj.', common.mustCall(function(error, data) {
   assert.strictEqual(data[0].includes('obj.1'), false);
   assert.strictEqual(data[0].includes('obj.1a'), false);
-  assert(data[0].includes('obj.a'));
+  assert.includes(data[0], 'obj.a');
 }));
 
 // Don't try to complete results of non-simple expressions
@@ -454,7 +454,7 @@ putIn.run(['var obj = {1:"a","1a":"b",a:"b"};']);
 testMe.complete(' obj.', common.mustCall((error, data) => {
   assert.strictEqual(data[0].includes('obj.1'), false);
   assert.strictEqual(data[0].includes('obj.1a'), false);
-  assert(data[0].includes('obj.a'));
+  assert.includes(data[0], 'obj.a');
 }));
 
 // Works inside assignments
@@ -474,7 +474,7 @@ putIn.run(['.clear']);
 putIn.run(['var obj = {"hello, world!": "some string", "key": 123}']);
 testMe.complete('obj.', common.mustCall((error, data) => {
   assert.strictEqual(data[0].includes('obj.hello, world!'), false);
-  assert(data[0].includes('obj.key'));
+  assert.includes(data[0], 'obj.key');
 }));
 
 // Make sure tab completion does not include __defineSetter__ and friends.
@@ -500,23 +500,23 @@ testMe.complete('obj.', common.mustCall(function(error, data) {
       const fixturePath = `${readFileSync}../fixtures/test-repl-tab-completion`;
       testMe.complete(fixturePath, common.mustCall((err, data) => {
         assert.strictEqual(err, null);
-        assert.ok(data[0][0].includes('.hiddenfiles'));
-        assert.ok(data[0][1].includes('hellorandom.txt'));
-        assert.ok(data[0][2].includes('helloworld.js'));
+        assert.includes(data[0][0], '.hiddenfiles');
+        assert.includes(data[0][1], 'hellorandom.txt');
+        assert.includes(data[0][2], 'helloworld.js');
       }));
 
       testMe.complete(`${fixturePath}/hello`,
                       common.mustCall((err, data) => {
                         assert.strictEqual(err, null);
-                        assert.ok(data[0][0].includes('hellorandom.txt'));
-                        assert.ok(data[0][1].includes('helloworld.js'));
+                        assert.includes(data[0][0], 'hellorandom.txt');
+                        assert.includes(data[0][1], 'helloworld.js');
                       })
       );
 
       testMe.complete(`${fixturePath}/.h`,
                       common.mustCall((err, data) => {
                         assert.strictEqual(err, null);
-                        assert.ok(data[0][0].includes('.hiddenfiles'));
+                        assert.includes(data[0][0], '.hiddenfiles');
                       })
       );
 
@@ -530,7 +530,7 @@ testMe.complete('obj.', common.mustCall(function(error, data) {
       const testPath = fixturePath.slice(0, -1);
       testMe.complete(testPath, common.mustCall((err, data) => {
         assert.strictEqual(err, null);
-        assert.ok(data[0][0].includes('test-repl-tab-completion'));
+        assert.includes(data[0][0], 'test-repl-tab-completion');
         assert.strictEqual(
           data[1],
           path.basename(testPath)

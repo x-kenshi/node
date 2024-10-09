@@ -21,7 +21,7 @@ test('disabled without --experimental-webstorage', async () => {
     assert.strictEqual(cp.code, 1);
     assert.strictEqual(cp.signal, null);
     assert.strictEqual(cp.stdout, '');
-    assert(cp.stderr.includes(`ReferenceError: ${api} is not defined`));
+    assert.includes(cp.stderr, `ReferenceError: ${api} is not defined`);
   }
 });
 

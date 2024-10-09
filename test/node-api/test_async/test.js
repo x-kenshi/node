@@ -17,7 +17,7 @@ if (process.argv[2] === 'child') {
 const p = child_process.spawnSync(
   process.execPath, [ __filename, 'child' ]);
 assert.ifError(p.error);
-assert.ok(p.stderr.toString().includes(testException));
+assert.includes(p.stderr.toString(), testException);
 
 // Successful async execution and completion callback.
 test_async.Test(5, {}, common.mustCall(function(err, val) {

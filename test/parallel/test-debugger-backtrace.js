@@ -21,9 +21,9 @@ const path = require('path');
       await cli.waitForPrompt();
       await cli.stepCommand('c');
       await cli.command('bt');
-      assert.ok(cli.output.includes(`#0 topFn ${script}:7:2`));
+      assert.includes(cli.output, `#0 topFn ${script}:7:2`);
       await cli.command('backtrace');
-      assert.ok(cli.output.includes(`#0 topFn ${script}:7:2`));
+      assert.includes(cli.output, `#0 topFn ${script}:7:2`);
     } finally {
       await cli.quit();
     }

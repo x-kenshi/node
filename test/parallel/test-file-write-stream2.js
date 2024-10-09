@@ -94,7 +94,7 @@ file.on('close', function() {
   cb_occurred += 'close ';
   assert.strictEqual(file.bytesWritten, EXPECTED.length * 2);
   file.write('should not work anymore', (err) => {
-    assert.ok(err.message.includes('write after end'));
+    assert.includes(err.message, 'write after end');
   });
 });
 

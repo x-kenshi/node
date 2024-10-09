@@ -332,7 +332,7 @@ function _validateContent(report, fields = []) {
 
 function checkForUnknownFields(actual, expected) {
   Object.keys(actual).forEach((field) => {
-    assert(expected.includes(field), `'${field}' not expected in ${expected}`);
+    assert.includes(expected, field, `'${field}' not expected in ${expected}`);
   });
 }
 

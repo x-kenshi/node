@@ -62,7 +62,6 @@ for (const { test, expected } of [
   ]);
   process.stderr.write(proc.stderr.toString());
   assert.strictEqual(proc.stderr.toString(), '');
-  assert(expected.includes(proc.stdout.toString()),
-         `${proc.stdout.toString()} is not included in ${expected}`);
+  assert.includes(expected, proc.stdout.toString(), `${proc.stdout.toString()} is not included in ${expected}`);
   assert.strictEqual(proc.status, 0);
 }

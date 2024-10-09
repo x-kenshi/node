@@ -26,9 +26,7 @@ const { createServer } = require('net');
       cli.output,
       /report this bug/,
       'Omits message about reporting this as a bug');
-    assert.ok(
-      cli.output.includes(`waiting for 127.0.0.1:${port} to be free`),
-      'Tells the user that the port wasn\'t available');
+    assert.includes(cli.output, `waiting for 127.0.0.1:${port} to be free`, 'Tells the user that the port wasn\'t available');
     assert.strictEqual(code, 1);
   } finally {
     blocker.close();

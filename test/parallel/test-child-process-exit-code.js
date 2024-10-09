@@ -36,6 +36,6 @@ exitChild.on('exit', common.mustCall(function(code, signal) {
 const errorScript = fixtures.path('child_process_should_emit_error.js');
 const errorChild = spawn(process.argv[0], [errorScript]);
 errorChild.on('exit', common.mustCall(function(code, signal) {
-  assert.ok(code !== 0);
+  assert.notStrictEqual(code, 0);
   assert.strictEqual(signal, null);
 }));

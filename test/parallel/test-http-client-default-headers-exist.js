@@ -46,10 +46,7 @@ const server = http.createServer(common.mustCall((req, res) => {
 
   const requestHeaders = Object.keys(req.headers);
   for (const header of requestHeaders) {
-    assert.ok(
-      expectedHeaders[req.method].includes(header.toLowerCase()),
-      `${header} should not exist for method ${req.method}`
-    );
+    assert.includes(expectedHeaders[req.method], header.toLowerCase(), `${header} should not exist for method ${req.method}`);
   }
 
   assert.strictEqual(

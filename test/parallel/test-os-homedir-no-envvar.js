@@ -15,7 +15,7 @@ if (process.argv[2] === 'child') {
   const home = os.homedir();
 
   assert.strictEqual(typeof home, 'string');
-  assert(home.includes(path.sep));
+  assert.includes(home, path.sep);
 } else {
   if (common.isWindows)
     delete process.env.USERPROFILE;

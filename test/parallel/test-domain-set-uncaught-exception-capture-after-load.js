@@ -19,12 +19,10 @@ assert.throws(
       }
     )(err);
 
-    assert(err.stack.includes('-'.repeat(40)),
-           `expected ${err.stack} to contain dashes`);
+    assert.includes(err.stack, '-'.repeat(40), `expected ${err.stack} to contain dashes`);
 
     const location = `at foobar (${__filename}:`;
-    assert(err.stack.includes(location),
-           `expected ${err.stack} to contain ${location}`);
+    assert.includes(err.stack, location, `expected ${err.stack} to contain ${location}`);
     return true;
   }
 );

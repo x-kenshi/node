@@ -130,7 +130,7 @@ assert.strictEqual(util.inspect({ 'a': { 'b': { 'c': 2 } } }, false, 1),
 assert.strictEqual(util.inspect({ 'a': { 'b': ['c'] } }, false, 1),
                    '{ a: { b: [Array] } }');
 assert.strictEqual(util.inspect(new Uint8Array(0)), 'Uint8Array(0) []');
-assert(inspect(new Uint8Array(0), { showHidden: true }).includes('[buffer]'));
+assert.includes(inspect(new Uint8Array(0), { showHidden: true }), '[buffer]');
 assert.strictEqual(
   util.inspect(
     Object.create(
@@ -656,9 +656,9 @@ assert.strictEqual(util.inspect(-5e-324), '-5e-324');
   );
 
   const ex = util.inspect(new Error('FAIL'), true);
-  assert(ex.includes('Error: FAIL'));
-  assert(ex.includes('[stack]'));
-  assert(ex.includes('[message]'));
+  assert.includes(ex, 'Error: FAIL');
+  assert.includes(ex, '[stack]');
+  assert.includes(ex, '[message]');
 }
 
 {
@@ -822,8 +822,7 @@ assert.strictEqual(util.inspect({ __proto__: Date.prototype }), 'Date {}');
 // See https://github.com/nodejs/node-v0.x-archive/issues/2225
 {
   const x = { [util.inspect.custom]: util.inspect };
-  assert(util.inspect(x).includes(
-    '[Symbol(nodejs.util.inspect.custom)]: [Function: inspect] {\n'));
+  assert.includes(util.inspect(x), '[Symbol(nodejs.util.inspect.custom)]: [Function: inspect] {\n');
 }
 
 // `util.inspect` should display the escaped value of a key.
@@ -1980,8 +1979,8 @@ util.inspect(process);
   const longList = util.inspect(list, { depth: Infinity });
   const match = longList.match(/next/g);
   assert(match.length > 500 && match.length < 10000);
-  assert(longList.includes('[Object: Inspection interrupted ' +
-    'prematurely. Maximum call stack size exceeded.]'));
+  assert.includes(longList, '[Object: Inspection interrupted ' +
+    'prematurely. Maximum call stack size exceeded.]');
 }
 
 // Do not escape single quotes if no double quote or backtick is present.
@@ -2310,7 +2309,7 @@ assert.strictEqual(
   const aliases = Object.getOwnPropertyNames(inspect.colors)
                   .filter((c) => !colors.includes(c));
   assert(!colors.includes('grey'));
-  assert(colors.includes('gray'));
+  assert.includes(colors, 'gray');
   // Verify that all aliases are correctly mapped.
   for (const alias of aliases) {
     assert(Array.isArray(inspect.colors[alias]));

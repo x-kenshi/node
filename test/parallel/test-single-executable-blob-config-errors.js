@@ -34,11 +34,7 @@ const assert = require('assert');
     });
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `Cannot read single executable configuration from ${config}`
-    )
-  );
+  assert.includes(stderr, `Cannot read single executable configuration from ${config}`);
 }
 
 {
@@ -53,11 +49,7 @@ const assert = require('assert');
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
   assert.match(stderr, /SyntaxError: Expected ':' after property name/);
-  assert(
-    stderr.includes(
-      `Cannot parse JSON from ${config}`
-    )
-  );
+  assert.includes(stderr, `Cannot parse JSON from ${config}`);
 }
 
 {
@@ -71,11 +63,7 @@ const assert = require('assert');
     });
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `"main" field of ${config} is not a non-empty string`
-    )
-  );
+  assert.includes(stderr, `"main" field of ${config} is not a non-empty string`);
 }
 
 {
@@ -89,11 +77,7 @@ const assert = require('assert');
     });
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `"main" field of ${config} is not a non-empty string`
-    )
-  );
+  assert.includes(stderr, `"main" field of ${config} is not a non-empty string`);
 }
 
 {
@@ -107,11 +91,7 @@ const assert = require('assert');
     });
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `"output" field of ${config} is not a non-empty string`
-    )
-  );
+  assert.includes(stderr, `"output" field of ${config} is not a non-empty string`);
 }
 
 {
@@ -131,11 +111,7 @@ const assert = require('assert');
     });
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `"disableExperimentalSEAWarning" field of ${config} is not a Boolean`
-    )
-  );
+  assert.includes(stderr, `"disableExperimentalSEAWarning" field of ${config} is not a Boolean`);
 }
 
 {
@@ -169,11 +145,7 @@ const assert = require('assert');
 
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `Cannot read main script ${main}`
-    )
-  );
+  assert.includes(stderr, `Cannot read main script ${main}`);
 }
 
 {
@@ -196,11 +168,7 @@ const assert = require('assert');
 
   const stderr = child.stderr.toString();
   assert.strictEqual(child.status, 1);
-  assert(
-    stderr.includes(
-      `Cannot write output to ${output}`
-    )
-  );
+  assert.includes(stderr, `Cannot write output to ${output}`);
 }
 
 {

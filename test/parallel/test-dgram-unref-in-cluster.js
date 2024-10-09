@@ -17,7 +17,7 @@ if (cluster.isPrimary) {
     const sockets = process.getActiveResourcesInfo().filter((item) => {
       return item === 'UDPWrap';
     });
-    assert.ok(sockets.length === 0);
+    assert.strictEqual(sockets.length, 0);
     process.disconnect();
   }));
 }

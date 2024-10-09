@@ -17,6 +17,6 @@ let stderr;
 child.stderr.setEncoding('utf8');
 child.stderr.on('data', (chunk) => stderr += chunk);
 child.stderr.on('end', common.mustCall(() => {
-  assert(stderr.includes('throw new Error()'), stderr);
+  assert.includes(stderr, 'throw new Error()', stderr);
   assert(!stderr.includes('Could not open trace file'), stderr);
 }));

@@ -29,8 +29,8 @@ if (isMainThread) {
 
   process.on('exit', () => {
     for (const [threadId, workerOutput] of workerIdsToOutput) {
-      assert.ok(workerOutput.includes(`1 threadId: ${threadId}`));
-      assert.ok(workerOutput.includes(`2 threadId: ${threadId}`));
+      assert.includes(workerOutput, `1 threadId: ${threadId}`);
+      assert.includes(workerOutput, `2 threadId: ${threadId}`);
     }
   });
 } else {

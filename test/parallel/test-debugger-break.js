@@ -26,27 +26,21 @@ const cli = startCLI(['--port=0', script]);
     'shows the source and marks the current line');
 
   await cli.stepCommand('n');
-  assert.ok(
-    cli.output.includes(`step in ${script}:2`),
-    'pauses in next line of the script');
+  assert.includes(cli.output, `step in ${script}:2`, 'pauses in next line of the script');
   assert.match(
     cli.output,
     /> 2 let name = 'World';/,
     'marks the 2nd line');
 
   await cli.stepCommand('next');
-  assert.ok(
-    cli.output.includes(`step in ${script}:3`),
-    'pauses in next line of the script');
+  assert.includes(cli.output, `step in ${script}:3`, 'pauses in next line of the script');
   assert.match(
     cli.output,
     /> 3 name = 'Robin';/,
     'marks the 3nd line');
 
   await cli.stepCommand('cont');
-  assert.ok(
-    cli.output.includes(`break in ${script}:10`),
-    'pauses on the next breakpoint');
+  assert.includes(cli.output, `break in ${script}:10`, 'pauses on the next breakpoint');
   assert.match(
     cli.output,
     />10 debugger;/,
@@ -60,8 +54,8 @@ const cli = startCLI(['--port=0', script]);
   assert.doesNotMatch(cli.output, /Could not resolve breakpoint/);
 
   await cli.command('breakpoints');
-  assert.ok(cli.output.includes(`#0 ${script}:6`));
-  assert.ok(cli.output.includes(`#1 ${script}:16`));
+  assert.includes(cli.output, `#0 ${script}:6`);
+  assert.includes(cli.output, `#1 ${script}:16`);
 
   await cli.command('list()');
   assert.match(
@@ -93,18 +87,12 @@ const cli = startCLI(['--port=0', script]);
     'entered timers.js');
 
   await cli.stepCommand('cont');
-  assert.ok(
-    cli.output.includes(`break in ${script}:16`),
-    'found breakpoint we set above w/ line number only');
+  assert.includes(cli.output, `break in ${script}:16`, 'found breakpoint we set above w/ line number only');
 
   await cli.stepCommand('cont');
-  assert.ok(
-    cli.output.includes(`break in ${script}:6`),
-    'found breakpoint we set above w/ line number & script');
+  assert.includes(cli.output, `break in ${script}:6`, 'found breakpoint we set above w/ line number & script');
 
   await cli.stepCommand('');
-  assert.ok(
-    cli.output.includes(`debugCommand in ${script}:14`),
-    'found function breakpoint we set above');
+  assert.includes(cli.output, `debugCommand in ${script}:14`, 'found function breakpoint we set above');
 })().finally(() => cli.quit())
   .then(common.mustCall());

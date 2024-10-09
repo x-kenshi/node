@@ -57,7 +57,7 @@ server.listen(0, function() {
 
   client.on('data', function(d) {
     console.log('client: on data', d);
-    assert.ok(typeof d === 'string');
+    assert.strictEqual(typeof d, 'string');
     buffer += d;
   });
 

@@ -89,7 +89,7 @@ test('test coverage report', async (t) => {
     const result = spawnSync(process.execPath, args);
 
     assert(!result.stdout.toString().includes('# start of coverage report'));
-    assert(result.stderr.toString().includes('coverage could not be collected'));
+    assert.includes(result.stderr.toString(), 'coverage could not be collected');
     assert.strictEqual(result.status, 0);
     assert(!findCoverageFileForPid(result.pid));
   });
@@ -102,7 +102,7 @@ test('test tap coverage reporter', skipIfNoInspector, async (t) => {
     const options = { env: { ...process.env, NODE_V8_COVERAGE: tmpdir.path } };
     const result = spawnSync(process.execPath, args, options);
     const report = getTapCoverageFixtureReport();
-    assert(result.stdout.toString().includes(report));
+    assert.includes(result.stdout.toString(), report);
     assert.strictEqual(result.stderr.toString(), '');
     assert.strictEqual(result.status, 0);
     assert(findCoverageFileForPid(result.pid));
@@ -114,7 +114,7 @@ test('test tap coverage reporter', skipIfNoInspector, async (t) => {
     const result = spawnSync(process.execPath, args);
     const report = getTapCoverageFixtureReport();
 
-    assert(result.stdout.toString().includes(report));
+    assert.includes(result.stdout.toString(), report);
     assert.strictEqual(result.stderr.toString(), '');
     assert.strictEqual(result.status, 0);
     assert(!findCoverageFileForPid(result.pid));
@@ -129,7 +129,7 @@ test('test spec coverage reporter', skipIfNoInspector, async (t) => {
     const result = spawnSync(process.execPath, args, options);
     const report = getSpecCoverageFixtureReport();
 
-    assert(result.stdout.toString().includes(report));
+    assert.includes(result.stdout.toString(), report);
     assert.strictEqual(result.stderr.toString(), '');
     assert.strictEqual(result.status, 0);
     assert(findCoverageFileForPid(result.pid));
@@ -141,7 +141,7 @@ test('test spec coverage reporter', skipIfNoInspector, async (t) => {
     const result = spawnSync(process.execPath, args);
     const report = getSpecCoverageFixtureReport();
 
-    assert(result.stdout.toString().includes(report));
+    assert.includes(result.stdout.toString(), report);
     assert.strictEqual(result.stderr.toString(), '');
     assert.strictEqual(result.status, 0);
     assert(!findCoverageFileForPid(result.pid));
@@ -157,7 +157,7 @@ test('single process coverage is the same with --test', skipIfNoInspector, () =>
   const report = getTapCoverageFixtureReport();
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
   assert(!findCoverageFileForPid(result.pid));
 });
@@ -192,7 +192,7 @@ test('coverage is combined for multiple processes', skipIfNoInspector, () => {
   });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });
 
@@ -230,7 +230,7 @@ test.skip('coverage works with isolation=none', skipIfNoInspector, () => {
   });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });
 
@@ -317,7 +317,7 @@ test('coverage with source maps', skipIfNoInspector, () => {
   const result = spawnSync(process.execPath, args, { cwd: fixture });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 1);
 });
 
@@ -331,7 +331,7 @@ test('coverage with source maps missing sources', skipIfNoInspector, () => {
   ]);
 
   const error = `Cannot find '${pathToFileURL(missing)}' imported from the source map for '${pathToFileURL(file)}'`;
-  assert(result.stdout.toString().includes(error));
+  assert.includes(result.stdout.toString(), error);
   assert.strictEqual(result.status, 1);
 });
 
@@ -361,7 +361,7 @@ test('coverage with ESM hook - source irrelevant', skipIfNoInspector, () => {
   const result = spawnSync(process.execPath, args, { cwd: fixture });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });
 
@@ -393,7 +393,7 @@ test('coverage with ESM hook - source transpiled', skipIfNoInspector, () => {
   const result = spawnSync(process.execPath, args, { cwd: fixture });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });
 
@@ -426,7 +426,7 @@ test('coverage with excluded files', skipIfNoInspector, () => {
     return report.replaceAll('/', '\\');
   }
 
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
   assert(!findCoverageFileForPid(result.pid));
 });
@@ -462,7 +462,7 @@ test('coverage with included files', skipIfNoInspector, () => {
     return report.replaceAll('/', '\\');
   }
 
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
   assert(!findCoverageFileForPid(result.pid));
 });
@@ -496,7 +496,7 @@ test('coverage with included and excluded files', skipIfNoInspector, () => {
     return report.replaceAll('/', '\\');
   }
 
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
   assert(!findCoverageFileForPid(result.pid));
 });
@@ -525,7 +525,7 @@ test('properly accounts for line endings in source maps', skipIfNoInspector, () 
 
   const result = spawnSync(process.execPath, args);
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });
 
@@ -560,6 +560,6 @@ test('correctly prints the coverage report of files contained in parent director
   });
 
   assert.strictEqual(result.stderr.toString(), '');
-  assert(result.stdout.toString().includes(report));
+  assert.includes(result.stdout.toString(), report);
   assert.strictEqual(result.status, 0);
 });

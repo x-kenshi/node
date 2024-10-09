@@ -48,7 +48,7 @@ function testHelper(stream, args, expectedOutput, cmd, env) {
     assert.notStrictEqual(response.length, 0);
     if (FIPS_ENABLED !== expectedOutput && FIPS_DISABLED !== expectedOutput) {
       // In the case of expected errors just look for a substring.
-      assert.ok(response.includes(expectedOutput));
+      assert.includes(response, expectedOutput);
     } else {
       const getFipsValue = Number(response);
       if (!Number.isNaN(getFipsValue))

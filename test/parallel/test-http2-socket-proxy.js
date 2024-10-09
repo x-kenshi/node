@@ -38,18 +38,18 @@ server.on('stream', common.mustCall(function(stream, headers) {
 
   // The indentation is corrected depending on the depth.
   let inspectedTimeout = util.inspect(session[kTimeout]);
-  assert(inspectedTimeout.includes('  _idlePrev: [TimersList]'));
-  assert(inspectedTimeout.includes('  _idleNext: [TimersList]'));
+  assert.includes(inspectedTimeout, '  _idlePrev: [TimersList]');
+  assert.includes(inspectedTimeout, '  _idleNext: [TimersList]');
   assert(!inspectedTimeout.includes('   _idleNext: [TimersList]'));
 
   inspectedTimeout = util.inspect([ session[kTimeout] ]);
-  assert(inspectedTimeout.includes('    _idlePrev: [TimersList]'));
-  assert(inspectedTimeout.includes('    _idleNext: [TimersList]'));
+  assert.includes(inspectedTimeout, '    _idlePrev: [TimersList]');
+  assert.includes(inspectedTimeout, '    _idleNext: [TimersList]');
   assert(!inspectedTimeout.includes('     _idleNext: [TimersList]'));
 
   const inspectedTimersList = util.inspect([[ session[kTimeout]._idlePrev ]]);
-  assert(inspectedTimersList.includes('      _idlePrev: [Timeout]'));
-  assert(inspectedTimersList.includes('      _idleNext: [Timeout]'));
+  assert.includes(inspectedTimersList, '      _idlePrev: [Timeout]');
+  assert.includes(inspectedTimersList, '      _idleNext: [Timeout]');
   assert(!inspectedTimersList.includes('       _idleNext: [Timeout]'));
 
   assert.throws(() => socket.destroy, errMsg);

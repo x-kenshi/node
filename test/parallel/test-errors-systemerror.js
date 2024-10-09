@@ -372,25 +372,25 @@ const { ERR_TEST } = codes;
   });
   let inspectedErr = inspect(err);
 
-  assert.ok(inspectedErr.includes(`info: {
+  assert.includes(inspectedErr, `info: {
     code: 'ERR',
     errno: 123,
     message: 'something happened',
     syscall: 'syscall_test',
     custom: 'custom'
-  },`));
+  },`);
 
   err.syscall = 'custom_syscall';
 
   inspectedErr = inspect(err);
 
-  assert.ok(inspectedErr.includes(`info: {
+  assert.includes(inspectedErr, `info: {
     code: 'ERR',
     errno: 123,
     message: 'something happened',
     syscall: 'custom_syscall',
     custom: 'custom'
-  },`));
+  },`);
 }
 
 {

@@ -37,7 +37,7 @@ const server = tls.createServer(options, (conn) => {
                 '-connect', `127.0.0.1:${server.address().port}`];
 
   execFile(common.opensslCli, args, common.mustSucceed((stdout) => {
-    assert(stdout.includes(reply));
+    assert.includes(stdout, reply);
     server.close();
   }));
 }));

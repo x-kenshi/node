@@ -51,9 +51,7 @@ function testStrictModeTerminal() {
   });
 
   cli.input.emit('data', 'xyz ');
-  assert.ok(
-    cli.output.accumulator.includes('\n// ReferenceError: xyz is not defined')
-  );
+  assert.includes(cli.output.accumulator, '\n// ReferenceError: xyz is not defined');
 }
 
 function testAutoMode() {

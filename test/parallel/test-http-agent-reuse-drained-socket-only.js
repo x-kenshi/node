@@ -70,13 +70,13 @@ function sendFstReq(serverPort) {
       req.write(dataLargerThanTCPSendBuf);
       req.uncork();
       if (process.platform === 'win32') {
-        assert.ok(req.socket.writableLength === 0);
+        assert.strictEqual(req.socket.writableLength, 0);
       }
 
       req.write(dataLargerThanTCPSendBuf);
       req.uncork();
       if (process.platform === 'win32') {
-        assert.ok(req.socket.writableLength === 0);
+        assert.strictEqual(req.socket.writableLength, 0);
       }
 
       req.end(dataLargerThanTCPSendBuf);

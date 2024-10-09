@@ -4,8 +4,8 @@ const assert = require('assert');
 const { builtinModules } = require('module');
 
 // Includes modules in lib/ (even deprecated ones)
-assert(builtinModules.includes('http'));
-assert(builtinModules.includes('sys'));
+assert.includes(builtinModules, 'http');
+assert.includes(builtinModules, 'sys');
 
 // Does not include internal modules
 assert.deepStrictEqual(

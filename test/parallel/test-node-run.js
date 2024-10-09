@@ -18,7 +18,7 @@ describe('node --run [command]', () => {
     );
     assert.match(child.stderr, /Can't find package\.json[\s\S]*/);
     // Ensure we show the path that starting path for the search
-    assert(child.stderr.includes(__dirname));
+    assert.includes(child.stderr, __dirname);
     assert.strictEqual(child.stdout, '');
     assert.strictEqual(child.code, 1);
   });
@@ -64,8 +64,8 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/package.json')));
-      assert(child.stderr.includes('no test specified'));
+      assert.includes(child.stderr, fixtures.path('run-script/package.json'));
+      assert.includes(child.stderr, 'no test specified');
       assert.strictEqual(child.code, 1);
     }
     {
@@ -75,7 +75,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/missing-scripts') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/missing-scripts/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/missing-scripts/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -85,7 +85,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-json') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-json/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-json/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -95,7 +95,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-schema') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-schema/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-schema/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -105,7 +105,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-schema') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-schema/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-schema/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -115,7 +115,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-schema') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-schema/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-schema/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -125,7 +125,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-schema') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-schema/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-schema/package.json'));
       assert.strictEqual(child.code, 1);
     }
     {
@@ -135,7 +135,7 @@ describe('node --run [command]', () => {
         { cwd: fixtures.path('run-script/invalid-schema') },
       );
       assert.strictEqual(child.stdout, '');
-      assert(child.stderr.includes(fixtures.path('run-script/invalid-schema/package.json')));
+      assert.includes(child.stderr, fixtures.path('run-script/invalid-schema/package.json'));
       assert.strictEqual(child.code, 1);
     }
   });
@@ -162,14 +162,14 @@ describe('node --run [command]', () => {
       [ '--run', `path-env${envSuffix}`],
       { cwd: fixtures.path('run-script/sub-directory') },
     );
-    assert.ok(child.stdout.includes(fixtures.path('run-script/node_modules/.bin')));
+    assert.includes(child.stdout, fixtures.path('run-script/node_modules/.bin'));
 
     // The following test ensures that we do not add paths that does not contain
     // "node_modules/.bin"
     assert.ok(!child.stdout.includes(fixtures.path('node_modules/.bin')));
 
     // The following test ensures that we add paths that contains "node_modules/.bin"
-    assert.ok(child.stdout.includes(fixtures.path('run-script/sub-directory/node_modules/.bin')));
+    assert.includes(child.stdout, fixtures.path('run-script/sub-directory/node_modules/.bin'));
 
     assert.strictEqual(child.stderr, '');
     assert.strictEqual(child.code, 0);
@@ -183,8 +183,8 @@ describe('node --run [command]', () => {
       [ '--run', scriptName],
       { cwd: fixtures.path('run-script') },
     );
-    assert.ok(child.stdout.includes(scriptName));
-    assert.ok(child.stdout.includes(packageJsonPath));
+    assert.includes(child.stdout, scriptName);
+    assert.includes(child.stdout, packageJsonPath);
     assert.strictEqual(child.stderr, '');
     assert.strictEqual(child.code, 0);
   });
@@ -196,7 +196,7 @@ describe('node --run [command]', () => {
       [ '--run', `special-env-variables${envSuffix}`],
       { cwd: fixtures.path('run-script/sub-directory') },
     );
-    assert.ok(child.stdout.includes(packageJsonPath));
+    assert.includes(child.stdout, packageJsonPath);
     assert.strictEqual(child.stderr, '');
     assert.strictEqual(child.code, 0);
   });

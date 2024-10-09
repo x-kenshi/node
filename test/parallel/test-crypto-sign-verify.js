@@ -627,7 +627,7 @@ assert.throws(
       msgfile}"`;
 
   exec(cmd, common.mustCall((err, stdout, stderr) => {
-    assert(stdout.includes('Verified OK'));
+    assert.includes(stdout, 'Verified OK');
   }));
 }
 

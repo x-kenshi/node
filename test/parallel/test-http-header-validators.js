@@ -58,5 +58,5 @@ console.log('validateHeaderValue');
 
 // Misc.
 function isFunc(v, ttl) {
-  assert.ok(v.constructor === Function, `${ttl} is expected to be a function`);
+  assert.strictEqual(v.constructor, Function, `${ttl} is expected to be a function`);
 }

@@ -66,9 +66,7 @@ function debuggerPausedAt(msg, functionName, previousTickLocation) {
 function assertArrayIncludes(actual, expected) {
   const expectedString = JSON.stringify(expected);
   const actualString = JSON.stringify(actual);
-  assert(
-    actual.includes(expected),
-    `Expected ${actualString} to contain ${expectedString}.`);
+  assert.includes(actual, expected, `Expected ${actualString} to contain ${expectedString}.`);
 }
 
 runTests().then(common.mustCall());

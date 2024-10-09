@@ -7,9 +7,9 @@ const { performance, PerformanceObserver } = require('perf_hooks');
 
 const perfObserver = new PerformanceObserver(common.mustCall((items) => {
   const entries = items.getEntries();
-  assert.ok(entries.length === 1);
+  assert.strictEqual(entries.length, 1);
   for (const entry of entries) {
-    assert.ok(util.inspect(entry).includes('this is detail'));
+    assert.includes(util.inspect(entry), 'this is detail');
   }
 }));
 

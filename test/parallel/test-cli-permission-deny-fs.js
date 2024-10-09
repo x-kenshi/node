@@ -94,9 +94,7 @@ const path = require('path');
       'fs.readFileSync(process.execPath)',
     ]
   );
-  assert.ok(
-    stderr.toString().includes('Access to this API has been restricted'),
-    stderr);
+  assert.includes(stderr.toString(), 'Access to this API has been restricted', stderr);
   assert.strictEqual(status, 1);
 }
 
@@ -109,9 +107,7 @@ const path = require('path');
       'fs.readFileSync(process.execPath)',
     ]
   );
-  assert.ok(
-    stderr.toString().includes('Access to this API has been restricted'),
-    stderr);
+  assert.includes(stderr.toString(), 'Access to this API has been restricted', stderr);
   assert.strictEqual(status, 1);
 }
 
@@ -124,9 +120,7 @@ const path = require('path');
       'fs.writeFileSync("policy-deny-example.md", "# test")',
     ]
   );
-  assert.ok(
-    stderr.toString().includes('Access to this API has been restricted'),
-    stderr);
+  assert.includes(stderr.toString(), 'Access to this API has been restricted', stderr);
   assert.strictEqual(status, 1);
   assert.ok(!fs.existsSync('permission-deny-example.md'));
 }

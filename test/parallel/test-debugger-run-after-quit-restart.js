@@ -24,10 +24,7 @@ const path = require('path');
     .then(() => cli.waitForPrompt())
     .then(() => cli.stepCommand('n'))
     .then(() => {
-      assert.ok(
-        cli.output.includes(`step in ${script}:2`),
-        'steps to the 2nd line'
-      );
+      assert.includes(cli.output, `step in ${script}:2`, 'steps to the 2nd line');
     })
     .then(() => cli.command('cont'))
     .then(() => cli.waitFor(/disconnect/))

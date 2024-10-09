@@ -25,11 +25,11 @@ const propertyNames = [];
 for (const name in test_object) {
   propertyNames.push(name);
 }
-assert.ok(propertyNames.includes('echo'));
-assert.ok(propertyNames.includes('readwriteValue'));
-assert.ok(propertyNames.includes('readonlyValue'));
+assert.includes(propertyNames, 'echo');
+assert.includes(propertyNames, 'readwriteValue');
+assert.includes(propertyNames, 'readonlyValue');
 assert.ok(!propertyNames.includes('hiddenValue'));
-assert.ok(propertyNames.includes('NameKeyValue'));
+assert.includes(propertyNames, 'NameKeyValue');
 assert.ok(!propertyNames.includes('readwriteAccessor1'));
 assert.ok(!propertyNames.includes('readwriteAccessor2'));
 assert.ok(!propertyNames.includes('readonlyAccessor1'));
@@ -46,12 +46,12 @@ const readwriteAccessor1Descriptor =
   Object.getOwnPropertyDescriptor(test_object, 'readwriteAccessor1');
 const readonlyAccessor1Descriptor =
   Object.getOwnPropertyDescriptor(test_object, 'readonlyAccessor1');
-assert.ok(readwriteAccessor1Descriptor.get != null);
-assert.ok(readwriteAccessor1Descriptor.set != null);
-assert.ok(readwriteAccessor1Descriptor.value === undefined);
-assert.ok(readonlyAccessor1Descriptor.get != null);
-assert.ok(readonlyAccessor1Descriptor.set === undefined);
-assert.ok(readonlyAccessor1Descriptor.value === undefined);
+assert.notStrictEqual(readwriteAccessor1Descriptor.get, null);
+assert.notStrictEqual(readwriteAccessor1Descriptor.set, null);
+assert.strictEqual(readwriteAccessor1Descriptor.value, undefined);
+assert.notStrictEqual(readonlyAccessor1Descriptor.get, null);
+assert.strictEqual(readonlyAccessor1Descriptor.set, undefined);
+assert.strictEqual(readonlyAccessor1Descriptor.value, undefined);
 test_object.readwriteAccessor1 = 1;
 assert.strictEqual(test_object.readwriteAccessor1, 1);
 assert.strictEqual(test_object.readonlyAccessor1, 1);

@@ -26,8 +26,7 @@ const nodeTimingProps = ['name', 'entryType', 'startTime', 'duration',
                          'nodeStart', 'v8Start', 'environment', 'loopStart',
                          'loopExit', 'bootstrapComplete', 'idleTime'];
 for (const p of nodeTimingProps)
-  assert.ok(typeof JSON.parse(JSON.stringify(nodeTiming))[p] ===
-    typeof nodeTiming[p]);
+  assert.strictEqual(typeof JSON.parse(JSON.stringify(nodeTiming))[p], typeof nodeTiming[p]);
 
 setTimeout(mustCall(function r() {
   const elu1 = eventLoopUtilization();

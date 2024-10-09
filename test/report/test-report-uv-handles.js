@@ -269,13 +269,13 @@ if (process.argv[2] === 'child') {
       if (validators[entry.type]) validators[entry.type](entry);
     }
     for (const socket of ['listening', 'inbound', 'outbound']) {
-      assert(found_tcp.includes(socket), `${socket} TCP socket was not found`);
+      assert.includes(found_tcp, socket, `${socket} TCP socket was not found`);
     }
     for (const socket of ['connected', 'unconnected']) {
-      assert(found_udp.includes(socket), `${socket} UDP socket was not found`);
+      assert.includes(found_udp, socket, `${socket} UDP socket was not found`);
     }
     for (const socket of ['listening', 'inbound']) {
-      assert(found_named_pipe.includes(socket), `${socket} named pipe socket was not found`);
+      assert.includes(found_named_pipe, socket, `${socket} named pipe socket was not found`);
     }
 
     // Common report tests.

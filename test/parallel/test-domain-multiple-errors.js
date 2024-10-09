@@ -14,7 +14,7 @@ const values = [
 ];
 
 d.on('error', common.mustCall((err) => {
-  assert(values.includes(err));
+  assert.includes(values, err);
 }, values.length));
 
 for (const something of values) {

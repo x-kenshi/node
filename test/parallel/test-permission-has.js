@@ -6,7 +6,7 @@ const common = require('../common');
 const assert = require('assert');
 
 {
-  assert.ok(typeof process.permission.has === 'function');
+  assert.strictEqual(typeof process.permission.has, 'function');
   assert.throws(() => {
     process.permission.has(null, '');
   }, common.expectsError({

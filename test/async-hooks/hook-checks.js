@@ -18,10 +18,7 @@ const assert = require('assert');
 exports.checkInvocations = function checkInvocations(activity, hooks, stage) {
   const stageInfo = `Checking invocations at stage "${stage}":\n   `;
 
-  assert.ok(activity != null,
-            `${stageInfo} Trying to check invocation for an activity, ` +
-            'but it was empty/undefined.',
-  );
+  assert.notStrictEqual(activity, null);
 
   // Check that actual invocations for all hooks match the expected invocations
   [ 'init', 'before', 'after', 'destroy', 'promiseResolve' ].forEach(checkHook);

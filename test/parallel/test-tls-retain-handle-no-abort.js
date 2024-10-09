@@ -19,7 +19,7 @@ const serverOptions = {
 let ssl = null;
 
 process.on('exit', function() {
-  assert.ok(ssl !== null);
+  assert.notStrictEqual(ssl, null);
   // If the internal pointer to stream_ isn't cleared properly then this
   // will abort.
   util.inspect(ssl);

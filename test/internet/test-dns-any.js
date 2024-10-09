@@ -16,7 +16,7 @@ const isIPv6 = net.isIPv6;
 dns.setServers([ '8.8.8.8', '8.8.4.4' ]);
 
 function checkWrap(req) {
-  assert.ok(typeof req === 'object');
+  assert.strictEqual(typeof req, 'object');
 }
 
 const checkers = {

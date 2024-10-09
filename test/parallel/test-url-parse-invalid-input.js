@@ -60,8 +60,8 @@ if (common.hasIntl) {
 
   // The generation logic above should at a minimum produce these two
   // characters.
-  assert(badIDNA.includes('℀'));
-  assert(badIDNA.includes('＠'));
+  assert.includes(badIDNA, '℀');
+  assert.includes(badIDNA, '＠');
 
   for (const badCodePoint of badIDNA) {
     const badURL = `http://fail${badCodePoint}fail.com/`;

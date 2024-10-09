@@ -13,7 +13,7 @@ for (const entryPoint of entryPoints) {
     const error = e.toString();
     assert.match(error, /MODULE_NOT_FOUND/);
     assert.match(error, /Cannot find module/);
-    assert(error.includes(entryPoint));
+    assert.includes(error, entryPoint);
     continue;
   }
   assert.fail('Executing node with inexistent entry point should ' +

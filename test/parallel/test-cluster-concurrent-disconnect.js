@@ -27,9 +27,9 @@ if (cluster.isPrimary) {
     worker.on('error', (err) => {
       assert.strictEqual(err.syscall, 'write');
       if (common.isMacOS) {
-        assert(['EPIPE', 'ENOTCONN'].includes(err.code), err);
+        assert.includes(['EPIPE', 'ENOTCONN'], err.code, err);
       } else {
-        assert(['EPIPE', 'ECONNRESET'].includes(err.code), err);
+        assert.includes(['EPIPE', 'ECONNRESET'], err.code, err);
       }
     });
 

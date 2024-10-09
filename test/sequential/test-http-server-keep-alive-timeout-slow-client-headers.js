@@ -49,8 +49,8 @@ server.listen(0, common.mustCall(() => {
     }
 
     function onHeaders() {
-      assert.ok(response.includes('HTTP/1.1 200 OK\r\n'));
-      assert.ok(response.includes('Connection: keep-alive\r\n'));
+      assert.includes(response, 'HTTP/1.1 200 OK\r\n');
+      assert.includes(response, 'Connection: keep-alive\r\n');
       callback();
     }
   }

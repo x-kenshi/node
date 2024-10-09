@@ -31,7 +31,7 @@ const env = {
     // There should be one snapshot taken and then after the
     // snapshot heap limit callback is popped, the OOM callback
     // becomes effective.
-    assert(stderr.includes('ERR_WORKER_OUT_OF_MEMORY'));
+    assert.includes(stderr, 'ERR_WORKER_OUT_OF_MEMORY');
     const list = fs.readdirSync(tmpdir.path)
       .filter((file) => file.endsWith('.heapsnapshot'));
     assert.strictEqual(list.length, 1);

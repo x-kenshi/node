@@ -37,7 +37,7 @@ const file = fixtures.path('snapshot', 'decompress-gzip-sync.js');
 
   const stats = fs.statSync(tmpdir.resolve('snapshot.blob'));
   assert(stats.isFile());
-  assert(stdout.includes('NODE_TEST_MODE: snapshot'));
+  assert.includes(stdout, 'NODE_TEST_MODE: snapshot');
 }
 
 {
@@ -58,5 +58,5 @@ const file = fixtures.path('snapshot', 'decompress-gzip-sync.js');
   console.log(stderr);
   console.log(stdout);
   assert.strictEqual(child.status, 0);
-  assert(stdout.includes('NODE_TEST_MODE: verify'));
+  assert.includes(stdout, 'NODE_TEST_MODE: verify');
 }

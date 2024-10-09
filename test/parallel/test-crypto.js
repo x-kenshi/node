@@ -113,7 +113,7 @@ function validateList(list) {
 
 // Assume that we have at least AES-128-CBC.
 const cryptoCiphers = crypto.getCiphers();
-assert(crypto.getCiphers().includes('aes-128-cbc'));
+assert.includes(crypto.getCiphers(), 'aes-128-cbc');
 validateList(cryptoCiphers);
 // Make sure all of the ciphers are supported by OpenSSL
 for (const algo of cryptoCiphers) {
@@ -131,8 +131,8 @@ for (const algo of cryptoCiphers) {
 
 // Assume that we have at least AES256-SHA.
 const tlsCiphers = tls.getCiphers();
-assert(tls.getCiphers().includes('aes256-sha'));
-assert(tls.getCiphers().includes('tls_aes_128_ccm_8_sha256'));
+assert.includes(tls.getCiphers(), 'aes256-sha');
+assert.includes(tls.getCiphers(), 'tls_aes_128_ccm_8_sha256');
 // There should be no capital letters in any element.
 const noCapitals = /^[^A-Z]+$/;
 assert(tlsCiphers.every((value) => noCapitals.test(value)));
@@ -140,11 +140,11 @@ validateList(tlsCiphers);
 
 // Assert that we have sha1 and sha256 but not SHA1 and SHA256.
 assert.notStrictEqual(crypto.getHashes().length, 0);
-assert(crypto.getHashes().includes('sha1'));
-assert(crypto.getHashes().includes('sha256'));
+assert.includes(crypto.getHashes(), 'sha1');
+assert.includes(crypto.getHashes(), 'sha256');
 assert(!crypto.getHashes().includes('SHA1'));
 assert(!crypto.getHashes().includes('SHA256'));
-assert(crypto.getHashes().includes('RSA-SHA1'));
+assert.includes(crypto.getHashes(), 'RSA-SHA1');
 assert(!crypto.getHashes().includes('rsa-sha1'));
 validateList(crypto.getHashes());
 // Make sure all of the hashes are supported by OpenSSL
@@ -153,7 +153,7 @@ for (const algo of crypto.getHashes())
 
 // Assume that we have at least secp384r1.
 assert.notStrictEqual(crypto.getCurves().length, 0);
-assert(crypto.getCurves().includes('secp384r1'));
+assert.includes(crypto.getCurves(), 'secp384r1');
 assert(!crypto.getCurves().includes('SECP384R1'));
 validateList(crypto.getCurves());
 

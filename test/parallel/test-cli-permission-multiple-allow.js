@@ -79,5 +79,5 @@ const path = require('path');
   assert.strictEqual(fsOut, 'false');
   assert.strictEqual(fsOutAllowed, 'true');
   assert.strictEqual(status, 0);
-  assert.ok(stderr.toString().includes('Warning: The --allow-fs-write CLI flag has changed.'));
+  assert.includes(stderr.toString(), 'Warning: The --allow-fs-write CLI flag has changed.');
 }

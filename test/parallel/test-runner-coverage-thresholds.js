@@ -67,7 +67,7 @@ for (const coverage of coverages) {
     ]);
 
     const stdout = result.stdout.toString();
-    assert(stdout.includes(getTapCoverageFixtureReport()));
+    assert.includes(stdout, getTapCoverageFixtureReport());
     assert.doesNotMatch(stdout, RegExp(`Error: [\\d\\.]+% ${coverage.name} coverage`));
     assert.strictEqual(result.status, 0);
     assert(!findCoverageFileForPid(result.pid));
@@ -98,7 +98,7 @@ for (const coverage of coverages) {
     ]);
 
     const stdout = result.stdout.toString();
-    assert(stdout.includes(getTapCoverageFixtureReport()));
+    assert.includes(stdout, getTapCoverageFixtureReport());
     assert.match(stdout, RegExp(`Error: ${coverage.actual.toFixed(2)}% ${coverage.name} coverage does not meet threshold of 99%`));
     assert.strictEqual(result.status, 1);
     assert(!findCoverageFileForPid(result.pid));

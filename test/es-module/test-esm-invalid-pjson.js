@@ -15,13 +15,8 @@ describe('ESM: Package.json', { concurrency: !process.env.TEST_PARALLEL }, () =>
 
     const { code, signal, stderr } = await spawnPromisified(execPath, [entry]);
 
-    assert.ok(stderr.includes('code: \'ERR_INVALID_PACKAGE_CONFIG\''), stderr);
-    assert.ok(
-      stderr.includes(
-        `Invalid package config ${path.toNamespacedPath(invalidJson)} while importing "invalid-pjson" from ${entry}.`
-      ),
-      stderr
-    );
+    assert.includes(stderr, 'code: \'ERR_INVALID_PACKAGE_CONFIG\'', stderr);
+    assert.includes(stderr, `Invalid package config ${path.toNamespacedPath(invalidJson)} while importing "invalid-pjson" from ${entry}.`, stderr);
     assert.strictEqual(code, 1);
     assert.strictEqual(signal, null);
   });

@@ -198,7 +198,7 @@ if (common.isWindows) {
 
 const home = os.homedir();
 is.string(home);
-assert.ok(home.includes(path.sep));
+assert.includes(home, path.sep);
 
 const version = os.version();
 assert.strictEqual(typeof version, 'string');
@@ -207,12 +207,12 @@ assert(version);
 if (common.isWindows && process.env.USERPROFILE) {
   assert.strictEqual(home, process.env.USERPROFILE);
   delete process.env.USERPROFILE;
-  assert.ok(os.homedir().includes(path.sep));
+  assert.includes(os.homedir(), path.sep);
   process.env.USERPROFILE = home;
 } else if (!common.isWindows && process.env.HOME) {
   assert.strictEqual(home, process.env.HOME);
   delete process.env.HOME;
-  assert.ok(os.homedir().includes(path.sep));
+  assert.includes(os.homedir(), path.sep);
   process.env.HOME = home;
 }
 
@@ -233,7 +233,7 @@ if (common.isWindows) {
   assert.strictEqual(typeof pwd.shell, 'string');
   // It's possible for /etc/passwd to leave the user's shell blank.
   if (pwd.shell.length > 0) {
-    assert(pwd.shell.includes(path.sep));
+    assert.includes(pwd.shell, path.sep);
   }
   assert.strictEqual(pwd.uid, pwdBuf.uid);
   assert.strictEqual(pwd.gid, pwdBuf.gid);
@@ -241,7 +241,7 @@ if (common.isWindows) {
 }
 
 is.string(pwd.username);
-assert.ok(pwd.homedir.includes(path.sep));
+assert.includes(pwd.homedir, path.sep);
 assert.strictEqual(pwd.username, pwdBuf.username.toString('utf8'));
 assert.strictEqual(pwd.homedir, pwdBuf.homedir.toString('utf8'));
 

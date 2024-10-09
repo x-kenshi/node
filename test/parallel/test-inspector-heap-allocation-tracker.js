@@ -40,7 +40,7 @@ setTimeout(() => {
   // What can we do about that?
   session.post('HeapProfiler.stopTrackingHeapObjects');
 
-  assert(data.includes('PassThrough'), data);
+  assert.includes(data, 'PassThrough', data);
 
   new Worker(__filename, { workerData: 'stopEarly' });
 }, 100);

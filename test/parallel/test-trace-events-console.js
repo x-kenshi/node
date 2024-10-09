@@ -52,7 +52,7 @@ if (process.argv[2] === 'child') {
       .filter((trace) => trace.cat !== '__metadata')
       .forEach((trace) => {
         assert.strictEqual(trace.pid, proc.pid);
-        assert(names.includes(trace.name));
+        assert.includes(names, trace.name);
         if (trace.name === 'count::bar')
           assert.strictEqual(trace.args.data, expectedCounts.shift());
         else if (trace.name === 'time::foo')

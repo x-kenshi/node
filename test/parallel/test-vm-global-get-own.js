@@ -89,9 +89,9 @@ function setPropertyAndAssert(data, property, viaDefine, value) {
   assert.strictEqual(data[property], value);
   assert.ok(property in data);
   if (typeof property === 'string') {
-    assert.ok(Object.getOwnPropertyNames(data).includes(property));
+    assert.includes(Object.getOwnPropertyNames(data), property);
   } else {
-    assert.ok(Object.getOwnPropertySymbols(data).includes(property));
+    assert.includes(Object.getOwnPropertySymbols(data), property);
   }
 }
 

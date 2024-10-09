@@ -73,7 +73,7 @@ fs.opendir(testDir, common.mustSucceed((dir) => {
     assert(!sync);
 
     // Order is operating / file system dependent
-    assert(files.includes(dirent.name), `'files' should include ${dirent}`);
+    assert.includes(files, dirent.name, `'files' should include ${dirent}`);
     assertDirent(dirent);
 
     let syncInner = true;

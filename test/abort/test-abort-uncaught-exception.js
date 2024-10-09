@@ -32,7 +32,7 @@ function run(flags, argv2, signals) {
       else
         assert.strictEqual(code, 1);
     } else if (signals) {
-      assert(signals.includes(sig), `Unexpected signal ${sig}`);
+      assert.includes(signals, sig, `Unexpected signal ${sig}`);
     } else {
       assert.strictEqual(sig, null);
     }

@@ -43,7 +43,7 @@ function tryGet(mod, tries) {
       tryGet(mod, ++tries);
       return;
     }
-    assert(errCodes.includes(err.code), err);
+    assert.includes(errCodes, err.code, err);
   }));
   // http.get() called req1.end() for us
 }
@@ -59,7 +59,7 @@ function tryRequest(mod, tries) {
       tryRequest(mod, ++tries);
       return;
     }
-    assert(errCodes.includes(err.code), err);
+    assert.includes(errCodes, err.code, err);
   }));
   req.end();
 }

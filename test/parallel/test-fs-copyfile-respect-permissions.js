@@ -29,7 +29,7 @@ function beforeEach() {
 
   const check = (err) => {
     const expected = ['EACCES', 'EPERM'];
-    assert(expected.includes(err.code), `${err.code} not in ${expected}`);
+    assert.includes(expected, err.code, `${err.code} not in ${expected}`);
     assert.strictEqual(fs.readFileSync(dest, 'utf8'), 'dest');
     return true;
   };

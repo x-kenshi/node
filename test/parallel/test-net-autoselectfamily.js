@@ -174,10 +174,10 @@ if (common.hasIPv6) {
     assert.strictEqual(error.errors.length, 2);
 
     const errors = error.errors.map((e) => e.message);
-    assert.ok(errors.includes('connect ECONNREFUSED 127.0.0.1:10'));
+    assert.includes(errors, 'connect ECONNREFUSED 127.0.0.1:10');
 
     if (common.hasIPv6) {
-      assert.ok(errors.includes('connect ECONNREFUSED ::1:10'));
+      assert.includes(errors, 'connect ECONNREFUSED ::1:10');
     }
   }));
 }

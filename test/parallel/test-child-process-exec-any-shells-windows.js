@@ -48,8 +48,7 @@ fs.writeFile(`${tmpPath}\\test file`, 'Test', common.mustSucceed(() => {
           { shell: 'PowerShell' },
           common.mustSucceed((stdout, stderror) => {
             assert.ok(!stderror);
-            assert.ok(stdout.includes(
-              'test file'));
+            assert.includes(stdout, 'test file');
           }));
 }));
 

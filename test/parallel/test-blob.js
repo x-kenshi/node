@@ -477,16 +477,16 @@ assert.throws(() => new Blob({}), {
 {
   const blob = new Blob(['hello']);
 
-  assert.ok(blob.slice(0, 1).constructor === Blob);
+  assert.strictEqual(blob.slice(0, 1).constructor, Blob);
   assert.ok(blob.slice(0, 1) instanceof Blob);
 }
 
 (async () => {
   const blob = new Blob(['hello']);
 
-  assert.ok(structuredClone(blob).constructor === Blob);
+  assert.strictEqual(structuredClone(blob).constructor, Blob);
   assert.ok(structuredClone(blob) instanceof Blob);
-  assert.ok(structuredClone(blob).size === blob.size);
-  assert.ok(structuredClone(blob).size === blob.size);
-  assert.ok((await structuredClone(blob).text()) === (await blob.text()));
+  assert.strictEqual(structuredClone(blob).size, blob.size);
+  assert.strictEqual(structuredClone(blob).size, blob.size);
+  assert.strictEqual(await structuredClone(blob).text(), await blob.text());
 })().then(common.mustCall());

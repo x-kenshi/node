@@ -23,7 +23,7 @@ server.on('stream', common.mustNotCall());
 server.on('session', common.mustCall((session) => {
   session.on('error', (e) => {
     assert.strictEqual(e.code, 'ERR_HTTP2_ERROR');
-    assert(e.message.includes('Flooding was detected'));
+    assert.includes(e.message, 'Flooding was detected');
     clearInterval(interval);
   });
   session.on('close', common.mustCall(() => {

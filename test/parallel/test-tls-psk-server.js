@@ -20,7 +20,7 @@ const server = tls.createServer({
   pskIdentityHint: IDENTITY,
   pskCallback(socket, identity) {
     assert.ok(socket instanceof tls.TLSSocket);
-    assert.ok(typeof identity === 'string');
+    assert.strictEqual(typeof identity, 'string');
     if (identity === IDENTITY)
       return Buffer.from(KEY, 'hex');
   }

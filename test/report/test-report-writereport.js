@@ -127,5 +127,5 @@ function validate() {
   assert.strictEqual(child.signal, null);
   assert.strictEqual(child.stdout.toString().trim(), '');
   const stderr = child.stderr.toString();
-  assert(stderr.includes('Failed to open Node.js report file:'));
+  assert.includes(stderr, 'Failed to open Node.js report file:');
 }

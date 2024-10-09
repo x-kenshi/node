@@ -528,7 +528,7 @@ TEST(function test_lookup_failure(done) {
     assert.strictEqual(err.code, dns.NOTFOUND);
     assert.strictEqual(err.code, 'ENOTFOUND');
     assert.doesNotMatch(err.message, /ENOENT/);
-    assert.ok(err.message.includes(addresses.NOT_FOUND));
+    assert.includes(err.message, addresses.NOT_FOUND);
 
     done();
   });
@@ -683,7 +683,7 @@ TEST(function test_lookup_failure(done) {
     assert(err instanceof Error);
     assert.strictEqual(err.code, 'ENOTFOUND');  // Silly error code...
     assert.strictEqual(err.hostname, addresses.NOT_FOUND);
-    assert.ok(err.message.includes(addresses.NOT_FOUND));
+    assert.includes(err.message, addresses.NOT_FOUND);
 
     done();
   });
@@ -706,7 +706,7 @@ TEST(function test_resolve_failure(done) {
     }
 
     assert.strictEqual(err.hostname, addresses.NOT_FOUND);
-    assert.ok(err.message.includes(addresses.NOT_FOUND));
+    assert.includes(err.message, addresses.NOT_FOUND);
 
     done();
   });

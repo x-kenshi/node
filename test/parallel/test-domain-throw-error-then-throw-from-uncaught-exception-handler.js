@@ -56,8 +56,7 @@ function runTestWithoutAbortOnUncaughtException() {
       // uncaughtException handler _must_ be called, and thus the error
       // message must include only the message of the error thrown from the
       // process' uncaughtException handler.
-      assert(stderr.includes(uncaughtExceptionHandlerErrMsg),
-             'stderr output must include proper uncaughtException ' +
+      assert.includes(stderr, uncaughtExceptionHandlerErrMsg, 'stderr output must include proper uncaughtException ' +
              'handler\'s error\'s message');
       assert(!stderr.includes(domainErrMsg),
              'stderr output must not include domain\'s error\'s message');

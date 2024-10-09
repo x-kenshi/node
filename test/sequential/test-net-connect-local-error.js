@@ -23,7 +23,7 @@ const optionsIPv6 = {
 };
 
 function onError(err, options) {
-  assert.ok(expectedErrorCodes.includes(err.code));
+  assert.includes(expectedErrorCodes, err.code);
   assert.strictEqual(err.syscall, 'connect');
   assert.strictEqual(err.localPort, options.localPort);
   assert.strictEqual(err.localAddress, options.localAddress);

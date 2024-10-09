@@ -112,8 +112,8 @@ testMe.complete("import\t( 'n", common.mustCall((error, data) => {
       assert.strictEqual(data.length, 2);
       assert.strictEqual(data[1], '.');
       assert.strictEqual(data[0].length, 2);
-      assert.ok(data[0].includes('./'));
-      assert.ok(data[0].includes('../'));
+      assert.includes(data[0], './');
+      assert.includes(data[0], '../');
     }));
   });
 
@@ -130,7 +130,7 @@ testMe.complete("import\t( 'n", common.mustCall((error, data) => {
         assert.strictEqual(err, null);
         assert.strictEqual(data.length, 2);
         assert.strictEqual(data[1], path);
-        assert.ok(data[0].includes('./test-repl-tab-complete.js'));
+        assert.includes(data[0], './test-repl-tab-complete.js');
       }));
     });
   });
@@ -141,7 +141,7 @@ testMe.complete("import\t( 'n", common.mustCall((error, data) => {
         assert.strictEqual(err, null);
         assert.strictEqual(data.length, 2);
         assert.strictEqual(data[1], path);
-        assert.ok(data[0].includes('../parallel/test-repl-tab-complete.js'));
+        assert.includes(data[0], '../parallel/test-repl-tab-complete.js');
       }));
     });
   });
@@ -151,8 +151,7 @@ testMe.complete("import\t( 'n", common.mustCall((error, data) => {
     testMe.complete(`import('${path}`, common.mustSucceed((data) => {
       assert.strictEqual(data.length, 2);
       assert.strictEqual(data[1], path);
-      assert.ok(data[0].includes(
-        '../fixtures/repl-folder-extensions/foo.js/'));
+      assert.includes(data[0], '../fixtures/repl-folder-extensions/foo.js/');
     }));
   }
 

@@ -1,18 +1,16 @@
 /**
- * @fileoverview Prohibit the use of assert operators ( ===, !==, ==, != )
+ * @fileoverview Enforces the use of `assert.includes`, `assert.strictEqual`, and other
+ * specific assert methods instead of assert operators ( ===, !==, ==, != ).
  */
 
 'use strict';
 
-const astSelector = 'ExpressionStatement[expression.type="CallExpression"]' +
-                    '[expression.callee.name="assert"]' +
-                    '[expression.arguments.0.type="BinaryExpression"]';
+const assertCallExpressionSelector = [
+  'ExpressionStatement[expression.type="CallExpression"][expression.callee.name="assert"]',
+  'ExpressionStatement[expression.callee.object.name="assert"][expression.callee.property.name="ok"]',
+].join(',');
 
-function parseError(method, op) {
-  return `'assert.${method}' should be used instead of '${op}'`;
-}
-
-const preferredAssertMethod = {
+const operatorToAssertMethodMap = {
   '===': 'strictEqual',
   '!==': 'notStrictEqual',
   '==': 'equal',
@@ -22,23 +20,44 @@ const preferredAssertMethod = {
 module.exports = {
   meta: { fixable: 'code' },
   create(context) {
+    const { sourceCode } = context;
+
     return {
-      [astSelector]: function(node) {
-        const arg = node.expression.arguments[0];
-        const assertMethod = preferredAssertMethod[arg.operator];
-        if (assertMethod) {
+      [assertCallExpressionSelector](node) {
+        const firstArg = node.expression.arguments[0];
+        const extraArgs = node.expression.arguments.slice(1).map((arg) => sourceCode.getText(arg)).join(', ');
+
+        const appendExtraArgs = extraArgs ? `, ${extraArgs}` : '';
+
+        // Handle binary expression assertions (===, !==, ==, !=)
+        if (firstArg.type === 'BinaryExpression') {
+          const { operator, left, right } = firstArg;
+          const assertMethod = operatorToAssertMethodMap[operator];
+
+          if (assertMethod) {
+            context.report({
+              node,
+              message: `Use assert.${assertMethod} instead of '${operator}' in assertions.`,
+              fix: (fixer) => fixer.replaceText(
+                node,
+                `assert.${assertMethod}(${sourceCode.getText(left)}, ${sourceCode.getText(right)}${appendExtraArgs});`,
+              ),
+            });
+          }
+        }
+
+        // Handle assert with `.includes(...)`
+        if (firstArg.type === 'CallExpression' && firstArg.callee.property?.name === 'includes') {
+          const container = sourceCode.getText(firstArg.callee.object);
+          const valueToCheck = sourceCode.getText(firstArg.arguments[0]);
+
           context.report({
             node,
-            message: parseError(assertMethod, arg.operator),
-            fix: (fixer) => {
-              const sourceCode = context.sourceCode;
-              const left = sourceCode.getText(arg.left);
-              const right = sourceCode.getText(arg.right);
-              return fixer.replaceText(
-                node,
-                `assert.${assertMethod}(${left}, ${right});`,
-              );
-            },
+            message: `Use assert.includes instead of assert(${container}.includes(${valueToCheck}))`,
+            fix: (fixer) => fixer.replaceText(
+              node,
+              `assert.includes(${container}, ${valueToCheck}${appendExtraArgs});`,
+            ),
           });
         }
       },

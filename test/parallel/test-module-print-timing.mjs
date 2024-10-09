@@ -23,8 +23,8 @@ it('should print the timing information for cjs', () => {
   const firstLine = result.stderr.split('\n').find((line) => line.includes('[url]'));
 
   assert.notStrictEqual(firstLine, undefined);
-  assert.ok(firstLine.includes('MODULE_TIMER'), `Not found MODULE_TIMER on ${firstLine}`);
-  assert.ok(firstLine.includes('[url]:'), `Not found [url]: on ${firstLine}`);
+  assert.includes(firstLine, 'MODULE_TIMER', `Not found MODULE_TIMER on ${firstLine}`);
+  assert.includes(firstLine, '[url]:', `Not found [url]: on ${firstLine}`);
   assert.ok(firstLine.endsWith('ms'), `Not found ms on ${firstLine}`);
 });
 
@@ -81,8 +81,8 @@ it('should write tracing & print logs for cjs', async () => {
   const firstLine = result.stderr.split('\n').find((line) => line.includes('[url]'));
 
   assert.notStrictEqual(firstLine, undefined);
-  assert.ok(firstLine.includes('MODULE_TIMER'), `Not found MODULE_TIMER on ${firstLine}`);
-  assert.ok(firstLine.includes('[url]:'), `Not found [url]: on ${firstLine}`);
+  assert.includes(firstLine, 'MODULE_TIMER', `Not found MODULE_TIMER on ${firstLine}`);
+  assert.includes(firstLine, '[url]:', `Not found [url]: on ${firstLine}`);
   assert.ok(firstLine.endsWith('ms'), `Not found ms on ${firstLine}`);
 
   const expectedMimeTypes = ['b', 'e'];

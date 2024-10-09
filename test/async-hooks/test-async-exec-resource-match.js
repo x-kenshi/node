@@ -20,7 +20,7 @@ createHook({
       if (firstSeenAsyncId === -1) {
         firstSeenAsyncId = asyncId;
       }
-      assert.ok(idResMap.get(asyncId) === undefined);
+      assert.strictEqual(idResMap.get(asyncId), undefined);
       idResMap.set(asyncId, resource);
     }, numExpectedCalls),
   before(asyncId) {
@@ -38,25 +38,25 @@ createHook({
 const beforeHook = common.mustCallAtLeast(
   (asyncId) => {
     const res = idResMap.get(asyncId);
-    assert.ok(res !== undefined);
+    assert.notStrictEqual(res, undefined);
     const execRes = executionAsyncResource();
-    assert.ok(execRes === res, 'resource mismatch in before');
+    assert.strictEqual(execRes, res);
   }, numExpectedCalls);
 
 const afterHook = common.mustCallAtLeast(
   (asyncId) => {
     const res = idResMap.get(asyncId);
-    assert.ok(res !== undefined);
+    assert.notStrictEqual(res, undefined);
     const execRes = executionAsyncResource();
-    assert.ok(execRes === res, 'resource mismatch in after');
+    assert.strictEqual(execRes, res);
   }, numExpectedCalls);
 
 const res = new AsyncResource('TheResource');
 const initRes = idResMap.get(res.asyncId());
-assert.ok(initRes === res, 'resource mismatch in init');
+assert.strictEqual(initRes, res);
 res.runInAsyncScope(common.mustCall(() => {
   const execRes = executionAsyncResource();
-  assert.ok(execRes === res, 'resource mismatch in cb');
+  assert.strictEqual(execRes, res);
 }));
 
 readFile(__filename, common.mustCall());

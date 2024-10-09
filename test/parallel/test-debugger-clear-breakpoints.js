@@ -26,8 +26,8 @@ const path = require('path');
     .then(() => cli.command('sb("break.js", 9)'))
     .then(() => cli.command('breakpoints'))
     .then(() => {
-      assert.ok(cli.output.includes(`#0 ${script}:3`));
-      assert.ok(cli.output.includes(`#1 ${script}:9`));
+      assert.includes(cli.output, `#0 ${script}:3`);
+      assert.includes(cli.output, `#1 ${script}:9`);
     })
     .then(() => cli.command('clearBreakpoint("break.js", 4)'))
     .then(() => {
@@ -40,13 +40,11 @@ const path = require('path');
     .then(() => cli.command('clearBreakpoint("break.js", 3)'))
     .then(() => cli.command('breakpoints'))
     .then(() => {
-      assert.ok(cli.output.includes(`#0 ${script}:9`));
+      assert.includes(cli.output, `#0 ${script}:9`);
     })
     .then(() => cli.stepCommand('cont'))
     .then(() => {
-      assert.ok(
-        cli.output.includes(`break in ${script}:9`),
-        'hits the 2nd breakpoint because the 1st was cleared');
+      assert.includes(cli.output, `break in ${script}:9`, 'hits the 2nd breakpoint because the 1st was cleared');
     })
     .then(() => cli.quit())
     .then(null, onFatal);

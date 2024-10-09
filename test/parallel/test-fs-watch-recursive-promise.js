@@ -32,7 +32,7 @@ tmpdir.refresh();
   let interval;
 
   process.on('exit', function() {
-    assert.ok(interval === null, 'watcher Object was not closed');
+    assert.strictEqual(interval, null);
   });
 
   process.nextTick(common.mustCall(() => {
@@ -76,7 +76,7 @@ tmpdir.refresh();
   const watcher = fs.watch(testsubdir, { recursive: true, signal: ac.signal });
   let interval;
   process.on('exit', function() {
-    assert.ok(interval === null, 'watcher Object was not closed');
+    assert.strictEqual(interval, null);
   });
   process.nextTick(common.mustCall(() => {
     interval = setInterval(() => {

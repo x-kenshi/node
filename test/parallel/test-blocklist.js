@@ -270,7 +270,7 @@ const util = require('util');
 {
   const blockList = new BlockList();
   const ret = util.inspect(blockList, { depth: null });
-  assert(ret.includes('rules: []'));
+  assert.includes(ret, 'rules: []');
 }
 
 {

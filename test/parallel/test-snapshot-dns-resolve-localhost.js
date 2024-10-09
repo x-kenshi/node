@@ -19,7 +19,7 @@ function checkOutput(stderr, stdout) {
   // We allow failures as it's not always possible to resolve localhost.
   // Functional tests are done in test/internet instead.
   if (!stderr.startsWith('error:')) {
-    assert(stdout.includes('addresses: ['));
+    assert.includes(stdout, 'addresses: [');
     assert.strictEqual(stdout.trim().split('\n').length, 1);
   }
 }

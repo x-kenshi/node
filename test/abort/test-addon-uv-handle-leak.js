@@ -81,9 +81,9 @@ if (process.argv[2] === 'child') {
         common.isIBMi ||
         (common.isLinux && !isGlibc()) ||
         common.isWindows)) {
-    assert(stderr.includes('ExampleOwnerClass'), stderr);
-    assert(stderr.includes('CloseCallback'), stderr);
-    assert(stderr.includes('example_instance'), stderr);
+    assert.includes(stderr, 'ExampleOwnerClass', stderr);
+    assert.includes(stderr, 'CloseCallback', stderr);
+    assert.includes(stderr, 'example_instance', stderr);
   }
 
   while (lines.length > 0) {

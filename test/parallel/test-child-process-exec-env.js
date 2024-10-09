@@ -60,5 +60,5 @@ process.on('exit', function() {
   debug('response: ', response);
   assert.strictEqual(success_count, 1);
   assert.strictEqual(error_count, 0);
-  assert.ok(response.includes('HELLO=WORLD'));
+  assert.includes(response, 'HELLO=WORLD');
 });

@@ -29,16 +29,16 @@ port2.onmessage = common.mustCall((message) => {
 
   const inspectedPort1 = util.inspect(port1);
   const inspectedPort2 = util.inspect(port2);
-  assert(inspectedPort1.includes('active: true'), inspectedPort1);
-  assert(inspectedPort2.includes('active: true'), inspectedPort2);
+  assert.includes(inspectedPort1, 'active: true', inspectedPort1);
+  assert.includes(inspectedPort2, 'active: true', inspectedPort2);
 
   port1.close();
 
   tick(10, () => {
     const inspectedPort1 = util.inspect(port1);
     const inspectedPort2 = util.inspect(port2);
-    assert(inspectedPort1.includes('active: false'), inspectedPort1);
-    assert(inspectedPort2.includes('active: false'), inspectedPort2);
+    assert.includes(inspectedPort1, 'active: false', inspectedPort1);
+    assert.includes(inspectedPort2, 'active: false', inspectedPort2);
   });
 });
 port1.postMessage(2);

@@ -44,7 +44,7 @@ server.on('request', common.mustCall(function(request, response) {
   assert.throws(() => request.socket.resume(), errMsg);
 
   // Should have correct this context for socket methods & getters
-  assert.ok(request.socket.address() != null);
+  assert.notStrictEqual(request.socket.address(), null);
   assert.ok(request.socket.remotePort);
 
   request.on('end', common.mustCall(() => {

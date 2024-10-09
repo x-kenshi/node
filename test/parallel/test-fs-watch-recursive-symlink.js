@@ -44,7 +44,7 @@ tmpdir.refresh();
   const watcher = fs.watch(rootDirectory, { recursive: true });
   let watcherClosed = false;
   watcher.on('change', function(event, filename) {
-    assert.ok(event === 'rename', `Received ${event}`);
+    assert.strictEqual(event, 'rename', `Received ${event}`);
     assert.ok(filename === path.basename(symlinkFolder) || filename === path.basename(filePath), `Received ${filename}`);
 
     if (filename === path.basename(filePath)) {
@@ -91,7 +91,7 @@ tmpdir.refresh();
     // macOS will only change the following events:
     // { event: 'rename', filename: 'symlink-folder' }
     // { event: 'rename', filename: 'acceptable.txt' }
-    assert.ok(event === 'rename', `Received ${event}`);
+    assert.strictEqual(event, 'rename', `Received ${event}`);
     assert.ok(filename === path.basename(symlinkFolder) || filename === path.basename(acceptableFile), `Received ${filename}`);
 
     if (filename === path.basename(acceptableFile)) {

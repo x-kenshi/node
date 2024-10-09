@@ -32,9 +32,9 @@ const path = require('path');
       assert.deepStrictEqual(cli.breakInfo, { filename: script, line: 1 });
       await cli.command('breakOnException');
       await cli.stepCommand('c');
-      assert.ok(cli.output.includes(`exception in ${script}:3`));
+      assert.includes(cli.output, `exception in ${script}:3`);
       await cli.stepCommand('c');
-      assert.ok(cli.output.includes(`exception in ${script}:9`));
+      assert.includes(cli.output, `exception in ${script}:9`);
 
       // Next run: With `breakOnUncaught` it only pauses on the 2nd exception.
       await cli.command('breakOnUncaught');
@@ -42,7 +42,7 @@ const path = require('path');
       await cli.waitForInitialBreak();
       assert.deepStrictEqual(cli.breakInfo, { filename: script, line: 1 });
       await cli.stepCommand('c');
-      assert.ok(cli.output.includes(`exception in ${script}:9`));
+      assert.includes(cli.output, `exception in ${script}:9`);
 
       // Next run: Back to the initial state! It should die again.
       await cli.command('breakOnNone');

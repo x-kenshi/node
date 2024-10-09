@@ -36,7 +36,7 @@ const dnsPromises = require('dns').promises;
   (async function() {
     const rrtype = undefined;
     const result = await dnsPromises.resolve('example.org', rrtype);
-    assert.ok(result !== undefined);
+    assert.notStrictEqual(result, undefined);
     assert.ok(result.length > 0);
   })().then(common.mustCall());
 }

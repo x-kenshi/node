@@ -35,7 +35,7 @@ if (process.argv[2] === 'child') {
     });
 
     child.on('close', function onChildClosed() {
-      assert(stderrOutput.includes(domainErrHandlerExMessage));
+      assert.includes(stderrOutput, domainErrHandlerExMessage);
       assert.strictEqual(stderrOutput.includes(internalExMessage), false);
     });
 

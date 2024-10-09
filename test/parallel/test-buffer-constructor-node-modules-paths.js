@@ -15,7 +15,7 @@ function test(main, callSite, expected) {
     filename: ${JSON.stringify(callSite)}
   });`], { encoding: 'utf8' });
   if (expected)
-    assert(stderr.includes('[DEP0005] DeprecationWarning'), stderr);
+    assert.includes(stderr, '[DEP0005] DeprecationWarning', stderr);
   else
     assert.strictEqual(stderr.trim(), '');
 }

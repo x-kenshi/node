@@ -38,7 +38,7 @@ const execNode = (args) => exec(
 
   assert(promise.child instanceof child_process.ChildProcess);
   promise.catch(common.mustCall((err) => {
-    assert(err.message.includes('doesntexist'));
+    assert.includes(err.message, 'doesntexist');
   }));
 }
 
@@ -47,7 +47,7 @@ const execNode = (args) => exec(
 
   assert(promise.child instanceof child_process.ChildProcess);
   promise.catch(common.mustCall((err) => {
-    assert(err.message.includes('doesntexist'));
+    assert.includes(err.message, 'doesntexist');
   }));
 }
 const failingCodeWithStdoutErr =

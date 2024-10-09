@@ -32,7 +32,7 @@ async_hooks.createHook({
   },
 
   promiseResolve(id) {
-    assert(promiseIds.includes(id));
+    assert.includes(promiseIds, id);
     createSnapshot();
   },
 

@@ -26,9 +26,9 @@ function run({ useColors }) {
     // Validate the output, which contains terminal escape codes.
     assert.strictEqual(actual.length, 6);
     assert.ok(actual[0].endsWith(input[0]));
-    assert.ok(actual[1].includes('... '));
+    assert.includes(actual[1], '... ');
     assert.ok(actual[1].endsWith(input[1]));
-    assert.ok(actual[2].includes('undefined'));
+    assert.includes(actual[2], 'undefined');
     assert.ok(actual[3].endsWith(input[2]));
     assert.strictEqual(actual[4], '{}');
   }));

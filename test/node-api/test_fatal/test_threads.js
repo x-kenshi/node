@@ -16,6 +16,5 @@ if (process.argv[2] === 'child') {
 const p = child_process.spawnSync(
   process.execPath, [ __filename, 'child' ]);
 assert.ifError(p.error);
-assert.ok(p.stderr.toString().includes(
-  'FATAL ERROR: work_thread foobar'));
+assert.includes(p.stderr.toString(), 'FATAL ERROR: work_thread foobar');
 assert(common.nodeProcessAborted(p.status, p.signal));

@@ -51,7 +51,7 @@ const file = fixtures.path('snapshot', 'marked.js');
   console.log(snapshotOutput);
 
   assert.strictEqual(child.status, 0);
-  assert(stderr.includes('NODE_TEST_USE_SNAPSHOT true'));
+  assert.includes(stderr, 'NODE_TEST_USE_SNAPSHOT true');
 
   child = spawnSync(process.execPath, [
     '--snapshot-blob',
@@ -70,7 +70,7 @@ const file = fixtures.path('snapshot', 'marked.js');
   console.log(verifyOutput);
 
   assert.strictEqual(child.status, 0);
-  assert(stderr.includes('NODE_TEST_USE_SNAPSHOT false'));
+  assert.includes(stderr, 'NODE_TEST_USE_SNAPSHOT false');
 
-  assert(snapshotOutput.includes(verifyOutput));
+  assert.includes(snapshotOutput, verifyOutput);
 }

@@ -7,7 +7,7 @@ const assert = require('assert');
 // synchronously and therefore contains a meaningful stacktrace.
 
 process.on('warning', common.mustCall((warning) => {
-  assert(warning.stack.includes(__filename));
+  assert.includes(warning.stack, __filename);
 }));
 
 const server = http.createServer((req, resp) => resp.end());

@@ -171,7 +171,7 @@ try {
     // test the resolve
     const resolveResult = resolve(`${moduleName}`);
     assert.strictEqual(resolveResult.format, 'module');
-    assert.ok(resolveResult.url.includes('my-dual-package/es/index.js'));
+    assert.includes(resolveResult.url, 'my-dual-package/es/index.js');
   }
 
   // TestParameters are ModuleName, mainRequireScript, mainImportScript,

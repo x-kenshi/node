@@ -73,7 +73,7 @@ function test(dhparam, keylen, expectedCipher) {
     execFile(common.opensslCli, args, common.mustSucceed((stdout) => {
       assert(keylen === null ||
              stdout.includes(`Server Temp Key: DH, ${keylen} bits`));
-      assert(stdout.includes(`Cipher    : ${expectedCipher}`));
+      assert.includes(stdout, `Cipher    : ${expectedCipher}`);
       server.close();
     }));
   }));

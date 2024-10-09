@@ -34,7 +34,7 @@ if (process.argv[2] === 'child') {
         .filter((trace) => trace.cat !== '__metadata');
       for (const trace of traces) {
         assert.strictEqual(trace.pid, proc.pid);
-        assert(names.includes(trace.name));
+        assert.includes(names, trace.name);
       }
     }));
   }));

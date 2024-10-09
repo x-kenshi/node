@@ -23,8 +23,8 @@ const runTest = async () => {
     await cli.command('sb(2)');
     await cli.command('sb(3)');
     await cli.command('breakpoints');
-    assert.ok(cli.output.includes(`#0 ${script}:2`));
-    assert.ok(cli.output.includes(`#1 ${script}:3`));
+    assert.includes(cli.output, `#0 ${script}:2`);
+    assert.includes(cli.output, `#1 ${script}:3`);
     await cli.stepCommand('c'); // hit line 2
     await cli.stepCommand('c'); // hit line 3
     assert.deepStrictEqual(cli.breakInfo, { filename: script, line: 3 });
@@ -37,8 +37,8 @@ const runTest = async () => {
     assert.deepStrictEqual(cli.breakInfo, { filename: script, line: 3 });
     await cli.command('breakpoints');
     const msg = `SCRIPT: ${script}, OUTPUT: ${cli.output}`;
-    assert.ok(cli.output.includes(`#0 ${script}:2`), msg);
-    assert.ok(cli.output.includes(`#1 ${script}:3`), msg);
+    assert.includes(cli.output, `#0 ${script}:2`, msg);
+    assert.includes(cli.output, `#1 ${script}:3`, msg);
   } finally {
     await cli.quit();
   }

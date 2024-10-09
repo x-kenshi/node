@@ -38,12 +38,6 @@ child.stdout.once('data', common.mustCall(() => {
 child.on('close', function(code) {
   assert.strictEqual(code, 0);
   const expected = 'Script execution was interrupted by `SIGINT`';
-  assert.ok(
-    stdout.includes(expected),
-    `Expected stdout to contain "${expected}", got ${stdout}`
-  );
-  assert.ok(
-    stdout.includes('42042\n'),
-    `Expected stdout to contain "42042", got ${stdout}`
-  );
+  assert.includes(stdout, expected, `Expected stdout to contain "${expected}", got ${stdout}`);
+  assert.includes(stdout, '42042\n', `Expected stdout to contain "42042", got ${stdout}`);
 });

@@ -31,5 +31,4 @@ putIn.run([
   'session.disconnect()',
 ]);
 
-assert(output.includes(
-  "null { result: { type: 'number', value: 2, description: '2' } }"));
+assert.includes(output, "null { result: { type: 'number', value: 2, description: '2' } }");

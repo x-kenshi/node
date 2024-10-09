@@ -36,7 +36,7 @@ function TEST(f) {
 }
 
 function checkWrap(req) {
-  assert.ok(typeof req === 'object');
+  assert.strictEqual(typeof req, 'object');
 }
 
 TEST(async function test_resolve6(done) {
@@ -65,7 +65,7 @@ TEST(async function test_reverse_ipv6(done) {
     assert.ok(res.length > 0);
 
     for (let i = 0; i < res.length; i++) {
-      assert.ok(typeof res[i] === 'string');
+      assert.strictEqual(typeof res[i], 'string');
     }
   }
 
@@ -218,7 +218,7 @@ TEST(function test_lookupservice_ip_ipv6(done) {
       }
       assert.strictEqual(typeof host, 'string');
       assert(host);
-      assert(['http', 'www', '80'].includes(service));
+      assert.includes(['http', 'www', '80'], service);
       done();
     }),
   );

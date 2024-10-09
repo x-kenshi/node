@@ -20,4 +20,4 @@ const result = spawnSync(process.execPath, [testFile]);
 // calling process.
 assert.ok(result.status, 'testFile swallowed its error');
 const err = result.stderr.toString();
-assert.ok(err.includes('fhqwhgads'), err);
+assert.includes(err, 'fhqwhgads', err);

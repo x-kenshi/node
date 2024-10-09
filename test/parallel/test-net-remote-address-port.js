@@ -34,18 +34,16 @@ const remoteAddrCandidates = [ common.localhostIPv4,
 const remoteFamilyCandidates = ['IPv4', 'IPv6'];
 
 const server = net.createServer(common.mustCall(function(socket) {
-  assert.ok(remoteAddrCandidates.includes(socket.remoteAddress),
-            `Invalid remoteAddress: ${socket.remoteAddress}`);
-  assert.ok(remoteFamilyCandidates.includes(socket.remoteFamily),
-            `Invalid remoteFamily: ${socket.remoteFamily}`);
+  assert.includes(remoteAddrCandidates, socket.remoteAddress, `Invalid remoteAddress: ${socket.remoteAddress}`);
+  assert.includes(remoteFamilyCandidates, socket.remoteFamily, `Invalid remoteFamily: ${socket.remoteFamily}`);
   assert.ok(socket.remotePort);
   assert.notStrictEqual(socket.remotePort, this.address().port);
   socket.on('end', function() {
     if (++conns_closed === 2) server.close();
   });
   socket.on('close', function() {
-    assert.ok(remoteAddrCandidates.includes(socket.remoteAddress));
-    assert.ok(remoteFamilyCandidates.includes(socket.remoteFamily));
+    assert.includes(remoteAddrCandidates, socket.remoteAddress);
+    assert.includes(remoteFamilyCandidates, socket.remoteFamily);
   });
   socket.resume();
 }, 2));
@@ -62,23 +60,23 @@ server.listen(0, function() {
   assert.strictEqual(client2.remotePort, undefined);
 
   client.on('connect', function() {
-    assert.ok(remoteAddrCandidates.includes(client.remoteAddress));
-    assert.ok(remoteFamilyCandidates.includes(client.remoteFamily));
+    assert.includes(remoteAddrCandidates, client.remoteAddress);
+    assert.includes(remoteFamilyCandidates, client.remoteFamily);
     assert.strictEqual(client.remotePort, server.address().port);
     client.end();
   });
   client.on('close', function() {
-    assert.ok(remoteAddrCandidates.includes(client.remoteAddress));
-    assert.ok(remoteFamilyCandidates.includes(client.remoteFamily));
+    assert.includes(remoteAddrCandidates, client.remoteAddress);
+    assert.includes(remoteFamilyCandidates, client.remoteFamily);
   });
   client2.on('connect', function() {
-    assert.ok(remoteAddrCandidates.includes(client2.remoteAddress));
-    assert.ok(remoteFamilyCandidates.includes(client2.remoteFamily));
+    assert.includes(remoteAddrCandidates, client2.remoteAddress);
+    assert.includes(remoteFamilyCandidates, client2.remoteFamily);
     assert.strictEqual(client2.remotePort, server.address().port);
     client2.end();
   });
   client2.on('close', function() {
-    assert.ok(remoteAddrCandidates.includes(client2.remoteAddress));
-    assert.ok(remoteFamilyCandidates.includes(client2.remoteFamily));
+    assert.includes(remoteAddrCandidates, client2.remoteAddress);
+    assert.includes(remoteFamilyCandidates, client2.remoteFamily);
   });
 });

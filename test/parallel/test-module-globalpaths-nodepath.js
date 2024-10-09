@@ -39,8 +39,8 @@ if (common.isWindows) {
 
 mod._initPaths();
 
-assert.ok(mod.globalPaths.includes(partA));
-assert.ok(mod.globalPaths.includes(partB));
+assert.includes(mod.globalPaths, partA);
+assert.includes(mod.globalPaths, partB);
 assert.ok(!mod.globalPaths.includes(partC));
 
 assert.ok(Array.isArray(mod.globalPaths));

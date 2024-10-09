@@ -15,7 +15,7 @@ const bufferWarning = 'Buffer() is deprecated due to security and usability ' +
                       'Buffer.allocUnsafe(), or Buffer.from() methods instead.';
 
 process.addListener('warning', common.mustCall((warning) => {
-  assert(warning.stack.includes('this_should_emit_a_warning'), warning.stack);
+  assert.includes(warning.stack, 'this_should_emit_a_warning', warning.stack);
 }));
 
 vm.runInNewContext('new Buffer(10)', { Buffer }, {

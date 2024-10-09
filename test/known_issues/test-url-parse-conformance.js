@@ -54,4 +54,4 @@ tests.forEach((test) => {
   }
 });
 
-assert.ok(failed === 0, `${failed} failed tests (out of ${attempted})`);
+assert.strictEqual(failed, 0, `${failed} failed tests (out of ${attempted})`);

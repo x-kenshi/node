@@ -33,15 +33,15 @@ function checkAll() {
   const handles = process._getActiveHandles();
 
   clients.forEach(function(item) {
-    assert.ok(handles.includes(item));
+    assert.includes(handles, item);
     item.destroy();
   });
 
   connections.forEach(function(item) {
-    assert.ok(handles.includes(item));
+    assert.includes(handles, item);
     item.end();
   });
 
-  assert.ok(handles.includes(server));
+  assert.includes(handles, server);
   server.close();
 }

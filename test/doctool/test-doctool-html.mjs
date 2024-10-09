@@ -172,6 +172,5 @@ testData.forEach(({ file, html }) => {
   const actual = output.replace(spaces, '');
   // Assert that the input stripped of all whitespace contains the
   // expected markup.
-  assert(actual.includes(expected),
-         `ACTUAL: ${actual}\nEXPECTED: ${expected}`);
+  assert.includes(actual, expected, `ACTUAL: ${actual}\nEXPECTED: ${expected}`);
 });

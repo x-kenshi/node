@@ -18,7 +18,7 @@ const serverOptions = {
   ciphers: CIPHERS,
   pskCallback(socket, id) {
     assert.ok(socket instanceof tls.TLSSocket);
-    assert.ok(typeof id === 'string');
+    assert.strictEqual(typeof id, 'string');
     return USERS[id];
   },
 };

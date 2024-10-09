@@ -27,10 +27,7 @@ try {
     'repeats the last command on <enter>'
   );
   await cli.command('version');
-  assert.ok(
-    cli.output.includes(process.versions.v8),
-    'version prints the v8 version'
-  );
+  assert.includes(cli.output, process.versions.v8, 'version prints the v8 version');
 } finally {
   const code = await cli.quit();
   assert.strictEqual(code, 0);

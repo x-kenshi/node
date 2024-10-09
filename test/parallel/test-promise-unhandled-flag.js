@@ -12,5 +12,4 @@ const child = cp.spawnSync(
 );
 
 assert.strictEqual(child.stdout.toString(), '');
-assert(child.stderr.includes(
-  'invalid value for --unhandled-rejections'), child.stderr);
+assert.includes(child.stderr.toString(), 'invalid value for --unhandled-rejections', child.stderr);

@@ -64,10 +64,10 @@ async function test() {
     'node.vm.script',
     'v8',
   ].sort();
-  assert.ok(categories.length === expectedCategories.length);
+  assert.strictEqual(categories.length, expectedCategories.length);
   categories.forEach((category, index) => {
     const value = expectedCategories[index];
-    assert.ok(category === value, `${category} is out of order, expect ${value}`);
+    assert.strictEqual(category, value, `${category} is out of order, expect ${value}`);
   });
 
   const traceConfig = { includedCategories: ['v8'] };

@@ -141,7 +141,7 @@ function createTimingInfo({
 
   assert.strictEqual(resource.entryType, 'resource');
   assert.strictEqual(resource.name, requestedUrl);
-  assert.ok(typeof resource.cacheMode === 'undefined', 'cacheMode does not have a getter');
+  assert.strictEqual(typeof resource.cacheMode, 'undefined');
   assert.strictEqual(resource.startTime, timingInfo.startTime);
   assert.strictEqual(resource.duration, 0);
   assert.strictEqual(resource.initiatorType, initiatorType);
@@ -276,7 +276,7 @@ function createTimingInfo({
 
   assert.strictEqual(resource.entryType, 'resource');
   assert.strictEqual(resource.name, requestedUrl);
-  assert.ok(typeof resource.cacheMode === 'undefined', 'cacheMode does not have a getter');
+  assert.strictEqual(typeof resource.cacheMode, 'undefined');
   assert.strictEqual(resource.startTime, timingInfo.startTime);
   // Duration should be the timingInfo endTime - startTime
   assert.strictEqual(resource.duration, 50);

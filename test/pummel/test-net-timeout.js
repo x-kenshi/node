@@ -97,8 +97,8 @@ echo_server.listen(0, () => {
 });
 
 process.on('exit', () => {
-  assert.ok(starttime != null);
-  assert.ok(timeouttime != null);
+  assert.notStrictEqual(starttime, null);
+  assert.notStrictEqual(timeouttime, null);
 
   const diff = timeouttime - starttime;
   console.log(`diff = ${diff}`);

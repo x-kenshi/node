@@ -21,12 +21,12 @@ function checkGCProfile(data) {
   if (data.statistics.length) {
     // Just check the first one
     const item = data.statistics[0];
-    assert.ok(typeof item.gcType === 'string');
+    assert.strictEqual(typeof item.gcType, 'string');
     assert.ok(item.cost >= 0);
-    assert.ok(typeof item.beforeGC === 'object');
-    assert.ok(typeof item.afterGC === 'object');
+    assert.strictEqual(typeof item.beforeGC, 'object');
+    assert.strictEqual(typeof item.afterGC, 'object');
     // The content of beforeGC and afterGC is same, so we just check afterGC
-    assert.ok(typeof item.afterGC.heapStatistics === 'object');
+    assert.strictEqual(typeof item.afterGC.heapStatistics, 'object');
     const heapStatisticsKeys = [
       'externalMemory',
       'heapSizeLimit',
@@ -43,7 +43,7 @@ function checkGCProfile(data) {
     heapStatisticsKeys.forEach((key) => {
       assert.ok(item.afterGC.heapStatistics[key] >= 0);
     });
-    assert.ok(typeof item.afterGC.heapSpaceStatistics === 'object');
+    assert.strictEqual(typeof item.afterGC.heapSpaceStatistics, 'object');
     const heapSpaceStatisticsKeys = [
       'physicalSpaceSize',
       'spaceAvailableSize',

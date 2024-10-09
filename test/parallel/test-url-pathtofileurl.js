@@ -21,7 +21,7 @@ const url = require('url');
 
 {
   const fileURL = url.pathToFileURL('test/%').href;
-  assert.ok(fileURL.includes('%25'));
+  assert.includes(fileURL, '%25');
 }
 
 {

@@ -25,24 +25,24 @@ try {
   await cli.waitForPrompt();
 
   await cli.command('setContextLineNumber("1")');
-  assert.ok(cli.output.includes('argument must be of type number. Received type string'));
+  assert.includes(cli.output, 'argument must be of type number. Received type string');
 
   await cli.command('setContextLineNumber(0)');
-  assert.ok(cli.output.includes('It must be >= 1. Received 0'));
+  assert.includes(cli.output, 'It must be >= 1. Received 0');
 
   // Make sure the initial value is 2.
   await cli.stepCommand('n');
-  assert.ok(getLastLine(cli.output).includes('4 x = 3'));
+  assert.includes(getLastLine(cli.output), '4 x = 3');
 
   await cli.command('setContextLineNumber(5)');
   await cli.stepCommand('n');
-  assert.ok(getLastLine(cli.output).includes('8 x = 7'));
+  assert.includes(getLastLine(cli.output), '8 x = 7');
 
   await cli.command('setContextLineNumber(3)');
   await cli.stepCommand('n');
-  assert.ok(getLastLine(cli.output).includes('7 x = 6'));
+  assert.includes(getLastLine(cli.output), '7 x = 6');
   await cli.command('list(3)');
-  assert.ok(getLastLine(cli.output).includes('7 x = 6'));
+  assert.includes(getLastLine(cli.output), '7 x = 6');
 
   await cli.quit();
 } catch (error) {

@@ -194,7 +194,7 @@ function TestFatalAlert() {
       ALPNProtocols: ['bar']
     }, common.mustNotCall()).on('error', common.mustCall((err) => {
       const allowedErrors = ['ECONNRESET', 'ERR_SSL_TLSV1_ALERT_NO_APPLICATION_PROTOCOL'];
-      assert.ok(allowedErrors.includes(err.code), `'${err.code}' was not one of ${allowedErrors}.`);
+      assert.includes(allowedErrors, err.code, `'${err.code}' was not one of ${allowedErrors}.`);
 
       // OpenSSL's s_client should output the TLS alert number, which is 120
       // for the 'no_application_protocol' alert.
@@ -243,7 +243,7 @@ function TestALPNCallback() {
     // Callback picks 2nd preference => undefined => ALPN rejected:
     assert.strictEqual(results[1].server, undefined);
     const allowedErrors = ['ECONNRESET', 'ERR_SSL_TLSV1_ALERT_NO_APPLICATION_PROTOCOL'];
-    assert.ok(allowedErrors.includes(results[1].client.error.code), `'${results[1].client.error.code}' was not one of ${allowedErrors}.`);
+    assert.includes(allowedErrors, results[1].client.error.code, `'${results[1].client.error.code}' was not one of ${allowedErrors}.`);
 
     TestBadALPNCallback();
   });
@@ -267,7 +267,7 @@ function TestBadALPNCallback() {
     // Callback returns 'http/5' => doesn't match client ALPN => error & reset
     assert.strictEqual(results[0].server, undefined);
     const allowedErrors = ['ECONNRESET', 'ERR_SSL_TLSV1_ALERT_NO_APPLICATION_PROTOCOL'];
-    assert.ok(allowedErrors.includes(results[0].client.error.code), `'${results[0].client.error.code}' was not one of ${allowedErrors}.`);
+    assert.includes(allowedErrors, results[0].client.error.code, `'${results[0].client.error.code}' was not one of ${allowedErrors}.`);
 
     TestALPNOptionsCallback();
   });

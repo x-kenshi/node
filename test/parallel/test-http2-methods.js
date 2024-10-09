@@ -17,7 +17,7 @@ server.on('stream', common.mustCall(onStream, expected));
 function onStream(stream, headers, flags) {
   const method = headers[':method'];
   assert.notStrictEqual(method, undefined);
-  assert(methods.includes(method), `method ${method} not included`);
+  assert.includes(methods, method, `method ${method} not included`);
   stream.respond({
     'content-type': 'text/html',
     ':status': 200

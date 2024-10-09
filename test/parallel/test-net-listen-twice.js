@@ -7,7 +7,7 @@ const assert = require('assert');
 if (cluster.isPrimary) {
   const worker = cluster.fork();
   worker.on('exit', common.mustCall((code) => {
-    assert.ok(code === 0);
+    assert.strictEqual(code, 0);
   }));
 } else {
   const server = net.createServer();

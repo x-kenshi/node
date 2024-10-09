@@ -41,7 +41,7 @@ if (process.argv[2] === 'child') {
     // `common.mustCall*` cannot be used here as in some environments
     // (i.e. single cpu) `ulimit` may not lead to such an error.
     worker.on('error', (e) => {
-      assert.ok(expected.includes(e.code), `${e.code} not expected`);
+      assert.includes(expected, e.code, `${e.code} not expected`);
     });
   }
 

@@ -104,7 +104,6 @@ function onExit() {
 
   // Verify reuse handle has been wrapped
   assert.strictEqual(first.type, second.type);
-  assert.ok(first.handle !== second.handle, 'Resource reused');
-  assert.ok(first.handle === second.handle.handle,
-            'Resource not wrapped correctly');
+  assert.notStrictEqual(first.handle, second.handle, 'Resource reused');
+  assert.strictEqual(first.handle, second.handle.handle);
 }

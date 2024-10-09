@@ -62,16 +62,16 @@ child.stdout.on('data', mustCallAtLeast((chunk) => {
 }));
 
 child.stdout.on('end', mustCall(() => {
-  assert.ok(response.includes('HELLO=WORLD'));
-  assert.ok(response.includes('FOO=BAR'));
+  assert.includes(response, 'HELLO=WORLD');
+  assert.includes(response, 'FOO=BAR');
   assert.ok(!response.includes('UNDEFINED=undefined'));
-  assert.ok(response.includes('NULL=null'));
-  assert.ok(response.includes(`EMPTY=${os.EOL}`));
+  assert.includes(response, 'NULL=null');
+  assert.includes(response, `EMPTY=${os.EOL}`);
   if (isWindows) {
-    assert.ok(response.includes('DUPLICATE=uppercase'));
+    assert.includes(response, 'DUPLICATE=uppercase');
     assert.ok(!response.includes('duplicate=lowercase'));
   } else {
-    assert.ok(response.includes('DUPLICATE=uppercase'));
-    assert.ok(response.includes('duplicate=lowercase'));
+    assert.includes(response, 'DUPLICATE=uppercase');
+    assert.includes(response, 'duplicate=lowercase');
   }
 }));

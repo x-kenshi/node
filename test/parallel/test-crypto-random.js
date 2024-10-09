@@ -351,9 +351,9 @@ assert.throws(
       randomInts.push(n);
       if (randomInts.length === 100) {
         assert.ok(!randomInts.includes(-1));
-        assert.ok(randomInts.includes(0));
-        assert.ok(randomInts.includes(1));
-        assert.ok(randomInts.includes(2));
+        assert.includes(randomInts, 0);
+        assert.includes(randomInts, 1);
+        assert.includes(randomInts, 2);
         assert.ok(!randomInts.includes(3));
       }
     }));
@@ -370,9 +370,9 @@ assert.throws(
   }
 
   assert.ok(!randomInts.includes(-1));
-  assert.ok(randomInts.includes(0));
-  assert.ok(randomInts.includes(1));
-  assert.ok(randomInts.includes(2));
+  assert.includes(randomInts, 0);
+  assert.includes(randomInts, 1);
+  assert.includes(randomInts, 2);
   assert.ok(!randomInts.includes(3));
 }
 {
@@ -385,8 +385,8 @@ assert.throws(
       randomInts.push(n);
       if (randomInts.length === 100) {
         assert.ok(!randomInts.includes(0));
-        assert.ok(randomInts.includes(1));
-        assert.ok(randomInts.includes(2));
+        assert.includes(randomInts, 1);
+        assert.includes(randomInts, 2);
         assert.ok(!randomInts.includes(3));
       }
     }));
@@ -402,8 +402,8 @@ assert.throws(
       randomInts.push(n);
       if (randomInts.length === 100) {
         assert.ok(!randomInts.includes(-11));
-        assert.ok(randomInts.includes(-10));
-        assert.ok(randomInts.includes(-9));
+        assert.includes(randomInts, -10);
+        assert.includes(randomInts, -9);
         assert.ok(!randomInts.includes(-8));
       }
     }));

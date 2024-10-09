@@ -27,9 +27,5 @@ const suffix = `' -- "\${cur_word}") )
 complete -o filenames -o nospace -o bashdefault -F _node_complete node node_g`
   .replace(/\r/g, '');
 
-assert.ok(
-  output.includes(prefix),
-  `Expect\n\n ${inspect(output)}\n\nto include\n\n${inspect(prefix)}`);
-assert.ok(
-  output.includes(suffix),
-  `Expect\n\n ${inspect(output)}\n\nto include\n\n${inspect(suffix)}`);
+assert.includes(output, prefix, `Expect\n\n ${inspect(output)}\n\nto include\n\n${inspect(prefix)}`);
+assert.includes(output, suffix, `Expect\n\n ${inspect(output)}\n\nto include\n\n${inspect(suffix)}`);

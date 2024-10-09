@@ -21,8 +21,8 @@ const env = {
 
 tmpdir.refresh();
 function checkOutput(stderr, stdout) {
-  assert(stdout.includes('hostnames: ['));
-  assert(stdout.includes('addresses: ['));
+  assert.includes(stdout, 'hostnames: [');
+  assert.includes(stdout, 'addresses: [');
   assert.strictEqual(stdout.trim().split('\n').length, 2);
 }
 {

@@ -40,10 +40,8 @@ assert.match(output, /\n\.say2\n/);
 inputStream.write('.say1 node developer\n');
 assert.ok(output.startsWith('hello node developer\n'),
           `say1 output starts incorrectly: "${output}"`);
-assert.ok(output.includes('> '),
-          `say1 output does not include prompt: "${output}"`);
+assert.includes(output, '> ', `say1 output does not include prompt: "${output}"`);
 inputStream.write('.say2 node developer\n');
 assert.ok(output.startsWith('hello from say2\n'),
           `say2 output starts incorrectly: "${output}"`);
-assert.ok(output.includes('> '),
-          `say2 output does not include prompt: "${output}"`);
+assert.includes(output, '> ', `say2 output does not include prompt: "${output}"`);

@@ -239,12 +239,12 @@ assert.strictEqual(strings.shift(),
 assert.strictEqual(strings.shift(),
                    "{\n  foo: 'bar',\n  [Symbol(nodejs.util.inspect.custom)]:" +
                     ' [Function: [nodejs.util.inspect.custom]]\n}\n');
-assert.ok(strings.shift().includes('foo: [Object]'));
+assert.includes(strings.shift(), 'foo: [Object]');
 assert.strictEqual(strings.shift().includes('baz'), false);
 assert.strictEqual(strings.shift(), 'inspect inspect\n');
-assert.ok(strings[0].includes('foo: { bar: { baz:'));
-assert.ok(strings[0].includes('quux'));
-assert.ok(strings.shift().includes('quux: true'));
+assert.includes(strings[0], 'foo: { bar: { baz:');
+assert.includes(strings[0], 'quux');
+assert.includes(strings.shift(), 'quux: true');
 
 assert.match(strings.shift().trim(), /^label: \d+(\.\d{1,3})?(ms|s)$/);
 assert.match(strings.shift().trim(), /^__proto__: \d+(\.\d{1,3})?(ms|s)$/);

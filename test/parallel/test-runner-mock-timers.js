@@ -901,7 +901,7 @@ describe('Mock Timers Test Suite', () => {
     it('should have ref', (t) => {
       t.mock.timers.enable();
       const timer = setTimeout();
-      assert.ok(typeof timer.ref === 'function');
+      assert.strictEqual(typeof timer.ref, 'function');
       assert.deepStrictEqual(timer.ref(), timer);
       clearTimeout(timer);
     });
@@ -909,7 +909,7 @@ describe('Mock Timers Test Suite', () => {
     it('should have unref', (t) => {
       t.mock.timers.enable();
       const timer = setTimeout();
-      assert.ok(typeof timer.unref === 'function');
+      assert.strictEqual(typeof timer.unref, 'function');
       assert.deepStrictEqual(timer.unref(), timer);
       clearTimeout(timer);
     });
@@ -917,7 +917,7 @@ describe('Mock Timers Test Suite', () => {
     it('should have refresh', (t) => {
       t.mock.timers.enable();
       const timer = setTimeout();
-      assert.ok(typeof timer.refresh === 'function');
+      assert.strictEqual(typeof timer.refresh, 'function');
       assert.deepStrictEqual(timer.refresh(), timer);
       clearTimeout(timer);
     });

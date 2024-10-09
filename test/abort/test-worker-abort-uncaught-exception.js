@@ -18,7 +18,6 @@ child.on('exit', common.mustCall((code, sig) => {
   if (common.isWindows) {
     assert.strictEqual(code, 0x80000003);
   } else {
-    assert(['SIGABRT', 'SIGTRAP', 'SIGILL'].includes(sig),
-           `Unexpected signal ${sig}`);
+    assert.includes(['SIGABRT', 'SIGTRAP', 'SIGILL'], sig, `Unexpected signal ${sig}`);
   }
 }));

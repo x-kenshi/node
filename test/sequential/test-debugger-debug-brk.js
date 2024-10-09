@@ -13,7 +13,7 @@ const script = fixtures.path('empty.js');
 function test(arg) {
   const child = spawnSync(process.execPath, ['--inspect', arg, script]);
   const stderr = child.stderr.toString();
-  assert(stderr.includes('DEP0062'));
+  assert.includes(stderr, 'DEP0062');
   assert.strictEqual(child.status, 9);
 }
 

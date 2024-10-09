@@ -55,7 +55,7 @@ function test1(options) {
 
   file.on('data', function(data) {
     assert.ok(data instanceof Buffer);
-    assert.ok(data.byteOffset % 8 === 0);
+    assert.strictEqual(data.byteOffset % 8, 0);
     assert.ok(!paused);
     file.length += data.length;
 

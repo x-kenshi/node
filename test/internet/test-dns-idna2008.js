@@ -29,7 +29,7 @@ dns.lookup(
   { family: fixture.family },
   mustCall((err, address) => {
     if (err && err.errno === 'ESERVFAIL') {
-      assert.ok(err.message.includes('queryA ESERVFAIL straße.de'));
+      assert.includes(err.message, 'queryA ESERVFAIL straße.de');
       return;
     }
     assert.ifError(err);
@@ -42,7 +42,7 @@ dns.promises.lookup(fixture.hostname, { family: fixture.family })
     assert.strictEqual(address, fixture.expectedAddress);
   }, (err) => {
     if (err && err.errno === 'ESERVFAIL') {
-      assert.ok(err.message.includes('queryA ESERVFAIL straße.de'));
+      assert.includes(err.message, 'queryA ESERVFAIL straße.de');
     } else {
       throw err;
     }
@@ -50,7 +50,7 @@ dns.promises.lookup(fixture.hostname, { family: fixture.family })
 
 dns.resolve4(fixture.hostname, mustCall((err, addresses) => {
   if (err && err.errno === 'ESERVFAIL') {
-    assert.ok(err.message.includes('queryA ESERVFAIL straße.de'));
+    assert.includes(err.message, 'queryA ESERVFAIL straße.de');
     return;
   }
   assert.ifError(err);
@@ -62,7 +62,7 @@ p.then((addresses) => {
   assert.deepStrictEqual(addresses, [fixture.expectedAddress]);
 }, (err) => {
   if (err && err.errno === 'ESERVFAIL') {
-    assert.ok(err.message.includes('queryA ESERVFAIL straße.de'));
+    assert.includes(err.message, 'queryA ESERVFAIL straße.de');
   } else {
     throw err;
   }

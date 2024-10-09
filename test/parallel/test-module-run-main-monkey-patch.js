@@ -15,4 +15,4 @@ const child = spawnSync(process.execPath, [
 ]);
 
 assert.strictEqual(child.status, 0);
-assert(child.stdout.toString().includes('runMain is monkey patched!'));
+assert.includes(child.stdout.toString(), 'runMain is monkey patched!');

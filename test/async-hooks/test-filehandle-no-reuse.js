@@ -59,7 +59,6 @@ function onExit() {
   checkInvocations(fsReqs[1], { init: 1, destroy: 1 }, 'when process exits');
 
   // Verify reuse handle has been wrapped
-  assert.ok(fsReqs[0].handle !== fsReqs[1].handle, 'Resource reused');
-  assert.ok(fsReqs[0].handle === fsReqs[1].handle.handle,
-            'Resource not wrapped correctly');
+  assert.notStrictEqual(fsReqs[0].handle, fsReqs[1].handle, 'Resource reused');
+  assert.strictEqual(fsReqs[0].handle, fsReqs[1].handle.handle);
 }

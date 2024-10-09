@@ -237,7 +237,7 @@ child.exec(
   common.mustCall((err, stdout, stderr) => {
     assert.ok(err);
     assert.strictEqual(stdout, '');
-    assert.ok(stderr.includes('--print cannot be used with ESM input'));
+    assert.includes(stderr, '--print cannot be used with ESM input');
   }));
 
 // Assert that error is written to stderr on invalid input.

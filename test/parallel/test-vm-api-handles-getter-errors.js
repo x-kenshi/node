@@ -30,6 +30,6 @@ const scripts = [];
 scripts.forEach((script) => {
   const node = process.execPath;
   execFile(node, [ '-e', script ], common.mustCall((err, stdout, stderr) => {
-    assert(stderr.includes('Error: xyz'), 'createScript crashes');
+    assert.includes(stderr, 'Error: xyz', 'createScript crashes');
   }));
 });

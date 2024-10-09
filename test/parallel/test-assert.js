@@ -419,7 +419,7 @@ test('Custom errors', () => {
     }, TypeError, rangeError);
   } catch (e) {
     threw = true;
-    assert.ok(e.message.includes(rangeError.message));
+    assert.includes(e.message, rangeError.message);
     assert.ok(e instanceof assert.AssertionError);
     assert.ok(!e.stack.includes('doesNotThrow'), e);
   }
@@ -474,7 +474,7 @@ test('Long values should be truncated for display', () => {
                        `${strictEqualMessageStart}+ actual - expected\n\n` +
                       `+ '${'A'.repeat(1000)}'\n- ''`);
     assert.strictEqual(err.actual.length, 1000);
-    assert.ok(inspect(err).includes(`actual: '${'A'.repeat(488)}...'`));
+    assert.includes(inspect(err), `actual: '${'A'.repeat(488)}...'`);
     return true;
   });
 });
@@ -487,10 +487,9 @@ test('Output that extends beyond 10 lines should also be truncated for display',
     assert.strictEqual(err.code, 'ERR_ASSERTION');
     assert.strictEqual(err.message.split('\n').length, 19);
     assert.strictEqual(err.actual.split('\n').length, 16);
-    assert.ok(inspect(err).includes(
-      "actual: 'fhqwhgads\\n' +\n" +
+    assert.includes(inspect(err), "actual: 'fhqwhgads\\n' +\n" +
       "    'fhqwhgads\\n' +\n".repeat(9) +
-      "    '...'"));
+      "    '...'");
     return true;
   });
 });

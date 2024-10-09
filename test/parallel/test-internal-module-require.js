@@ -100,7 +100,7 @@ if (process.argv[2] === 'child') {
     assert.deepStrictEqual(publicModules, expectedPublicModules);
   });
 } else {
-  assert(process.execArgv.includes('--expose-internals'));
+  assert.includes(process.execArgv, '--expose-internals');
   const child = fork(__filename, ['child'], {
     execArgv: []
   });

@@ -13,8 +13,7 @@ if (process.argv[2] !== 'spawned') {
   const result = spawnSync(process.execPath,
                            [ '--expose-internals', __filename, 'spawned'],
                            { encoding: 'utf8' });
-  assert.ok(result.stderr.includes('Unknown worker message type FHQWHGADS'),
-            `Expected error not found in: ${result.stderr}`);
+  assert.includes(result.stderr, 'Unknown worker message type FHQWHGADS', `Expected error not found in: ${result.stderr}`);
 } else {
   new Worker(`
     const { internalBinding } = require('internal/test/binding');

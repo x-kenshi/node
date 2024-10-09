@@ -20,8 +20,5 @@ if (process.argv[2] === 'child') {
   // FreeBSD uses SIGILL (v12.2) or SIGBUS (v12.4 and greater) for this kind of crash.
   // macOS uses SIGILL or SIGTRAP (arm64) for this kind of crash.
   const allowedSignals = ['SIGSEGV', 'SIGILL', 'SIGTRAP', 'SIGBUS'];
-  assert(
-    allowedSignals.includes(child.signal),
-    `child.signal = ${child.signal}`,
-  );
+  assert.includes(allowedSignals, child.signal, `child.signal = ${child.signal}`);
 }

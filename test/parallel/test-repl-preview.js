@@ -176,7 +176,7 @@ async function tests(options) {
       assert.strictEqual(lines.pop(), '\x1B[1G\x1B[0Jrepl > \x1B[8G');
       assert.deepStrictEqual(lines, preview);
     } else {
-      assert.ok(lines[0].includes(noPreview), lines.map(inspect));
+      assert.includes(lines[0], noPreview, lines.map(inspect));
       if (preview.length !== 1 || preview[0] !== `${input}\r`)
         assert.strictEqual(lines.length, 2);
     }

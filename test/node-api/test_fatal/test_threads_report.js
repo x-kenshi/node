@@ -25,8 +25,7 @@ const p = child_process.spawnSync(
   [ '--report-on-fatalerror', __filename, 'child' ],
   { cwd: tmpdir.path });
 assert.ifError(p.error);
-assert.ok(p.stderr.toString().includes(
-  'FATAL ERROR: work_thread foobar'));
+assert.includes(p.stderr.toString(), 'FATAL ERROR: work_thread foobar');
 assert.ok(p.status === 134 || p.signal === 'SIGABRT');
 
 const reports = helper.findReports(p.pid, tmpdir.path);

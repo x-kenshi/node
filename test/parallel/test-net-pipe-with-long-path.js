@@ -28,9 +28,9 @@ const server = net.createServer()
     }));
   })
   .on('error', (error) => {
-    assert.ok(error.code === 'EINVAL', error.message);
+    assert.strictEqual(error.code, 'EINVAL', error.message);
     net.connect(pipePath)
       .on('error', common.mustCall((error) => {
-        assert.ok(error.code === 'EINVAL', error.message);
+        assert.strictEqual(error.code, 'EINVAL', error.message);
       }));
   });

@@ -21,9 +21,9 @@ describe('DecompressionStream kInspect method', () => {
     const options = {};
     const actual = decompressionStream[kInspect](depth, options);
 
-    assert(actual.includes('DecompressionStream'));
-    assert(actual.includes('ReadableStream'));
-    assert(actual.includes('WritableStream'));
+    assert.includes(actual, 'DecompressionStream');
+    assert.includes(actual, 'ReadableStream');
+    assert.includes(actual, 'WritableStream');
   });
 });
 
@@ -34,8 +34,8 @@ describe('CompressionStream kInspect method', () => {
     const options = {};
     const actual = compressionStream[kInspect](depth, options);
 
-    assert(actual.includes('CompressionStream'));
-    assert(actual.includes('ReadableStream'));
-    assert(actual.includes('WritableStream'));
+    assert.includes(actual, 'CompressionStream');
+    assert.includes(actual, 'ReadableStream');
+    assert.includes(actual, 'WritableStream');
   });
 });

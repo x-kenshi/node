@@ -91,7 +91,7 @@ function checkFiles() {
 
   for (let i = 0; i < total; i++) {
     const fn = `${i}.jpg`;
-    assert.ok(files.includes(fn), `couldn't find '${fn}'`);
+    assert.includes(files, fn, `couldn't find '${fn}'`);
     const stat = fs.statSync(`${tmpdir.path}/${fn}`);
     assert.strictEqual(
       image.length, stat.size,
