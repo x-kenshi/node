@@ -1,0 +1,29 @@
+name: "Comment Commands"
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  disable-stale:
+    if: ${{ github.event.comment.body == '/disable-stale' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add 'never-stale' label
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: gh issue edit "$NUMBER" --repo ${{ github.repository }} --add-label "never-stale"
+  enable-stale:
+    if: ${{ github.event.comment.body == '/enable-stale' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove 'never-stale' label
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: gh issue edit "$NUMBER" --repo ${{ github.repository }} --remove-label "never-stale"
