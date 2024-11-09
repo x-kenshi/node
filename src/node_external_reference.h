@@ -162,7 +162,7 @@ class ExternalReferenceRegistry {
   V(handle_wrap)                                                               \
   V(heap_utils)                                                                \
   V(http_parser)                                                               \
-  V(internal_only_v8)                                                          \
+  V(v8)                                                          \
   V(messaging)                                                                 \
   V(mksnapshot)                                                                \
   V(module_wrap)                                                               \
