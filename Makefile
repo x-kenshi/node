@@ -395,7 +395,7 @@ test/addons/.docbuildstamp: $(DOCBUILDSTAMP_PREREQS) tools/doc/node_modules
 		echo "Skipping .docbuildstamp (no crypto and/or no ICU)"; \
 	else \
 		$(RM) -r test/addons/??_*/; \
-		$(call available-npx, --prefix tools/doc api-docs-tooling -t addon-verify -i doc/api/addons.md -o test/addons/) \
+		$(call available-node, deps/npm/bin/npx-cli.js --prefix tools/doc api-docs-tooling -t addon-verify -i doc/api/addons.md -o test/addons/) \
 		[ $$? -eq 0 ] && touch $@; \
 	fi
 
@@ -790,7 +790,7 @@ doc-only: tools/doc/node_modules \
 	@if [ "$(shell $(node_use_openssl_and_icu))" != "true" ]; then \
 		echo "Skipping doc-only (no crypto or no icu)"; \
 	else \
-		$(call available-npx, --prefix tools/doc api-docs-tooling -t legacy-html-all legacy-json-all api-links -i doc/api/\*.md -i lib/\*.js --ignore $(skip_apidoc_files) -o out/doc/api/ --lint-dry-run -c file://$(PWD)/CHANGELOG.md) \
+		$(call available-node, deps/npm/bin/npx-cli.js --prefix tools/doc api-docs-tooling -t legacy-html-all legacy-json-all api-links -i doc/api/\*.md -i lib/\*.js --ignore $(skip_apidoc_files) -o out/doc/api/ --lint-dry-run -c file://$(PWD)/CHANGELOG.md) \
 	fi
 
 .PHONY: doc
@@ -1330,7 +1330,7 @@ lint-md: lint-js-doc lint-docs | tools/.mdlintstamp ## Lint the markdown documen
 .PHONY: lint-docs
 lint-docs: tools/doc/node_modules
 	$(info Running API Doc linter...)
-	$(call available-npx, --prefix tools/doc api-docs-tooling -i doc/api/*.md -r github)
+	$(call available-node, deps/npm/bin/npx-cli.js --prefix tools/doc api-docs-tooling -i doc/api/*.md -r github)
 
 run-format-md = tools/lint-md/lint-md.mjs --format $(LINT_MD_FILES)
 .PHONY: format-md
