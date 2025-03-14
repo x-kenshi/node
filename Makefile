@@ -1320,7 +1320,7 @@ lint-md: lint-js-doc lint-docs | tools/.mdlintstamp ## Lint the markdown documen
 .PHONY: lint-docs
 lint-docs: tools/doc/node_modules
 	$(info Running API Doc linter...)
-	$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling -i doc/api/*.md)
+	$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling -i doc/api/*.md -r github)
 
 run-format-md = tools/lint-md/lint-md.mjs --format $(LINT_MD_FILES)
 .PHONY: format-md
