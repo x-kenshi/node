@@ -385,7 +385,7 @@ test/addons/.docbuildstamp: $(DOCBUILDSTAMP_PREREQS) tools/doc/node_modules
 		echo "Skipping .docbuildstamp (no crypto and/or no ICU)"; \
 	else \
 		$(RM) -r test/addons/??_*/; \
-		$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling -t addon-verify -i doc/api/addons.md -o test/addons/ --lint-dry-run) \
+		$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling generate -t addon-verify -i doc/api/addons.md -o test/addons/ --no-lint) \
 		[ $$? -eq 0 ] && touch $@; \
 	fi
 
@@ -791,13 +791,26 @@ tools/doc/node_modules: tools/doc/package.json
 		cd tools/doc && $(call available-node,$(run-npm-ci)) \
 	fi
 
+RAWVER=$(shell $(PYTHON) tools/getnodeversion.py)
+VERSION=v$(RAWVER)
+
 .PHONY: doc-only
 doc-only: tools/doc/node_modules \
 	$(apidoc_dirs)  ## Builds the docs with the local or the global Node.js binary.
 	@if [ "$(shell $(node_use_openssl_and_icu))" != "true" ]; then \
 		echo "Skipping doc-only (no crypto or no icu)"; \
 	else \
-		$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling -t legacy-html-all legacy-json-all api-links -i doc/api/\*.md -i lib/\*.js --ignore $(skip_apidoc_files) -o out/doc/api/ --lint-dry-run -c file://$(PWD)/CHANGELOG.md) \
+		$(call available-node, \
+			$(NPX) --prefix tools/doc api-docs-tooling generate \
+			-t legacy-html-all legacy-json-all api-links \
+			-i doc/api/*.md \
+			-i lib/*.js \
+			--ignore $(skip_apidoc_files) \
+			-o out/doc/api/ \
+			--no-lint \
+			-c file://$(PWD)/CHANGELOG.md \
+			-v $(VERSION) \
+		) \
 	fi
 
 .PHONY: doc
@@ -832,8 +845,6 @@ docserve: doc-only ## Serve the documentation on localhost:8000.
 docclean: ## Remove the generated documentation.
 	$(RM) -r out/doc
 
-RAWVER=$(shell $(PYTHON) tools/getnodeversion.py)
-VERSION=v$(RAWVER)
 CHANGELOG=doc/changelogs/CHANGELOG_V$(firstword $(subst ., ,$(RAWVER))).md
 
 # For nightly builds, you must set DISTTYPE to "nightly", "next-nightly" or
@@ -1342,7 +1353,7 @@ lint-md: lint-js-doc lint-docs | tools/.mdlintstamp ## Lint the markdown documen
 .PHONY: lint-docs
 lint-docs: tools/doc/node_modules
 	$(info Running API Doc linter...)
-	$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling -i doc/api/*.md -r github)
+	$(call available-node, $(NPX) --prefix tools/doc api-docs-tooling lint -i doc/api/*.md)
 
 run-format-md = tools/lint-md/lint-md.mjs --format $(LINT_MD_FILES)
 .PHONY: format-md

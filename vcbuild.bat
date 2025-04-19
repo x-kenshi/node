@@ -605,7 +605,15 @@ if not exist %node_exe% (
 mkdir %config%\doc
 robocopy /e doc\api %config%\doc\api
 
-"%npx_exe%" --prefix tools/doc api-docs-tooling -t legacy-html-all legacy-json-all api-links -i doc/api/*.md -i lib/*.js -o out/doc/api/ --lint-dry-run -c file://%~dp0\CHANGELOG.md
+%npx_exe% ^
+  --prefix tools/doc api-docs-tooling generate ^
+  -t legacy-html-all legacy-json-all api-links ^
+  -i doc/api/*.md ^
+  -i lib/*.js ^
+  -o out/doc/api/ ^
+  --no-lint ^
+  -c file://%~dp0\CHANGELOG.md ^
+  -v %NODE_VERSION%
 
 :run
 @rem Run tests if requested.
@@ -621,7 +629,7 @@ for /d %%F in (test\addons\??_*) do (
   rd /s /q %%F
 )
 :: generate
-"%npx_exe%" --prefix tools/doc api-docs-tooling -t addon-verify -i "%~dp0doc\api\addons.md" -o "%~dp0test\addons"
+"%npx_exe%" --prefix tools/doc api-docs-tooling generate -t addon-verify -i "%~dp0doc\api\addons.md" -o "%~dp0test\addons" --no-lint
 if %errorlevel% neq 0 exit /b %errorlevel%
 :: building addons
 setlocal
@@ -764,7 +772,7 @@ for /D %%D IN (doc\*) do (
   )
 )
 %node_exe% tools\lint-md\lint-md.mjs %lint_md_files%
-%npx_exe% --prefix tools\doc api-docs-tooling -i doc\api\*.md
+%npx_exe% --prefix tools\doc api-docs-tooling lint -i doc\api\*.md
 ENDLOCAL
 goto format-md
 
